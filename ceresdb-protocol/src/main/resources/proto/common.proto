@@ -1,0 +1,10 @@
+syntax = "proto3";
+package storage;
+
+option java_package="com.ceresdb.proto";
+option java_outer_classname = "Common";
+
+message ResponseHeader {
+  uint32 code = 1;
+  string error = 2;
+}

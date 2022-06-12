@@ -1,0 +1,6 @@
+com.ceresdb.signal.ShowHelpSignalHandler
+com.ceresdb.signal.MetricsSignalHandler
+com.ceresdb.signal.DisplaySignalHandler
+com.ceresdb.signal.ClearRouteCacheSignalHandler
+com.ceresdb.signal.ShowRouteCacheSignalHandler
+com.ceresdb.signal.RwLoggingSignalHandler
