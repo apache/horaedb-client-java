@@ -24,3 +24,6 @@ hs_err_pid*
 
 # Java build target
 target
+
+# dev tools
+.idea
