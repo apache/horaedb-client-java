@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ceresdb-client</artifactId>
         <groupId>com.ceresdb</groupId>
-        <version>1.0.1.RC2</version>
+        <version>0.1.0</version>
     </parent>
 
     <artifactId>ceresdb-rpc</artifactId>
