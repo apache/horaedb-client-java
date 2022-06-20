@@ -177,9 +177,9 @@ final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
 ```
 
 ## Licensing
-CeresDB 与其 Java client 都遵守 [Apache License 2.0](./LICENSE).
+遵守 [Apache License 2.0](./LICENSE).
 
 ## 社区与技术支持
-- 加入 Slack 社区与用户群：[Slack 入口](https://join.slack.com/t/ceresdbcommunity/shared_invite/zt-1au1ihbdy-5huC9J9s2462yBMIWmerTw)
+- 加入 Slack 社区与用户群 [Slack 入口](https://join.slack.com/t/ceresdbcommunity/shared_invite/zt-1au1ihbdy-5huC9J9s2462yBMIWmerTw)
 - 加入微信社区与用户群 [微信二维码](https://github.com/CeresDB/assets/blob/main/WeChatQRCode.jpg)
-- 搜索并加入钉钉社区与用户群: 44602802
+- 搜索并加入钉钉社区与用户群 44602802
