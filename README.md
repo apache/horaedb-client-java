@@ -2,12 +2,13 @@
 [中文](./docs/README_CN.md)
 
 ## Introduction
-CeresDBxClient is a high-performance  Java client for CeresDB. CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
+CeresDBxClient is a high-performance  Java client for CeresDB.
+CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
 - With the well designed SPI, the network transport layer is extensible. And we provide the default implementation which uses the gRPC framework.
-- The client provides high-performance async streaming write API
-- The client also collects lots of performance metrics by default. These metrics can be configured to write to local file
+- The client provides high-performance async streaming write API.
+- The client also collects lots of performance metrics by default. These metrics can be configured to write to local file.
 - We can take memory snapshots that contains the status of critical objects. The snapshots can also be configured to write to local file, which helps a lot when we diagnose complex problems.
 
 ## Data ingestion process
@@ -121,7 +122,7 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 );
 ```
 
-For more examples of table creation statements, see the detail docs [here](./table.md)
+For more examples of table creation statements, see the detail docs [here](./docs/table.md)
 
 
 ## Data ingestion example
@@ -129,8 +130,12 @@ For more examples of table creation statements, see the detail docs [here](./tab
 // CeresDBx options
 final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8081) //
         .tenant("test", "sub_test", "test_token") // tenant info
-        .writeMaxRetries(1) // maximum retry times when write fails (only some error codes will be retried, such as the routing table failure)
-        .readMaxRetries(1) // maximum retry times when read fails (only some error codes will be retried, such as the routing table failure)
+        // maximum retry times when write fails
+        // (only some error codes will be retried, such as the routing table failure)
+        .writeMaxRetries(1)
+        // maximum retry times when read fails
+        // (only some error codes will be retried, such as the routing table failure)
+        .readMaxRetries(1)
         .build();
 
 final CeresDBxClient client = new CeresDBxClient();
