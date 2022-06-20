@@ -120,8 +120,6 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 );
 ```
 
-更多建表语句例子见 [这里](./table.md)
-
 ## 写入 Example
 ```java
 // CeresDBx options

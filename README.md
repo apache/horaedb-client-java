@@ -1,8 +1,8 @@
 # CeresDB Java Client
-[中文](./docs/README_CN.md)
+[中文](./README_CN.md)
 
 ## Introduction
-CeresDBxClient is a high-performance  Java client for CeresDB.
+CeresDBxClient is a high-performance Java client for CeresDB.
 CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
@@ -122,9 +122,6 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 );
 ```
 
-For more examples of table creation statements, see the detail docs [here](./docs/table.md)
-
-
 ## Data ingestion example
 ```java
 // CeresDBx options
@@ -185,7 +182,7 @@ final QueryOk queryOk = qr.getOk();
 final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
 ```
 ## Licensing
-CeresDB and its Java client is under [Apache License 2.0](./LICENSE).
+Under [Apache License 2.0](./LICENSE).
 
 ## Community and support
 - Join the user group on [Slack](https://join.slack.com/t/ceresdbcommunity/shared_invite/zt-1au1ihbdy-5huC9J9s2462yBMIWmerTw)
