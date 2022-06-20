@@ -1,5 +1,7 @@
-# CeresDB client
-CeresDBxClient 是 CeresDB 的高性能 Java 版客户端，CeresDB 定位高性能的、分布式的、Schema-less 的 HTAP (Hybrid Timeseries/Analytic Processing) 型时间序列数据库。
+# CeresDB Java Client
+
+## 介绍
+CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为高性能的、分布式的、Schema-less 的云原生时序数据库。它可以同时支持时间序列和数据分析型的工作负载。
 
 ## 功能特性
 - 通信层基于 SPI 可扩展，默认提供 gRPC 的实现
@@ -87,7 +89,7 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端，CeresDB 定位高性
 ```
 
 ## 需要
-编译需要 Java8 及以上
+编译需要 Java 8 及以上
 
 ## 建表
 CeresDB 是一个 Schema-less 的时序数据引擎，你可以不必创建 schema 就立刻写入数据（CeresDB 会根据你的第一次写入帮你创建一个默认的 schema）。
@@ -118,8 +120,6 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 );
 ```
 
-更多建表语句例子见 [这里](./table.md)
-
 ## 写入 Example
 ```java
 // CeresDBx options
@@ -138,7 +138,7 @@ final long t0 = System.currentTimeMillis();
 final long t1 = t0 + 1000;
 final long t2 = t1 + 1000;
 final Rows data = Series.newBuilder("machine_metric")
-    .tag("city", "Hangzhou")
+    .tag("city", "Singapore")
     .tag("ip", "127.0.01")
     .toRowsBuilder()
     // 下面针对 cpu、mem 两列，一次写入了三行数据（3 个时间戳），CeresDB 鼓励这种实践，SDK 可以通过高效的压缩来减少网络传输，并且对 server 端写入非常友好
@@ -176,5 +176,10 @@ final QueryOk queryOk = qr.getOk();
 final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
 ```
 
-## 技术支持
-- 顾客是上帝钉钉群：21983792
+## Licensing
+遵守 [Apache License 2.0](./LICENSE).
+
+## 社区与技术支持
+- 加入 Slack 社区与用户群 [Slack 入口](https://join.slack.com/t/ceresdbcommunity/shared_invite/zt-1au1ihbdy-5huC9J9s2462yBMIWmerTw)
+- 加入微信社区与用户群 [微信二维码](https://github.com/CeresDB/assets/blob/main/WeChatQRCode.jpg)
+- 搜索并加入钉钉社区与用户群 44602802
