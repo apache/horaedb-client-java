@@ -1,4 +1,8 @@
 # CeresDB Java Client
+
+[![build](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml)
+![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
+
 [中文](./README_CN.md)
 
 ## Introduction
