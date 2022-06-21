@@ -1,5 +1,8 @@
 # CeresDB Java Client
 
+[![build](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml)
+![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
+
 ## 介绍
 CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为高性能的、分布式的、Schema-less 的云原生时序数据库。它可以同时支持时间序列和数据分析型的工作负载。
 
