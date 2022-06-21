@@ -1,0 +1,95 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check_format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Check format
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && sh ./tools/check_format.sh
+
+  test_ceresdb_common:
+    needs: check_format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Maven Test
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && (mvn --projects ceresdb-common test
+            || mvn --projects ceresdb-common test
+            || mvn --projects ceresdb-common test)
+
+  test_ceresdb_grpc:
+    needs: check_format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Maven Test
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && (mvn --projects ceresdb-grpc test
+            || mvn --projects ceresdb-grpc test
+            || mvn --projects ceresdb-grpc test)
+
+  test_ceresdb_protocol:
+    needs: check_format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Maven Test
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && (mvn --projects ceresdb-protocol test
+            || mvn --projects ceresdb-protocol test
+            || mvn --projects ceresdb-protocol test)
+
+  test_ceresdb_sql:
+    needs: check_format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Maven Test
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && (mvn --projects ceresdb-sql test
+            || mvn --projects ceresdb-sql test
+            || mvn --projects ceresdb-sql test)
+
+  test_ceresdb_javacc:
+    needs: check_format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Maven Test
+        run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          && (mvn --projects ceresdb-sql-javacc test
+            || mvn --projects ceresdb-sql-javacc test
+            || mvn --projects ceresdb-sql-javacc test)
