@@ -27,3 +27,6 @@ target
 
 # dev tools
 .idea
+.classpath
+.project
+.settings
