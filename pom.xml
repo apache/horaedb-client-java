@@ -348,6 +348,9 @@
                 <configuration>
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>${project.encoding}</encoding>
+                    <directories>
+                        <directory>${main.user.dir}/ceresdb-sql-javacc</directory>
+                    </directories>
                 </configuration>
             </plugin>
             <!-- sort pom -->
