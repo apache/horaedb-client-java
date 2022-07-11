@@ -196,7 +196,7 @@ public final class Utils {
         final int failed = resp.getFailed();
 
         if (code == Result.SUCCESS) {
-            final Set<String> metrics = (rows != null && WriteOk.isCollectWroteDetail())
+            final Set<String> metrics = rows != null && WriteOk.isCollectWroteDetail()
                 ? rows.stream()
                     .map(Rows::getMetric)
                     .collect(Collectors.toSet())
