@@ -348,9 +348,19 @@
                 <configuration>
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>${project.encoding}</encoding>
-                    <directories>
-                        <directory>${main.user.dir}/ceresdb-sql-javacc</directory>
-                    </directories>
+                    <excludes>
+                        <exclude>**/ServiceLoader.java</exclude>
+                        <exclude>**/UnsafeUtil.java</exclude>
+                        <exclude>**/proto/*</exclude>
+                        <exclude>**/sql/AbstractCharStream.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParser.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParserConstants.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParserTokenManager.java</exclude>
+                        <exclude>**/sql/ParseException.java</exclude>
+                        <exclude>**/sql/SimpleCharStream.java</exclude>
+                        <exclude>**/sql/Token.java</exclude>
+                        <exclude>**/sql/TokenMgrException.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!-- sort pom -->
