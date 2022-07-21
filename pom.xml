@@ -281,19 +281,6 @@
                                         <ignore></ignore>
                                     </action>
                                 </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                                        <artifactId>maven-java-formatter-plugin</artifactId>
-                                        <versionRange>[0.4,)</versionRange>
-                                        <goals>
-                                            <goal>format</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
@@ -313,23 +300,6 @@
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
-            <!-- formatter -->
-            <!-- <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <version>0.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
-                    <encoding>${project.encoding}</encoding>
-                </configuration>
-            </plugin> -->
             <!-- formatter refer to: https://code.revelc.net/formatter-maven-plugin/examples.html -->
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
