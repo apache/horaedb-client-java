@@ -23,8 +23,8 @@ package com.ceresdb.common.util.internal;
  */
 public final class ThrowUtil {
 
-    private static final ReferenceFieldUpdater<Throwable, Throwable> causeUpdater = Updaters.newReferenceFieldUpdater(
-                                                                                      Throwable.class, "cause");
+    private static final ReferenceFieldUpdater<Throwable, Throwable> causeUpdater = Updaters
+            .newReferenceFieldUpdater(Throwable.class, "cause");
 
     /**
      * Raises an exception bypassing compiler checks for checked exceptions.

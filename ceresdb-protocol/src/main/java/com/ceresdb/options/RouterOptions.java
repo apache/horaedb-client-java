@@ -31,12 +31,12 @@ public class RouterOptions implements Copiable<RouterOptions> {
     private Endpoint  clusterAddress;
     // Specifies the maximum number of routing table caches. When the number reaches the limit, the ones that
     // have not been used for a long time are cleared first
-    private int       maxCachedSize        = 10_000;
+    private int maxCachedSize = 10_000;
     // The frequency at which the route tables garbage collector is triggered. The default is 60 seconds
-    private long      gcPeriodSeconds      = 60;
+    private long gcPeriodSeconds = 60;
     // Refresh frequency of route tables. The background refreshes all route tables periodically. By default,
     // all route tables are refreshed every 30 seconds.
-    private long      refreshPeriodSeconds = 30;
+    private long refreshPeriodSeconds = 30;
 
     public RpcClient getRpcClient() {
         return rpcClient;

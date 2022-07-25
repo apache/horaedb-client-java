@@ -64,10 +64,10 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
     private static final Logger LOG = LoggerFactory.getLogger(WriteClient.class);
 
-    private WriteOptions        opts;
-    private RouterClient        routerClient;
-    private Executor            asyncPool;
-    private WriteLimiter        writeLimiter;
+    private WriteOptions opts;
+    private RouterClient routerClient;
+    private Executor     asyncPool;
+    private WriteLimiter writeLimiter;
 
     static final class InnerMetrics {
         static final Histogram WRITE_ROWS_SUCCESS    = MetricsUtil.histogram("write_rows_success_num");
@@ -125,11 +125,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
             InnerMetrics.writeQps().mark();
             if (r != null) {
                 if (Utils.isRwLogging()) {
-                    LOG.info("Write to {}, duration={} ms, result={}.",
-                            Utils.DB_NAME,
-                            Clock.defaultClock().duration(startCall),
-                            r
-                    );
+                    LOG.info("Write to {}, duration={} ms, result={}.", Utils.DB_NAME,
+                            Clock.defaultClock().duration(startCall), r);
                 }
                 if (r.isOk()) {
                     final WriteOk ok = r.getOk();
@@ -149,10 +146,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
         final CompletableFuture<WriteOk> respFuture = new CompletableFuture<>();
 
         return this.routerClient.routeFor(Collections.singleton(metric))
-                .thenApply(routes -> routes.values()
-                    .stream()
-                    .findFirst()
-                    .orElseGet(() -> Route.invalid(metric)))
+                .thenApply(routes -> routes.values().stream().findFirst().orElseGet(() -> Route.invalid(metric)))
                 .thenApply(route -> streamWriteTo(route, ctx, Utils.toUnaryObserver(respFuture)))
                 .thenApply(reqObserver -> new StreamWriteBuf<Rows, WriteOk>() {
 
@@ -211,58 +205,58 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
         // 1. Get routes
         return this.routerClient.routeFor(metrics)
-            // 2. Split data by route info and write to DB
-            .thenComposeAsync(routes -> Utils.splitDataByRoute(data, routes)
-                .entrySet()
-                .stream()
-                // Write to database
-                .map(e -> writeTo(e.getKey(), e.getValue(), ctx.copy(), retries))
-                // Reduce and combine write result
-                .reduce((f1, f2) -> f1.thenCombineAsync(f2, Utils::combineResult, this.asyncPool))
-                .orElse(Utils.completedCf(WriteOk.emptyOk().mapToResult())), this.asyncPool)
-            // 3. If failed, refresh route info and retry on INVALID_ROUTE
-            .thenComposeAsync(r -> {
-                if (r.isOk()) {
-                    LOG.debug("Success to write to {}, ok={}.", Utils.DB_NAME, r.getOk());
-                    return Utils.completedCf(r);
-                }
+                // 2. Split data by route info and write to DB
+                .thenComposeAsync(routes -> Utils.splitDataByRoute(data, routes).entrySet().stream()
+                        // Write to database
+                        .map(e -> writeTo(e.getKey(), e.getValue(), ctx.copy(), retries))
+                        // Reduce and combine write result
+                        .reduce((f1, f2) -> f1.thenCombineAsync(f2, Utils::combineResult, this.asyncPool))
+                        .orElse(Utils.completedCf(WriteOk.emptyOk().mapToResult())), this.asyncPool)
+                // 3. If failed, refresh route info and retry on INVALID_ROUTE
+                .thenComposeAsync(r -> {
+                    if (r.isOk()) {
+                        LOG.debug("Success to write to {}, ok={}.", Utils.DB_NAME, r.getOk());
+                        return Utils.completedCf(r);
+                    }
 
-                final Err err = r.getErr();
-                LOG.warn("Failed to write to {}, retries={}, err={}.", Utils.DB_NAME, retries, err);
-                if (retries + 1 > this.opts.getMaxRetries()) {
-                    LOG.error("Retried {} times still failed.", retries);
-                    return Utils.completedCf(r);
-                }
+                    final Err err = r.getErr();
+                    LOG.warn("Failed to write to {}, retries={}, err={}.", Utils.DB_NAME, retries, err);
+                    if (retries + 1 > this.opts.getMaxRetries()) {
+                        LOG.error("Retried {} times still failed.", retries);
+                        return Utils.completedCf(r);
+                    }
 
-                // Should refresh route table
-                final Set<String> toRefresh = err.stream() //
-                    .filter(Utils::shouldRefreshRouteTable) //
-                    .flatMap(e -> e.getFailedWrites().stream()) //
-                    .map(Rows::getMetric) //
-                    .collect(Collectors.toSet());
+                    // Should refresh route table
+                    final Set<String> toRefresh = err.stream() //
+                            .filter(Utils::shouldRefreshRouteTable) //
+                            .flatMap(e -> e.getFailedWrites().stream()) //
+                            .map(Rows::getMetric) //
+                            .collect(Collectors.toSet());
 
-                // Should retries
-                final List<Rows> rowsToRetry = err.stream() //
-                    .filter(Utils::shouldRetry) //
-                    .flatMap(e -> e.getFailedWrites().stream()) //
-                    .collect(Collectors.toList());
+                    // Should retries
+                    final List<Rows> rowsToRetry = err.stream() //
+                            .filter(Utils::shouldRetry) //
+                            .flatMap(e -> e.getFailedWrites().stream()) //
+                            .collect(Collectors.toList());
 
-                // Should not retries
-                final Optional<Err> noRetryErr = err.stream() //
-                    .filter(Utils::shouldNotRetry) //
-                    .reduce(Err::combine);
+                    // Should not retries
+                    final Optional<Err> noRetryErr = err.stream() //
+                            .filter(Utils::shouldNotRetry) //
+                            .reduce(Err::combine);
 
-                // Async refresh route info
-                final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient.routeRefreshFor(toRefresh)
-                        // Even for some data that does not require a refresh of the routing table,
-                        // we still wait until the routing table is flushed successfully before
-                        // retrying it, in order to give the server a break.
-                        .thenComposeAsync(routes -> write0(rowsToRetry, ctx, retries + 1), this.asyncPool);
+                    // Async refresh route info
+                    final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient.routeRefreshFor(toRefresh)
+                            // Even for some data that does not require a refresh of the routing table,
+                            // we still wait until the routing table is flushed successfully before
+                            // retrying it, in order to give the server a break.
+                            .thenComposeAsync(routes -> write0(rowsToRetry, ctx, retries + 1), this.asyncPool);
 
-                return noRetryErr.isPresent()
-                        ? rwf.thenApplyAsync(ret -> Utils.combineResult(noRetryErr.get().mapToResult(), ret), this.asyncPool)
-                        : rwf.thenApplyAsync(ret -> Utils.combineResult(err.getSubOk().mapToResult(), ret), this.asyncPool);
-            }, this.asyncPool);
+                    return noRetryErr.isPresent() ?
+                            rwf.thenApplyAsync(ret -> Utils.combineResult(noRetryErr.get().mapToResult(), ret),
+                                    this.asyncPool) :
+                            rwf.thenApplyAsync(ret -> Utils.combineResult(err.getSubOk().mapToResult(), ret),
+                                    this.asyncPool);
+                }, this.asyncPool);
     }
 
     private CompletableFuture<Result<WriteOk, Err>> writeTo(final Endpoint endpoint, //
@@ -292,8 +286,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
         }
 
         return fs.build() //
-            .reduce((f1, f2) -> f1.thenCombineAsync(f2, Utils::combineResult, this.asyncPool)) //
-            .orElse(Utils.completedCf(WriteOk.emptyOk().mapToResult()));
+                .reduce((f1, f2) -> f1.thenCombineAsync(f2, Utils::combineResult, this.asyncPool)) //
+                .orElse(Utils.completedCf(WriteOk.emptyOk().mapToResult()));
     }
 
     private static class PartBuf {
@@ -329,8 +323,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                                                              final Collection<Rows> data, //
                                                              final Context ctx, //
                                                              final int retries) {
-        final CompletableFuture<Storage.WriteResponse> wrf = this.routerClient.invoke(
-                endpoint, //
+        final CompletableFuture<Storage.WriteResponse> wrf = this.routerClient.invoke(endpoint, //
                 toWriteRequestObj(data.stream()), //
                 ctx.with("retries", retries) // server can use this in metrics
         );
@@ -341,8 +334,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     private Observer<Stream<Rows>> streamWriteTo(final Route route, //
                                                  final Context ctx, //
                                                  final Observer<WriteOk> respObserver) {
-        final Observer<Storage.WriteRequest> rpcObs = this.routerClient.invokeClientStreaming(
-                route.getEndpoint(), //
+        final Observer<Storage.WriteRequest> rpcObs = this.routerClient.invokeClientStreaming(route.getEndpoint(), //
                 Storage.WriteRequest.getDefaultInstance(), //
                 ctx, //
                 new Observer<Storage.WriteResponse>() {
@@ -378,7 +370,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                     if (this.metric.equals(rs.getMetric())) {
                         return true;
                     }
-                    throw new StreamException(String.format("Invalid metric %s, only can write %s.", rs.getMetric(), this.metric));
+                    throw new StreamException(
+                            String.format("Invalid metric %s, only can write %s.", rs.getMetric(), this.metric));
                 });
 
                 rpcObs.onNext(toWriteRequestObj(data));
@@ -450,9 +443,9 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
         public Storage.WriteMetric build() {
             return this.wmcBui //
-                .addAllTagNames(this.tagDict.toOrdered()) //
-                .addAllFieldNames(this.fieldDict.toOrdered()) //
-                .build();
+                    .addAllTagNames(this.tagDict.toOrdered()) //
+                    .addAllFieldNames(this.fieldDict.toOrdered()) //
+                    .build();
         }
     }
 
@@ -471,22 +464,19 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                 if (Value.isNull(tagV)) {
                     return;
                 }
-                final Storage.Tag.Builder tBui = Storage.Tag.newBuilder()
-                        .setNameIndex(tagDict.insert(tagK))
+                final Storage.Tag.Builder tBui = Storage.Tag.newBuilder().setNameIndex(tagDict.insert(tagK))
                         .setValue(Utils.toProtoValue(tagV));
                 weyBui.addTags(tBui.build());
             });
 
             final NameDict fieldDict = tp3.getFieldDict();
             rs.getFields().forEach((ts, fields) -> {
-                final Storage.FieldGroup.Builder fgBui = Storage.FieldGroup.newBuilder()
-                        .setTimestamp(ts);
+                final Storage.FieldGroup.Builder fgBui = Storage.FieldGroup.newBuilder().setTimestamp(ts);
                 fields.forEach((name, field) -> {
                     if (Value.isNull(field)) {
                         return;
                     }
-                    final Storage.Field.Builder fBui = Storage.Field.newBuilder()
-                            .setNameIndex(fieldDict.insert(name))
+                    final Storage.Field.Builder fBui = Storage.Field.newBuilder().setNameIndex(fieldDict.insert(name))
                             .setValue(Utils.toProtoValue(field));
                     fgBui.addFields(fBui.build());
                 });
@@ -504,12 +494,12 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     @Override
     public void display(final Printer out) {
         out.println("--- WriteClient ---") //
-            .print("maxRetries=") //
-            .println(this.opts.getMaxRetries()) //
-            .print("maxWriteSize=") //
-            .println(this.opts.getMaxWriteSize()) //
-            .print("asyncPool=") //
-            .println(this.asyncPool);
+                .print("maxRetries=") //
+                .println(this.opts.getMaxRetries()) //
+                .print("maxWriteSize=") //
+                .println(this.opts.getMaxWriteSize()) //
+                .print("asyncPool=") //
+                .println(this.asyncPool);
     }
 
     @Override
@@ -530,18 +520,16 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
         @Override
         public int calculatePermits(final Collection<Rows> in) {
-            return in == null ? 0 : in.stream()
-                    .map(Rows::getRowCount)
-                    .reduce(0, Integer::sum);
+            return in == null ? 0 : in.stream().map(Rows::getRowCount).reduce(0, Integer::sum);
         }
 
         @Override
         public Result<WriteOk, Err> rejected(final Collection<Rows> in, final RejectedState state) {
             final String errMsg = String.format(
-                "Write limited by client, acquirePermits=%d, maxPermits=%d, availablePermits=%d.", //
-                state.acquirePermits(), //
-                state.maxPermits(), //
-                state.availablePermits());
+                    "Write limited by client, acquirePermits=%d, maxPermits=%d, availablePermits=%d.", //
+                    state.acquirePermits(), //
+                    state.maxPermits(), //
+                    state.availablePermits());
             return Result.err(Err.writeErr(Result.FLOW_CONTROL, errMsg, null, in));
         }
     }

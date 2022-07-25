@@ -92,8 +92,7 @@ public class QueryClientTest {
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
                 .setCode(Result.SUCCESS) //
                 .build();
-        final Storage.QueryResponse resp = Storage.QueryResponse.newBuilder()
-                .setHeader(header) //
+        final Storage.QueryResponse resp = Storage.QueryResponse.newBuilder().setHeader(header) //
                 .addRows(ByteStringHelper.wrap(new byte[] { 1, 2, 3 })) //
                 .build();
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
@@ -105,8 +104,7 @@ public class QueryClientTest {
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));
 
-        final QueryRequest req = QueryRequest.newBuilder()
-                .forMetrics("query_test_table") //
+        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
@@ -127,8 +125,7 @@ public class QueryClientTest {
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
                 .setCode(Result.SUCCESS) //
                 .build();
-        final Storage.QueryResponse resp = Storage.QueryResponse.newBuilder()
-                .setHeader(header) //
+        final Storage.QueryResponse resp = Storage.QueryResponse.newBuilder().setHeader(header) //
                 .addRows(ByteStringHelper.wrap(new byte[] { 1, 2, 3 })) //
                 .build();
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
@@ -144,8 +141,7 @@ public class QueryClientTest {
                     }
                 }));
 
-        final QueryRequest req = QueryRequest.newBuilder()
-                .forMetrics("query_test_table") //
+        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
@@ -164,34 +160,34 @@ public class QueryClientTest {
     @Test
     public void queryFailedTest() throws ExecutionException, InterruptedException {
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
-            .setCode(500) // failed code
-            .build();
+                .setCode(500) // failed code
+                .build();
         final Storage.QueryResponse resp = Storage.QueryResponse.newBuilder().setHeader(header) //
-            .build();
+                .build();
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.routeFor(Mockito.eq(Collections.singletonList("query_test_table")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 4517371149948738282L;
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 4517371149948738282L;
 
-                {
-                    put("query_test_table", Route.of("query_test_table", ep));
-                }
-            }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any())).thenReturn(
-            Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 2347114952231996366L;
+                    {
+                        put("query_test_table", Route.of("query_test_table", ep));
+                    }
+                }));
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 2347114952231996366L;
 
-                {
-                    put("query_test_table", Route.of("query_test_table", ep));
-                }
-            }));
+                    {
+                        put("query_test_table", Route.of("query_test_table", ep));
+                    }
+                }));
 
         final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
-            .ql("select number from query_test_table") //
-            .build();
+                .ql("select number from query_test_table") //
+                .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
 
         final Result<QueryOk, Err> r = f.get();
@@ -269,15 +265,15 @@ public class QueryClientTest {
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.routeFor(Mockito.any())) //
-            .thenReturn(Utils.completedCf(new HashMap<>()));
+                .thenReturn(Utils.completedCf(new HashMap<>()));
         Mockito.when(this.routerClient.clusterRoute()) //
-            .thenReturn(Route.of(ep));
+                .thenReturn(Route.of(ep));
 
         final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
-            .ql("select number from query_test_table") //
-            .build();
+                .ql("select number from query_test_table") //
+                .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
 
         return f.get();
@@ -295,8 +291,8 @@ public class QueryClientTest {
 
     private Storage.QueryResponse mockQueryResponse() throws IOException {
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
-            .setCode(Result.SUCCESS) //
-            .build();
+                .setCode(Result.SUCCESS) //
+                .build();
         final String userSchema = "{\"type\":\"record\"," + "\"name\":\"my_record\"," + "\"fields\":[" //
                                   + "{\"name\":\"f1\",\"type\":\"string\"}," //
                                   + "{\"name\":\"f2\",\"type\":\"int\"}," //
@@ -323,11 +319,11 @@ public class QueryClientTest {
         baos.flush();
 
         return Storage.QueryResponse.newBuilder() //
-            .setHeader(header) //
-            .setSchemaType(Storage.QueryResponse.SchemaType.AVRO) //
-            .setSchemaContent(userSchema) //
-            .addRows(ByteStringHelper.wrap(baos.toByteArray())) //
-            .build();
+                .setHeader(header) //
+                .setSchemaType(Storage.QueryResponse.SchemaType.AVRO) //
+                .setSchemaContent(userSchema) //
+                .addRows(ByteStringHelper.wrap(baos.toByteArray())) //
+                .build();
     }
 
     @Test

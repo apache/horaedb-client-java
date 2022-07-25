@@ -36,10 +36,9 @@ import com.codahale.metrics.Timer;
  */
 public class SerializingExecutor implements Executor {
 
-    private static final Logger                   LOG                  = LoggerFactory
-                                                                           .getLogger(SerializingExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SerializingExecutor.class);
 
-    private static final int                      QUEUE_SIZE_THRESHOLD = 512;
+    private static final int QUEUE_SIZE_THRESHOLD = 512;
 
     private final String                          name;
     private final Timer                           singleTaskTimer;
@@ -47,8 +46,8 @@ public class SerializingExecutor implements Executor {
     private final Histogram                       drainNumHis;
     private final Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
 
-    private final Queue<Runnable>                 queue                = new ConcurrentLinkedQueue<>();
-    private final AtomicReference<Thread>         drainingThread       = new AtomicReference<>();
+    private final Queue<Runnable>         queue          = new ConcurrentLinkedQueue<>();
+    private final AtomicReference<Thread> drainingThread = new AtomicReference<>();
 
     public SerializingExecutor(String name) {
         this(name, LogUncaughtExceptionHandler.INSTANCE);

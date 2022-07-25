@@ -29,11 +29,11 @@ import com.ceresdb.common.Copiable;
  */
 public class QueryOptions implements Copiable<QueryOptions> {
 
-    private RouterClient  routerClient;
-    private Executor      asyncPool;
+    private RouterClient routerClient;
+    private Executor     asyncPool;
 
     // In the case of routing table failure, a retry of the read is attempted.
-    private int           maxRetries               = 1;
+    private int maxRetries = 1;
     // Query flow limit: maximum number of query requests in-flight.
     private int           maxInFlightQueryRequests = 8;
     private LimitedPolicy limitedPolicy            = LimitedPolicy.defaultQueryLimitedPolicy();

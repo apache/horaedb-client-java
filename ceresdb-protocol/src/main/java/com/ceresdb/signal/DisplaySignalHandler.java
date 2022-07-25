@@ -43,7 +43,7 @@ import com.ceresdb.common.util.Files;
 @SPI(priority = 98)
 public class DisplaySignalHandler implements SignalHandler {
 
-    private static final Logger LOG       = LoggerFactory.getLogger(DisplaySignalHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DisplaySignalHandler.class);
 
     private static final String BASE_NAME = "CeresDB_client_display.log";
 
@@ -62,10 +62,10 @@ public class DisplaySignalHandler implements SignalHandler {
             final File file = FileOutputHelper.getOutputFile(BASE_NAME);
 
             LOG.info("Displaying CeresDBx clients triggered by signal: {} to file: {}.", signalName,
-                file.getAbsoluteFile());
+                    file.getAbsoluteFile());
 
-            try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true),
-                StandardCharsets.UTF_8))) {
+            try (PrintWriter out = new PrintWriter(
+                    new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
                 final Display.Printer printer = new Display.DefaultPrinter(out);
                 for (final CeresDBxClient ins : instances) {
                     ins.display(printer);

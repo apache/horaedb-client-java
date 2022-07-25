@@ -29,13 +29,13 @@ import com.ceresdb.common.Copiable;
  */
 public class WriteOptions implements Copiable<WriteOptions> {
 
-    private RouterClient  routerClient;
-    private Executor      asyncPool;
+    private RouterClient routerClient;
+    private Executor     asyncPool;
 
     // Maximum data entry per write
-    private int           maxRetries           = 1;
+    private int maxRetries = 1;
     // In the case of routing table failure or some other retry able error, a retry of the write is attempted.
-    private int           maxWriteSize         = 512;
+    private int maxWriteSize = 512;
     // Write flow limit: maximum number of data rows in-flight.
     private int           maxInFlightWriteRows = 8192;
     private LimitedPolicy limitedPolicy        = LimitedPolicy.defaultWriteLimitedPolicy();

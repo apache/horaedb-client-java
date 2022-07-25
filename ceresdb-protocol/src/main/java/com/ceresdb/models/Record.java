@@ -248,10 +248,10 @@ public interface Record extends IndexedRecord {
         @Override
         public String toString() {
             return "[" + //
-                    "name='" + name + '\'' + //
-                    ", type='" + type + '\'' + //
-                    ", subTypes='" + subTypes + '\'' + //
-                    ']';
+                   "name='" + name + '\'' + //
+                   ", type='" + type + '\'' + //
+                   ", subTypes='" + subTypes + '\'' + //
+                   ']';
         }
     }
 
@@ -279,9 +279,9 @@ public interface Record extends IndexedRecord {
         @Override
         public String toString() {
             return "FieldType{" + //
-                    "type=" + type + //
-                    ", logicalType=" + logicalType + //
-                    '}';
+                   "type=" + type + //
+                   ", logicalType=" + logicalType + //
+                   '}';
         }
     }
 
@@ -289,22 +289,10 @@ public interface Record extends IndexedRecord {
      * Data types, represents any valid schema.
      */
     enum Type {
-        Null,
-        Double,
-        Float,
-        Bytes,
-        String,
-        Long,
-        Int,
-        Boolean,
-        Union,
-        Unknown
+        Null, Double, Float, Bytes, String, Long, Int, Boolean, Union, Unknown
     }
 
     enum LogicalType {
-        TimestampMillis,
-        TimestampMicros,
-        Null,
-        Unknown
+        TimestampMillis, TimestampMicros, Null, Unknown
     }
 }

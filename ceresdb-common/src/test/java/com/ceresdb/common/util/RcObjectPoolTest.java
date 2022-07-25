@@ -27,17 +27,17 @@ public class RcObjectPoolTest {
 
     static final ObjectPool.Resource<Object> RESOURCE = new ObjectPool.Resource<Object>() {
 
-                                                          @Override
-                                                          public Object create() {
-                                                              return new Object();
-                                                          }
+        @Override
+        public Object create() {
+            return new Object();
+        }
 
-                                                          @Override
-                                                          public void close(final Object instance) {
-                                                          }
-                                                      };
+        @Override
+        public void close(final Object instance) {
+        }
+    };
 
-    static final RcObjectPool<Object>        POOL     = new RcObjectPool<>(RESOURCE);
+    static final RcObjectPool<Object> POOL = new RcObjectPool<>(RESOURCE);
 
     @Test
     public void sharedTest() {

@@ -45,22 +45,13 @@ public interface MetricParser {
     List<Column> createColumns();
 
     enum StatementType {
-        Unknown,
-        Create,
-        Select,
-        Alter,
-        Describe,
-        Show,
-        Drop,
-        Insert,
-        Exists
+        Unknown, Create, Select, Alter, Describe, Show, Drop, Insert, Exists
     }
 
     interface Column {
 
         enum ColumnType {
-            Unknown,
-            Timestamp, //
+            Unknown, Timestamp, //
             Tag, //
             Field,
         }

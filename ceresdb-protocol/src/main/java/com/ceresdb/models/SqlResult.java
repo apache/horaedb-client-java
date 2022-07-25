@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class SqlResult {
 
-    public static final SqlResult           EMPTY_RESULT = new SqlResult(-1, null);
+    public static final SqlResult EMPTY_RESULT = new SqlResult(-1, null);
 
     private final long                      affectedRows;
     private final List<Map<String, Object>> rows;

@@ -35,13 +35,13 @@ public class ExecutorServiceHelperTest {
     @Test
     public void shutdownNotStart() {
         final ExecutorService e = ThreadPoolUtil.newBuilder().poolName("test_shutdown") //
-            .coreThreads(1) //
-            .maximumThreads(1) //
-            .keepAliveSeconds(100L) //
-            .workQueue(new SynchronousQueue<>()) //
-            .enableMetric(false) //
-            .threadFactory(new NamedThreadFactory("test_shutdown")) //
-            .build();
+                .coreThreads(1) //
+                .maximumThreads(1) //
+                .keepAliveSeconds(100L) //
+                .workQueue(new SynchronousQueue<>()) //
+                .enableMetric(false) //
+                .threadFactory(new NamedThreadFactory("test_shutdown")) //
+                .build();
         Assert.assertTrue(ExecutorServiceHelper.shutdownAndAwaitTermination(e));
     }
 }

@@ -25,7 +25,8 @@ import com.codahale.metrics.MetricRegistry;
  */
 public class ThreadPoolMetricRegistry {
 
-    private static final ThreadLocal<Long> TIME_THREAD_LOCAL = ThreadLocal.withInitial(() -> Clock.defaultClock().getTick());
+    private static final ThreadLocal<Long> TIME_THREAD_LOCAL = ThreadLocal
+            .withInitial(() -> Clock.defaultClock().getTick());
 
     /**
      * Return the global registry of metric instances.

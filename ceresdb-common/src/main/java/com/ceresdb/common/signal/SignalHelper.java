@@ -30,7 +30,7 @@ import com.ceresdb.common.util.Platform;
  */
 public final class SignalHelper {
 
-    private static final Logger         LOG             = LoggerFactory.getLogger(SignalHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SignalHelper.class);
 
     private static final SignalAccessor SIGNAL_ACCESSOR = getSignalAccessor0();
 

@@ -45,26 +45,26 @@ import java.util.function.Function;
 public class VegasLimit extends AbstractLimit {
 
     private static final Logger LOG = LoggerFactory.getLogger(VegasLimit.class);
-    
+
     private static final Function<Integer, Integer> LOG10 = Log10RootFunction.create(0);
 
     public static class Builder {
-        private int initialLimit = 20;
-        private int maxConcurrency = 1000;
-        private MetricRegistry registry = EmptyMetricRegistry.INSTANCE;
-        private double smoothing = 1.0;
-        
-        private Function<Integer, Integer> alphaFunc = (limit) -> 3 * LOG10.apply(limit);
-        private Function<Integer, Integer> betaFunc = (limit) -> 6 * LOG10.apply(limit);
-        private Function<Integer, Integer> thresholdFunc = LOG10;
-        private Function<Double, Double> increaseFunc = (limit) -> limit + LOG10.apply(limit.intValue());
-        private Function<Double, Double> decreaseFunc = (limit) -> limit - LOG10.apply(limit.intValue());
-        private int probeMultiplier = 30;
-        private boolean logOnLimitChange = true;
-        
+        private int            initialLimit   = 20;
+        private int            maxConcurrency = 1000;
+        private MetricRegistry registry       = EmptyMetricRegistry.INSTANCE;
+        private double         smoothing      = 1.0;
+
+        private Function<Integer, Integer> alphaFunc        = (limit) -> 3 * LOG10.apply(limit);
+        private Function<Integer, Integer> betaFunc         = (limit) -> 6 * LOG10.apply(limit);
+        private Function<Integer, Integer> thresholdFunc    = LOG10;
+        private Function<Double, Double>   increaseFunc     = (limit) -> limit + LOG10.apply(limit.intValue());
+        private Function<Double, Double>   decreaseFunc     = (limit) -> limit - LOG10.apply(limit.intValue());
+        private int                        probeMultiplier  = 30;
+        private boolean                    logOnLimitChange = true;
+
         private Builder() {
         }
-        
+
         /**
          * The limiter will probe for a new noload RTT every probeMultiplier * current limit
          * iterations.  Default value is 30.
@@ -76,47 +76,47 @@ public class VegasLimit extends AbstractLimit {
             this.probeMultiplier = probeMultiplier;
             return this;
         }
-        
+
         public Builder alpha(final int alpha) {
             this.alphaFunc = (ignore) -> alpha;
             return this;
         }
-        
+
         public Builder threshold(final Function<Integer, Integer> threshold) {
             this.thresholdFunc = threshold;
             return this;
         }
-        
+
         public Builder alpha(final Function<Integer, Integer> alpha) {
             this.alphaFunc = alpha;
             return this;
         }
-        
+
         public Builder beta(final int beta) {
             this.betaFunc = (ignore) -> beta;
             return this;
         }
-        
+
         public Builder beta(final Function<Integer, Integer> beta) {
             this.betaFunc = beta;
             return this;
         }
-        
+
         public Builder increase(final Function<Double, Double> increase) {
             this.increaseFunc = increase;
             return this;
         }
-        
+
         public Builder decrease(final Function<Double, Double> decrease) {
             this.decreaseFunc = decrease;
             return this;
         }
-        
+
         public Builder smoothing(final double smoothing) {
             this.smoothing = smoothing;
             return this;
         }
-        
+
         public Builder initialLimit(final int initialLimit) {
             this.initialLimit = initialLimit;
             return this;
@@ -136,43 +136,43 @@ public class VegasLimit extends AbstractLimit {
             this.registry = registry;
             return this;
         }
-        
+
         public VegasLimit build() {
             return new VegasLimit(this);
         }
     }
-    
+
     public static Builder newBuilder() {
         return new Builder();
     }
-    
+
     public static VegasLimit newDefault() {
         return newBuilder().build();
     }
-    
+
     /**
      * Estimated concurrency limit based on our algorithm
      */
     private volatile double estimatedLimit;
-    
+
     private volatile long rtt_noload = 0;
-    
+
     /**
      * Maximum allowed limit providing an upper bound failsafe
      */
-    private final int maxLimit; 
-    
-    private final double smoothing;
+    private final int maxLimit;
+
+    private final double                     smoothing;
     private final Function<Integer, Integer> alphaFunc;
     private final Function<Integer, Integer> betaFunc;
     private final Function<Integer, Integer> thresholdFunc;
-    private final Function<Double, Double> increaseFunc;
-    private final Function<Double, Double> decreaseFunc;
-    private final SampleListener rttSampleListener;
-    private final int probeMultiplier;
-    private final boolean logOnLimitChange;
-    private int probeCount = 0;
-    private double probeJitter;
+    private final Function<Double, Double>   increaseFunc;
+    private final Function<Double, Double>   decreaseFunc;
+    private final SampleListener             rttSampleListener;
+    private final int                        probeMultiplier;
+    private final boolean                    logOnLimitChange;
+    private int                              probeCount = 0;
+    private double                           probeJitter;
 
     private VegasLimit(Builder builder) {
         super(builder.initialLimit);
@@ -212,13 +212,13 @@ public class VegasLimit extends AbstractLimit {
             this.rtt_noload = rtt;
             return (int) this.estimatedLimit;
         }
-        
+
         if (this.rtt_noload == 0 || rtt < this.rtt_noload) {
             LOG.debug("New MinRTT {}.", TimeUnit.NANOSECONDS.toMicros(rtt) / 1000.0);
             this.rtt_noload = rtt;
             return (int) this.estimatedLimit;
         }
-        
+
         this.rttSampleListener.addSample(getRttMillis(this.rtt_noload));
 
         return updateEstimatedLimit(rtt, inflight, didDrop);
@@ -233,7 +233,7 @@ public class VegasLimit extends AbstractLimit {
         // Treat any drop (i.e timeout) as needing to reduce the limit
         if (didDrop) {
             newLimit = this.decreaseFunc.apply(currLimit);
-        // Prevent upward drift if not close to the limit
+            // Prevent upward drift if not close to the limit
         } else if (inflight * 2 < currLimit) {
             return (int) currLimit;
         } else {
@@ -244,13 +244,13 @@ public class VegasLimit extends AbstractLimit {
             // Aggressive increase when no queuing
             if (queueSize <= threshold) {
                 newLimit = currLimit + beta;
-            // Increase the limit if queue is still manageable
+                // Increase the limit if queue is still manageable
             } else if (queueSize < alpha) {
                 newLimit = this.increaseFunc.apply(currLimit);
-            // Detecting latency so decrease
+                // Detecting latency so decrease
             } else if (queueSize > beta) {
                 newLimit = this.decreaseFunc.apply(currLimit);
-            // We're within he sweet spot so nothing to do
+                // We're within he sweet spot so nothing to do
             } else {
                 return (int) currLimit;
             }
@@ -260,12 +260,9 @@ public class VegasLimit extends AbstractLimit {
         newLimit = (1 - this.smoothing) * currLimit + this.smoothing * newLimit;
 
         if (this.logOnLimitChange && (int) newLimit != (int) currLimit) {
-            LOG.info("New limit={}, previous limit={}, minRtt={} ms, winRtt={} ms, queueSize={}.",
-                    (int) newLimit,
-                    (int) currLimit,
-                    TimeUnit.NANOSECONDS.toMicros(this.rtt_noload) / 1000.0,
-                    TimeUnit.NANOSECONDS.toMicros(rtt) / 1000.0,
-                    queueSize);
+            LOG.info("New limit={}, previous limit={}, minRtt={} ms, winRtt={} ms, queueSize={}.", (int) newLimit,
+                    (int) currLimit, TimeUnit.NANOSECONDS.toMicros(this.rtt_noload) / 1000.0,
+                    TimeUnit.NANOSECONDS.toMicros(rtt) / 1000.0, queueSize);
         }
 
         this.estimatedLimit = newLimit;
@@ -280,7 +277,7 @@ public class VegasLimit extends AbstractLimit {
     @Override
     public String toString() {
         return "VegasLimit [limit=" + getLimit() + //
-                ", rtt_noload=" + TimeUnit.NANOSECONDS.toMicros(this.rtt_noload) / 1000.0 + //
-                " ms]";
+               ", rtt_noload=" + TimeUnit.NANOSECONDS.toMicros(this.rtt_noload) / 1000.0 + //
+               " ms]";
     }
 }

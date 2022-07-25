@@ -40,7 +40,7 @@ public class AuthHeadersInterceptor implements ClientInterceptor {
 
     private static final ThreadLocal<String> CURRENT_CHILD_TENANT = new ThreadLocal<>();
 
-    private final Tenant                     tenant;
+    private final Tenant tenant;
 
     public AuthHeadersInterceptor(Tenant tenant) {
         this.tenant = Requires.requireNonNull(tenant, "tenant");
@@ -62,8 +62,7 @@ public class AuthHeadersInterceptor implements ClientInterceptor {
     }
 
     private final class HeaderAttachingClientCall<ReqT, RespT>
-                                                               extends
-                                                               ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
+            extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
 
         // Non private to avoid synthetic class
         HeaderAttachingClientCall(ClientCall<ReqT, RespT> call) {

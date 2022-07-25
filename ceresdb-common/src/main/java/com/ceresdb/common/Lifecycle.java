@@ -36,5 +36,6 @@ public interface Lifecycle<T> {
      */
     void shutdownGracefully();
 
-    default void ensureInitialized() {}
+    default void ensureInitialized() {
+    }
 }

@@ -60,12 +60,12 @@ import com.ceresdb.rpc.RpcOptions;
  */
 public class CeresDBTest {
 
-    private static final Logger LOG             = LoggerFactory.getLogger(CeresDBTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CeresDBTest.class);
 
-    private String              TEST_TABLE_NAME = "all_type_test_table_%d";
+    private String TEST_TABLE_NAME = "all_type_test_table_%d";
 
-    private CeresDBxOptions     opts;
-    private CeresDBxClient      client;
+    private CeresDBxOptions opts;
+    private CeresDBxClient  client;
 
     @Before
     public void before() {
@@ -75,11 +75,11 @@ public class CeresDBTest {
         rpcOpts.setLimitKind(RpcOptions.LimitKind.Gradient);
         rpcOpts.setLogOnLimitChange(true);
         this.opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831, 5000) //
-            .tenant("public", "sub_test", "test_token") //
-            .rpcOptions(rpcOpts) //
-            .writeMaxRetries(0) //
-            .readMaxRetries(1) //
-            .build();
+                .tenant("public", "sub_test", "test_token") //
+                .rpcOptions(rpcOpts) //
+                .writeMaxRetries(0) //
+                .readMaxRetries(1) //
+                .build();
         this.client = new CeresDBxClient();
         final boolean ret = this.client.init(this.opts);
 
@@ -90,29 +90,29 @@ public class CeresDBTest {
         final SqlResult existsResult = management.executeSql("EXISTS TABLE %s", TEST_TABLE_NAME);
         LOG.info("EXISTS TABLE before: {}.", existsResult);
 
-        final SqlResult result = management.executeSql(String.format(
-            "CREATE TABLE %s(" + //
-                    "ts TIMESTAMP NOT NULL," + //
-                    "c1 STRING TAG NOT NULL," + //
-                    "c2 INT64 TAG NULL," + //
-                    "c3 DOUBLE NULL," + //
-                    "c4 STRING NULL," + //
-                    "c5 INT64 NULL," + //
-                    "c6 FLOAT NULL," + //
-                    "c7 INT32 NULL," + //
-                    "c8 INT16 NULL," + //
-                    "c9 INT8 NULL," + //
-                    "c10 BOOLEAN NULL," + //
-                    "c11 UINT64 NULL," + //
-                    "c12 UINT32 NULL," + //
-                    "c13 UINT16 NULL," + //
-                    "c14 UINT8 NULL," + //
-                    "c15 TIMESTAMP NULL," + //
-                    "c16 VARBINARY NULL," + //
-                    "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')", TEST_TABLE_NAME));
+        final SqlResult result = management.executeSql(String.format("CREATE TABLE %s(" + //
+                                                                     "ts TIMESTAMP NOT NULL," + //
+                                                                     "c1 STRING TAG NOT NULL," + //
+                                                                     "c2 INT64 TAG NULL," + //
+                                                                     "c3 DOUBLE NULL," + //
+                                                                     "c4 STRING NULL," + //
+                                                                     "c5 INT64 NULL," + //
+                                                                     "c6 FLOAT NULL," + //
+                                                                     "c7 INT32 NULL," + //
+                                                                     "c8 INT16 NULL," + //
+                                                                     "c9 INT8 NULL," + //
+                                                                     "c10 BOOLEAN NULL," + //
+                                                                     "c11 UINT64 NULL," + //
+                                                                     "c12 UINT32 NULL," + //
+                                                                     "c13 UINT16 NULL," + //
+                                                                     "c14 UINT8 NULL," + //
+                                                                     "c15 TIMESTAMP NULL," + //
+                                                                     "c16 VARBINARY NULL," + //
+                                                                     "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
+                TEST_TABLE_NAME));
 
         LOG.info("Start CeresDBx client {}, with options: {}, create table {}: {}.", result(ret), this.opts,
-            TEST_TABLE_NAME, result);
+                TEST_TABLE_NAME, result);
 
         final SqlResult existsResult2 = management.executeSql("EXISTS TABLE %s", TEST_TABLE_NAME);
         LOG.info("EXISTS TABLE after: {}.", existsResult2);
@@ -154,7 +154,7 @@ public class CeresDBTest {
                 .ql("select * from %s where ts < to_timestamp_millis('%s')", TEST_TABLE_NAME, timeString) //
                 .build();
 
-        final Result<QueryOk, Err> queryR =  this.client.query(req).get();
+        final Result<QueryOk, Err> queryR = this.client.query(req).get();
 
         LOG.info("#comprehensiveTest query result={}.", queryR);
 
@@ -165,33 +165,32 @@ public class CeresDBTest {
         ok.mapToRecord().forEach(rd -> {
             LOG.info("Field descriptor: {}", rd.getFieldDescriptors());
             LOG.info("Data: ts={}, c1={}, c2={}, c3={}, c4={}, c5={}, c6={}, c7={}, c8={}, c9={}," + //
-                                    "c10={}, c11={}, c12={}, c13={}, c14={}, c15={}, c16={}",
-                            rd.getTimestamp("ts"), //
-                            rd.getString("c1"), //
-                            rd.getInt64("c2"), //
-                            rd.getDouble("c3"), //
-                            rd.getString("c4"), //
-                            rd.getInt64("c5"), //
-                            rd.getFloat("c6"), //
-                            rd.getInteger("c7"), //
-                            rd.getInt16("c8"), //
-                            rd.getInt8("c9"), //
-                            rd.getBoolean("c10"), //
-                            rd.getUInt64("c11"), //
-                            rd.getUInt32("c12"), //
-                            rd.getUInt16("c13"), //
-                            rd.getUInt8("c14"), //
-                            rd.getTimestamp("c15"),
-                            rd.getBytes("c16"));
-            }
-        );
+            "c10={}, c11={}, c12={}, c13={}, c14={}, c15={}, c16={}", rd.getTimestamp("ts"), //
+                    rd.getString("c1"), //
+                    rd.getInt64("c2"), //
+                    rd.getDouble("c3"), //
+                    rd.getString("c4"), //
+                    rd.getInt64("c5"), //
+                    rd.getFloat("c6"), //
+                    rd.getInteger("c7"), //
+                    rd.getInt16("c8"), //
+                    rd.getInt8("c9"), //
+                    rd.getBoolean("c10"), //
+                    rd.getUInt64("c11"), //
+                    rd.getUInt32("c12"), //
+                    rd.getUInt16("c13"), //
+                    rd.getUInt8("c14"), //
+                    rd.getTimestamp("c15"), rd.getBytes("c16"));
+        });
 
         final Management management = this.client.management();
 
-        final SqlResult alterResult1 = management.executeSql("ALTER TABLE %s ADD COLUMN (c18 UINT64, c19 STRING TAG)", TEST_TABLE_NAME);
+        final SqlResult alterResult1 = management.executeSql("ALTER TABLE %s ADD COLUMN (c18 UINT64, c19 STRING TAG)",
+                TEST_TABLE_NAME);
         LOG.info("ALTER TABLE 1: {}.", alterResult1);
 
-        final SqlResult alterResult2 = management.executeSql("ALTER TABLE %s ADD COLUMN c20 STRING TAG", TEST_TABLE_NAME);
+        final SqlResult alterResult2 = management.executeSql("ALTER TABLE %s ADD COLUMN c20 STRING TAG",
+                TEST_TABLE_NAME);
         LOG.info("ALTER TABLE 2: {}.", alterResult2);
 
         final SqlResult descResult = management.executeSql("DESCRIBE %s", TEST_TABLE_NAME);
@@ -221,10 +220,8 @@ public class CeresDBTest {
         final long timestamp = time.getTimeInMillis();
         final Collection<Rows> rows = new ArrayList<>();
         for (long ts = (timestamp - count); ts < timestamp; ts++) {
-            final Rows.Builder builder = Series.newBuilder(TEST_TABLE_NAME)
-                    .tag("c1", "first_c1")
-                    .tag("c2", TagValue.withInt64(12))
-                    .toRowsBuilder() //
+            final Rows.Builder builder = Series.newBuilder(TEST_TABLE_NAME).tag("c1", "first_c1")
+                    .tag("c2", TagValue.withInt64(12)).toRowsBuilder() //
                     .fields(ts, in -> {
                         in.put("c3", FieldValue.withDouble(0.1));
                         in.put("c4", FieldValue.withString("string value"));
@@ -234,7 +231,8 @@ public class CeresDBTest {
                         in.put("c8", FieldValue.withInt16(16));
                         in.put("c9", FieldValue.withInt8(8));
                         in.put("c10", FieldValue.withBoolean(true));
-                        in.put("c11", FieldValue.withUInt64(UnsignedUtil.getUInt64(Long.MAX_VALUE).add(BigInteger.ONE)));
+                        in.put("c11",
+                                FieldValue.withUInt64(UnsignedUtil.getUInt64(Long.MAX_VALUE).add(BigInteger.ONE)));
                         in.put("c12", FieldValue.withUInt32(33));
                         in.put("c13", FieldValue.withUInt16(17));
                         in.put("c14", FieldValue.withUInt8(9));
@@ -285,12 +283,12 @@ public class CeresDBTest {
     public void streamWriteTest() {
         final StreamWriteBuf<Rows, WriteOk> writeBuf = this.client.streamWrite(TEST_TABLE_NAME);
         final CompletableFuture<WriteOk> future = writeBuf.write(makeRows(Calendar.getInstance(), 2)) //
-            .write(makeRows(Calendar.getInstance(), 3)) //
-            .flush() //
-            .writeAndFlush(makeRows(Calendar.getInstance(), 10)) //
-            .write(makeRows(Calendar.getInstance(), 10)) //
-            .writeAndFlush(makeRows(Calendar.getInstance(), 10)) //
-            .completed();
+                .write(makeRows(Calendar.getInstance(), 3)) //
+                .flush() //
+                .writeAndFlush(makeRows(Calendar.getInstance(), 10)) //
+                .write(makeRows(Calendar.getInstance(), 10)) //
+                .writeAndFlush(makeRows(Calendar.getInstance(), 10)) //
+                .completed();
 
         Assert.assertEquals(35, future.join().getSuccess());
     }

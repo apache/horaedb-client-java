@@ -55,8 +55,8 @@ public class RequestLimiterBuilder extends AbstractPartitionedLimiter.Builder<Re
     }
 
     public Limiter<RequestLimitCtx> build() {
-        return this.blockOnLimit ? BlockingLimiter.wrap(super.build(), Duration.ofMillis(this.blockTimeoutMillis))
-            : super.build();
+        return this.blockOnLimit ? BlockingLimiter.wrap(super.build(), Duration.ofMillis(this.blockTimeoutMillis)) :
+                super.build();
     }
 
     @Override

@@ -51,8 +51,8 @@ public class TopKSelectorTest {
             }
         };
 
-        final List<String> top5Keys = TopKSelector.selectTopK(map.entrySet(), 3,
-            (o1, o2) -> -o1.getValue().compareTo(o2.getValue())) //
+        final List<String> top5Keys = TopKSelector
+                .selectTopK(map.entrySet(), 3, (o1, o2) -> -o1.getValue().compareTo(o2.getValue())) //
                 .map(Map.Entry::getKey) //
                 .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList("j", "k", "l"), top5Keys);

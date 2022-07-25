@@ -47,22 +47,20 @@ import com.ceresdb.util.TestUtil;
 public class CeresDBxClientTest {
 
     private static final ReferenceFieldUpdater<CeresDBxClient, WriteClient> WC_UPDATER = Updaters //
-                                                                                           .newReferenceFieldUpdater(
-                                                                                               CeresDBxClient.class,
-                                                                                               "writeClient");
+            .newReferenceFieldUpdater(CeresDBxClient.class, "writeClient");
 
-    private CeresDBxClient                                                  client;
-    private CeresDBxOptions                                                 opts;
+    private CeresDBxClient  client;
+    private CeresDBxOptions opts;
     @Mock
-    private WriteClient                                                     writeClient;
+    private WriteClient     writeClient;
 
     @Before
     public void before() {
         this.opts = CeresDBxOptions.newBuilder("127.0.0.1", 8081) //
-            .tenant("test", "sub_test", "test_token") //
-            .writeMaxRetries(1) //
-            .readMaxRetries(1) //
-            .build();
+                .tenant("test", "sub_test", "test_token") //
+                .writeMaxRetries(1) //
+                .readMaxRetries(1) //
+                .build();
         this.client = new CeresDBxClient();
     }
 
@@ -100,7 +98,7 @@ public class CeresDBxClientTest {
         final Rows rows = TestUtil.newRow("test_metric1");
 
         Mockito.when(this.writeClient.write(Mockito.anyList(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
+                .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
         final CompletableFuture<Result<WriteOk, Err>> f = this.client.write(rows);
         final Result<WriteOk, Err> ret = f.get();
         Assert.assertTrue(ret.isOk());

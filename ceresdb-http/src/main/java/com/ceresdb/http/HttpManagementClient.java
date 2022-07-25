@@ -54,17 +54,17 @@ import okhttp3.ResponseBody;
  */
 public class HttpManagementClient implements Management {
 
-    private static final Logger LOG           = LoggerFactory.getLogger(HttpManagementClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HttpManagementClient.class);
 
     private static final String AFFECTED_ROWS = "affected_rows";
     private static final String ROWS          = "rows";
 
-    private final AtomicBoolean started       = new AtomicBoolean(false);
+    private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private ManagementOptions   opts;
+    private ManagementOptions opts;
 
-    private Tenant              tenant;
-    private RouterClient        routerClient;
+    private Tenant       tenant;
+    private RouterClient routerClient;
 
     @Override
     public boolean init(final ManagementOptions opts) {
@@ -88,14 +88,15 @@ public class HttpManagementClient implements Management {
     @Override
     public void display(final Printer out) {
         out.println("--- HttpManagementClient ---") //
-            .print("started=") //
-            .println(this.started) //
-            .print("tenant=") //
-            .println(this.tenant.getTenant());
+                .print("started=") //
+                .println(this.started) //
+                .print("tenant=") //
+                .println(this.tenant.getTenant());
     }
 
     @Override
-    public SqlResult executeSql(final boolean autoRouting, final Context ctx, final String fmtSql, final Object... args) {
+    public SqlResult executeSql(final boolean autoRouting, final Context ctx, final String fmtSql,
+                                final Object... args) {
         final String sql = getSql(fmtSql, args);
         final Endpoint managementAddress = this.opts.getManagementAddress();
 
@@ -130,17 +131,17 @@ public class HttpManagementClient implements Management {
 
     private SqlResult doExecuteSql(final String sql, final Endpoint endpoint, final Context ctx) {
         final Request request = contextToHeaders(newBaseRequestBuilder(), ctx) //
-            .url(getUrl(endpoint)) //
-            .post(HttpUtil.requestBody(HttpUtil.params("query", sql))) //
-            .build();
+                .url(getUrl(endpoint)) //
+                .post(HttpUtil.requestBody(HttpUtil.params("query", sql))) //
+                .build();
 
         LOG.info("Executing sql: {}, to: {}.", sql, endpoint);
 
         try (Response resp = HttpUtil.httpClient().newCall(request).execute()) {
             if (!resp.isSuccessful()) {
-                throw new ManagementException(String.format(
-                    "Execute sql [%s] error from server %s, err_code=%d, err_msg=%s, detail_msg=%s", //
-                    sql, endpoint, resp.code(), resp.message(), getRespBody(resp)));
+                throw new ManagementException(
+                        String.format("Execute sql [%s] error from server %s, err_code=%d, err_msg=%s, detail_msg=%s", //
+                                sql, endpoint, resp.code(), resp.message(), getRespBody(resp)));
             }
             return toSqlResult(resp);
         } catch (final Throwable t) {
@@ -153,11 +154,9 @@ public class HttpManagementClient implements Management {
     private Endpoint getTargetEndpoint(final Collection<Route> routes) {
         final Endpoint managementAddress = this.opts.getManagementAddress();
 
-        return routes == null ? managementAddress : routes
-                .stream()
-                .findFirst()
-                .map(r -> Endpoint.of(r.getEndpoint().getIp(), managementAddress.getPort()))
-                .orElse(managementAddress);
+        return routes == null ? managementAddress :
+                routes.stream().findFirst().map(r -> Endpoint.of(r.getEndpoint().getIp(), managementAddress.getPort()))
+                        .orElse(managementAddress);
     }
 
     private String getSql(final String fmtSql, final Object... args) {
@@ -185,7 +184,7 @@ public class HttpManagementClient implements Management {
 
     private Request.Builder newBaseRequestBuilder() {
         return authHeaders(new Request.Builder()) //
-            .addHeader("Content-Type", "application/json");
+                .addHeader("Content-Type", "application/json");
     }
 
     private Request.Builder authHeaders(final Request.Builder builder) {

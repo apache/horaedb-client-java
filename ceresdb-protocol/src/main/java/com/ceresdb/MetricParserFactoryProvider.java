@@ -25,8 +25,8 @@ import com.ceresdb.common.util.ServiceLoader;
 public class MetricParserFactoryProvider {
 
     private static final MetricParserFactory METRIC_PARSER_FACTORY = ServiceLoader //
-                                                                .load(MetricParserFactory.class) //
-                                                                .firstOrDefault(() -> MetricParserFactory.DEFAULT);
+            .load(MetricParserFactory.class) //
+            .firstOrDefault(() -> MetricParserFactory.DEFAULT);
 
     public static MetricParserFactory getMetricParserFactory() {
         return METRIC_PARSER_FACTORY;

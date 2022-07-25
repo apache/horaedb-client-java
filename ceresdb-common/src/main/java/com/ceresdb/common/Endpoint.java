@@ -30,8 +30,8 @@ public class Endpoint implements Serializable {
     private static final long serialVersionUID = -7329681263115546100L;
 
     @SuppressWarnings("PMD")
-    private String            ip               = "0.0.0.0";
-    private int               port;
+    private String ip = "0.0.0.0";
+    private int    port;
 
     public static Endpoint of(final String ip, final int port) {
         return new Endpoint(ip, port);

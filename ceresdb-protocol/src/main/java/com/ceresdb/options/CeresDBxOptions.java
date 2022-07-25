@@ -197,45 +197,45 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
      */
     public static Builder newBuilder(final String clusterHost, final int clusterPort, final int managementPort) {
         return new Builder(Endpoint.of(clusterHost, clusterPort)) //
-            .managementAddress(Endpoint.of(clusterHost, managementPort));
+                .managementAddress(Endpoint.of(clusterHost, managementPort));
     }
 
     public static final class Builder {
         // The only constant address of this cluster.
         private final Endpoint clusterAddress;
         // Database management address, such as creating tables.
-        private Endpoint       managementAddress;
+        private Endpoint managementAddress;
         // Asynchronous thread pool, which is used to handle various asynchronous tasks in the SDK.
-        private Executor       asyncWritePool;
-        private Executor       asyncReadPool;
+        private Executor asyncWritePool;
+        private Executor asyncReadPool;
         // Tenant
-        private Tenant         tenant;
+        private Tenant tenant;
         // Rpc options, in general, the default configuration is fine.
-        private RpcOptions     rpcOptions                     = RpcOptions.newDefault();
+        private RpcOptions rpcOptions = RpcOptions.newDefault();
         // Write options
         // Maximum data entry per write
-        private int            maxWriteSize                   = 512;
+        private int maxWriteSize = 512;
         // In the case of routing table failure or some other retry able error, a retry of the write is attempted.
-        private int            writeMaxRetries                = 1;
+        private int writeMaxRetries = 1;
         // Write flow control: maximum number of data rows in-flight.
-        private int            maxInFlightWriteRows           = 8192;
+        private int maxInFlightWriteRows = 8192;
         // Write flow control: limited policy
-        private LimitedPolicy  writeLimitedPolicy             = LimitedPolicy.defaultWriteLimitedPolicy();
+        private LimitedPolicy writeLimitedPolicy = LimitedPolicy.defaultWriteLimitedPolicy();
         // Query options
         // In the case of routing table failure, a retry of the read is attempted.
-        private int            readMaxRetries                 = 1;
+        private int readMaxRetries = 1;
         // Query flow control: maximum number of query requests in-flight.
-        private int            maxInFlightQueryRequests       = 8;
+        private int maxInFlightQueryRequests = 8;
         // Query flow control: limited policy
-        private LimitedPolicy  queryLimitedPolicy             = LimitedPolicy.defaultQueryLimitedPolicy();
+        private LimitedPolicy queryLimitedPolicy = LimitedPolicy.defaultQueryLimitedPolicy();
         // Specifies the maximum number of routing table caches. When the number reaches the limit, the ones that
         // have not been used for a long time are cleared first
-        private int            routeTableMaxCachedSize        = 10_000;
+        private int routeTableMaxCachedSize = 10_000;
         // The frequency at which the route tables garbage collector is triggered. The default is 60 seconds.
-        private long           routeTableGcPeriodSeconds      = 60;
+        private long routeTableGcPeriodSeconds = 60;
         // Refresh frequency of route tables. The background refreshes all route tables periodically. By default,
         // all route tables are refreshed every 30 seconds.
-        private long           routeTableRefreshPeriodSeconds = 30;
+        private long routeTableRefreshPeriodSeconds = 30;
 
         public Builder(Endpoint clusterAddress) {
             this.clusterAddress = clusterAddress;

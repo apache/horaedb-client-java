@@ -125,8 +125,8 @@ public class MetricParserTest {
 
     @Test
     public void createTableIfNotExistsTest() {
-        final MetricParser parser = getParser("CREATE TABLE IF NOT EXISTS with_primary_key(\n"
-                                              + "    ts TIMESTAMP NOT NULL,\n" //
+        final MetricParser parser = getParser(
+                "CREATE TABLE IF NOT EXISTS with_primary_key(\n" + "    ts TIMESTAMP NOT NULL,\n" //
                                               + "    c1 STRING NOT NULL,\n" //
                                               + "    c2 STRING NULL,\n" //
                                               + "    c3 DOUBLE NULL,\n" //

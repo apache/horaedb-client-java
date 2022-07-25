@@ -34,8 +34,8 @@ public class IdChannel extends ManagedChannel {
 
     private static final AtomicLong ID_ALLOC = new AtomicLong();
 
-    private final long              channelId;
-    private final ManagedChannel    channel;
+    private final long           channelId;
+    private final ManagedChannel channel;
 
     private static long getNextId() {
         return ID_ALLOC.incrementAndGet();
