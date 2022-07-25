@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * A metric QL parser that can extract metric names from the given QL.
- * 
+ *
  * @author jiachun.fjc
  */
 public interface MetricParser {
@@ -32,7 +32,7 @@ public interface MetricParser {
 
     /**
      * Extract metric(table) names from the given QL.
-     * 
+     *
      * @return metric names
      */
     List<String> metricNames();

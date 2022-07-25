@@ -35,7 +35,8 @@ public class RpcServiceRegister {
     public static void registerStorageService() {
         // register protobuf serializer
         RpcFactoryProvider.getRpcFactory().register(
-                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Route"), MethodDescriptor.MethodType.UNARY), //
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Route"), MethodDescriptor.MethodType.UNARY),
+                //
                 Storage.RouteRequest.class, //
                 Storage.RouteRequest.getDefaultInstance(), //
                 Storage.RouteResponse.getDefaultInstance());

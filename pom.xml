@@ -317,8 +317,6 @@
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>${project.encoding}</encoding>
                     <excludes>
-                        <exclude>**/ServiceLoader.java</exclude>
-                        <exclude>**/UnsafeUtil.java</exclude>
                         <exclude>**/proto/*</exclude>
                         <exclude>**/sql/AbstractCharStream.java</exclude>
                         <exclude>**/sql/CeresDBxSqlParser.java</exclude>

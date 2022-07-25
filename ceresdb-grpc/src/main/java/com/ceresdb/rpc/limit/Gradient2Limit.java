@@ -68,7 +68,7 @@ import com.netflix.concurrency.limits.limit.measurement.Measurement;
  * In this state the system goes back to steady state after a prolonged period of excessive load.  Requests aren't rejected
  * and the sample RTT remains low. During this state the long term RTT may take some time to go back to normal and could
  * potentially be several multiples higher than the current RTT.
- * 
+ *
  * Refer to {@link com.netflix.concurrency.limits.limit.Gradient2Limit}
  */
 public class Gradient2Limit extends AbstractLimit {

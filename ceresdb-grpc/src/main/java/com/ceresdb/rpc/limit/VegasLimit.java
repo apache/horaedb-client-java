@@ -33,7 +33,7 @@ import java.util.function.Function;
 /**
  * Limiter based on TCP Vegas where the limit increases by alpha if the queue_use is small ({@literal <} alpha)
  * and decreases by alpha if the queue_use is large ({@literal >} beta).
- * 
+ *
  * Queue size is calculated using the formula, 
  *  queue_use = limit − BWE×RTTnoLoad = limit × (1 − RTTnoLoad/RTTactual)
  *

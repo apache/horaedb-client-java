@@ -33,37 +33,37 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({ "ConstantConditions", "PMD" })
 public final class UnsafeUtil {
 
-    private static final Logger         LOG                       = LoggerFactory.getLogger(UnsafeUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UnsafeUtil.class);
 
-    private static final Object         UNSAFE                    = getUnsafe0();
+    private static final Object UNSAFE = getUnsafe0();
 
-    private static final UnsafeAccessor UNSAFE_ACCESSOR           = getUnsafeAccessor0();
+    private static final UnsafeAccessor UNSAFE_ACCESSOR = getUnsafeAccessor0();
 
-    private static final long           BYTE_ARRAY_BASE_OFFSET    = arrayBaseOffset(byte[].class);
+    private static final long BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset(byte[].class);
     // Micro-optimization: we can assume a scale of 1 and skip the multiply
     // private static final long BYTE_ARRAY_INDEX_SCALE = 1;
 
-    private static final long           BOOLEAN_ARRAY_BASE_OFFSET = arrayBaseOffset(boolean[].class);
-    private static final long           BOOLEAN_ARRAY_INDEX_SCALE = arrayIndexScale(boolean[].class);
+    private static final long BOOLEAN_ARRAY_BASE_OFFSET = arrayBaseOffset(boolean[].class);
+    private static final long BOOLEAN_ARRAY_INDEX_SCALE = arrayIndexScale(boolean[].class);
 
-    private static final long           INT_ARRAY_BASE_OFFSET     = arrayBaseOffset(int[].class);
-    private static final long           INT_ARRAY_INDEX_SCALE     = arrayIndexScale(int[].class);
+    private static final long INT_ARRAY_BASE_OFFSET = arrayBaseOffset(int[].class);
+    private static final long INT_ARRAY_INDEX_SCALE = arrayIndexScale(int[].class);
 
-    private static final long           LONG_ARRAY_BASE_OFFSET    = arrayBaseOffset(long[].class);
-    private static final long           LONG_ARRAY_INDEX_SCALE    = arrayIndexScale(long[].class);
+    private static final long LONG_ARRAY_BASE_OFFSET = arrayBaseOffset(long[].class);
+    private static final long LONG_ARRAY_INDEX_SCALE = arrayIndexScale(long[].class);
 
-    private static final long           FLOAT_ARRAY_BASE_OFFSET   = arrayBaseOffset(float[].class);
-    private static final long           FLOAT_ARRAY_INDEX_SCALE   = arrayIndexScale(float[].class);
+    private static final long FLOAT_ARRAY_BASE_OFFSET = arrayBaseOffset(float[].class);
+    private static final long FLOAT_ARRAY_INDEX_SCALE = arrayIndexScale(float[].class);
 
-    private static final long           DOUBLE_ARRAY_BASE_OFFSET  = arrayBaseOffset(double[].class);
-    private static final long           DOUBLE_ARRAY_INDEX_SCALE  = arrayIndexScale(double[].class);
+    private static final long DOUBLE_ARRAY_BASE_OFFSET = arrayBaseOffset(double[].class);
+    private static final long DOUBLE_ARRAY_INDEX_SCALE = arrayIndexScale(double[].class);
 
-    private static final long           OBJECT_ARRAY_BASE_OFFSET  = arrayBaseOffset(Object[].class);
-    private static final long           OBJECT_ARRAY_INDEX_SCALE  = arrayIndexScale(Object[].class);
+    private static final long OBJECT_ARRAY_BASE_OFFSET = arrayBaseOffset(Object[].class);
+    private static final long OBJECT_ARRAY_INDEX_SCALE = arrayIndexScale(Object[].class);
 
-    private static final long           BUFFER_ADDRESS_OFFSET     = objectFieldOffset(bufferAddressField());
+    private static final long BUFFER_ADDRESS_OFFSET = objectFieldOffset(bufferAddressField());
 
-    private static final long           STRING_VALUE_OFFSET       = objectFieldOffset(stringValueField());
+    private static final long STRING_VALUE_OFFSET = objectFieldOffset(stringValueField());
 
     /**
      * Whether or not can use the unsafe api.
@@ -240,13 +240,13 @@ public final class UnsafeUtil {
     }
 
     public static boolean getBooleanVolatile(final boolean[] target, final long index) {
-        return UNSAFE_ACCESSOR.getBooleanVolatile(target, BOOLEAN_ARRAY_BASE_OFFSET
-                                                          + (index * BOOLEAN_ARRAY_INDEX_SCALE));
+        return UNSAFE_ACCESSOR.getBooleanVolatile(target,
+                BOOLEAN_ARRAY_BASE_OFFSET + (index * BOOLEAN_ARRAY_INDEX_SCALE));
     }
 
     public static void putBooleanVolatile(final boolean[] target, final long index, final boolean value) {
         UNSAFE_ACCESSOR.putBooleanVolatile(target, BOOLEAN_ARRAY_BASE_OFFSET + (index * BOOLEAN_ARRAY_INDEX_SCALE),
-            value);
+                value);
     }
 
     public static float getFloatVolatile(final float[] target, final long index) {

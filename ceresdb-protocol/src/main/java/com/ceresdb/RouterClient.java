@@ -294,7 +294,8 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             return times;
         }
 
-        LOG.warn("Now that the number of cached entries [{}] is about to exceed its limit [{}], we need to clean up.", //
+        LOG.warn("Now that the number of cached entries [{}] is about to exceed its limit [{}], we need to clean up.",
+                //
                 this.routeCache.size(), this.opts.getMaxCachedSize());
 
         final int itemsToGC = (int) (this.routeCache.size() * CLEAN_THRESHOLD);
