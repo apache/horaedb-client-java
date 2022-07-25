@@ -281,19 +281,6 @@
                                         <ignore></ignore>
                                     </action>
                                 </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                                        <artifactId>maven-java-formatter-plugin</artifactId>
-                                        <versionRange>[0.4,)</versionRange>
-                                        <goals>
-                                            <goal>format</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
@@ -313,21 +300,37 @@
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
-            <!-- formatter -->
+            <!-- formatter refer to: https://code.revelc.net/formatter-maven-plugin/examples.html -->
             <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <version>0.4</version>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>2.15.0</version>
+                <!--
                 <executions>
                     <execution>
                         <goals>
                             <goal>format</goal>
+                            <goal>validate</goal>
                         </goals>
                     </execution>
                 </executions>
+                -->
                 <configuration>
                     <configFile>${main.user.dir}/tools/codestyle/formatter.xml</configFile>
                     <encoding>${project.encoding}</encoding>
+                    <excludes>
+                        <exclude>**/ServiceLoader.java</exclude>
+                        <exclude>**/UnsafeUtil.java</exclude>
+                        <exclude>**/proto/*</exclude>
+                        <exclude>**/sql/AbstractCharStream.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParser.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParserConstants.java</exclude>
+                        <exclude>**/sql/CeresDBxSqlParserTokenManager.java</exclude>
+                        <exclude>**/sql/ParseException.java</exclude>
+                        <exclude>**/sql/SimpleCharStream.java</exclude>
+                        <exclude>**/sql/Token.java</exclude>
+                        <exclude>**/sql/TokenMgrException.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!-- sort pom -->
