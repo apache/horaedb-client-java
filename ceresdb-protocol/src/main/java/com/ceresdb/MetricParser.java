@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * A metric QL parser that can extract metric names from the given QL.
- * 
+ *
  * @author jiachun.fjc
  */
 public interface MetricParser {
@@ -32,7 +32,7 @@ public interface MetricParser {
 
     /**
      * Extract metric(table) names from the given QL.
-     * 
+     *
      * @return metric names
      */
     List<String> metricNames();
@@ -45,22 +45,13 @@ public interface MetricParser {
     List<Column> createColumns();
 
     enum StatementType {
-        Unknown,
-        Create,
-        Select,
-        Alter,
-        Describe,
-        Show,
-        Drop,
-        Insert,
-        Exists
+        Unknown, Create, Select, Alter, Describe, Show, Drop, Insert, Exists
     }
 
     interface Column {
 
         enum ColumnType {
-            Unknown,
-            Timestamp, //
+            Unknown, Timestamp, //
             Tag, //
             Field,
         }

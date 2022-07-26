@@ -32,8 +32,8 @@ public final class Result<Ok, Err> {
     public static final int SHOULD_RETRY  = 310;
     public static final int FLOW_CONTROL  = 503;
 
-    private final Ok        ok;
-    private final Err       err;
+    private final Ok  ok;
+    private final Err err;
 
     public static <Ok, Err> Result<Ok, Err> ok(final Ok ok) {
         Requires.requireNonNull(ok, "Null.ok");

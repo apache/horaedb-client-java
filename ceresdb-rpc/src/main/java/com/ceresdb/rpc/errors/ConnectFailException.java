@@ -38,7 +38,8 @@ public class ConnectFailException extends RemotingException {
         super(cause);
     }
 
-    public ConnectFailException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ConnectFailException(String message, Throwable cause, boolean enableSuppression,
+                                boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

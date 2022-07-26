@@ -38,9 +38,9 @@ public class SqlParserUtil {
     private static final String _TIMESTAMP_KEY_UC = "TIMESTAMP KEY";
     private static final String _TIMESTAMP_KEY_LC = _TIMESTAMP_KEY_UC.toLowerCase();
     // This syntax is not supported in CeresDB
-    private static final String _UNIQUE_KEY       = "UNIQUE KEY";
-    private static final String _TAG              = "TAG";
-    private static final String _CREATE_TABLE     = "CREATE TABLE";
+    private static final String _UNIQUE_KEY   = "UNIQUE KEY";
+    private static final String _TAG          = "TAG";
+    private static final String _CREATE_TABLE = "CREATE TABLE";
 
     public static List<String> extractTableNames(final Statement stmt) {
         final TablesNamesFinder tablesFinder = new TablesNamesFinder();
@@ -55,7 +55,7 @@ public class SqlParserUtil {
             Requires.requireTrue(!ucSql.contains(_UNIQUE_KEY), "`unique key` not supported");
             // Case mixing is not supported
             return sql.replace(_TIMESTAMP_KEY_UC, _UNIQUE_KEY) //
-                .replace(_TIMESTAMP_KEY_LC, _UNIQUE_KEY);
+                    .replace(_TIMESTAMP_KEY_LC, _UNIQUE_KEY);
         }
 
         return sql;
@@ -66,51 +66,42 @@ public class SqlParserUtil {
 
         // timestamp
         final String tsColName = createTable.getIndexes() // must not null
-                .stream()
-                .filter(SqlParserUtil::isTimestampColumn)
-                .flatMap(idx -> idx.getColumnsNames().stream())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("There must be a `timestamp` column"));
+                .stream().filter(SqlParserUtil::isTimestampColumn).flatMap(idx -> idx.getColumnsNames().stream())
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("There must be a `timestamp` column"));
 
-        final Set<String> tags = createTable.getColumnDefinitions()
-                .stream()
-                .filter(SqlParserUtil::isTagColumn)
-                .map(ColumnDefinition::getColumnName)
-                .collect(Collectors.toSet());
+        final Set<String> tags = createTable.getColumnDefinitions().stream().filter(SqlParserUtil::isTagColumn)
+                .map(ColumnDefinition::getColumnName).collect(Collectors.toSet());
 
-        return createTable.getColumnDefinitions()
-                .stream()
-                .map(col -> new MetricParser.Column() {
+        return createTable.getColumnDefinitions().stream().map(col -> new MetricParser.Column() {
 
-                    @Override
-                    public String metricName() {
-                        return metricName;
-                    }
+            @Override
+            public String metricName() {
+                return metricName;
+            }
 
-                    @Override
-                    public String columnName() {
-                        return col.getColumnName();
-                    }
+            @Override
+            public String columnName() {
+                return col.getColumnName();
+            }
 
-                    @Override
-                    public ColumnType columnType() {
-                        if (tsColName.equals(columnName())) {
-                            return ColumnType.Timestamp;
-                        }
+            @Override
+            public ColumnType columnType() {
+                if (tsColName.equals(columnName())) {
+                    return ColumnType.Timestamp;
+                }
 
-                        if (tags.contains(columnName())) {
-                            return ColumnType.Tag;
-                        }
+                if (tags.contains(columnName())) {
+                    return ColumnType.Tag;
+                }
 
-                        return ColumnType.Field;
-                    }
+                return ColumnType.Field;
+            }
 
-                    @Override
-                    public String valueType() {
-                        return col.getColDataType().getDataType();
-                    }
-                })
-                .collect(Collectors.toList());
+            @Override
+            public String valueType() {
+                return col.getColDataType().getDataType();
+            }
+        }).collect(Collectors.toList());
     }
 
     private static boolean isTagColumn(final ColumnDefinition col) {

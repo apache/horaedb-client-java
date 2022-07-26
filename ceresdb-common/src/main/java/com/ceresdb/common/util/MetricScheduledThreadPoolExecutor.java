@@ -55,8 +55,8 @@ public class MetricScheduledThreadPoolExecutor extends LogScheduledThreadPoolExe
     @Override
     protected void afterExecute(final Runnable r, final Throwable t) {
         ThreadPoolMetricRegistry.metricRegistry() //
-            .timer("scheduled_thread_pool." + getName()) //
-            .update(ThreadPoolMetricRegistry.finish(), TimeUnit.MILLISECONDS);
+                .timer("scheduled_thread_pool." + getName()) //
+                .update(ThreadPoolMetricRegistry.finish(), TimeUnit.MILLISECONDS);
         super.afterExecute(r, t);
     }
 }

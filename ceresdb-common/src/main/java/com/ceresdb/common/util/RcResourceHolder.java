@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RcResourceHolder<T> {
 
-    private static final Logger                            LOG       = LoggerFactory.getLogger(RcResourceHolder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RcResourceHolder.class);
 
     private final Map<ObjectPool.Resource<T>, Instance<T>> instances = new IdentityHashMap<>();
 
@@ -47,7 +47,7 @@ public class RcResourceHolder<T> {
         final Instance<T> cached = this.instances.get(resource);
         Requires.requireNonNull(cached, "No cached instance found for " + resource);
         Requires.requireTrue(returned == cached.payload(), "Releasing the wrong instance, expected=%s, actual=%s",
-            cached.payload(), returned);
+                cached.payload(), returned);
         Requires.requireTrue(cached.rc() > 0, "RefCount has already reached zero");
         if (cached.decAndGet() == 0) {
             LOG.info("[RcResourceHolder] close instance: {}.", cached);

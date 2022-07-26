@@ -38,14 +38,14 @@ public class TestUtil {
     public static Rows newRow(final String metric) {
         final long time = Clock.defaultClock().getTick() - 1;
         return Series.newBuilder(metric) //
-            .tag("tag1", "tag_v1") //
-            .tag("tag2", "tag_v2") //
-            .toRowsBuilder() //
-            .field(time, "field1", FieldValue.withDouble(0.1)) //
-            .field(time, "field2", FieldValue.withString("string_value")) //
-            .field(time + 1, "field1", FieldValue.withDouble(0.2)) //
-            .field(time + 1, "field2", FieldValue.withString("string_value_2")) //
-            .build();
+                .tag("tag1", "tag_v1") //
+                .tag("tag2", "tag_v2") //
+                .toRowsBuilder() //
+                .field(time, "field1", FieldValue.withDouble(0.1)) //
+                .field(time, "field2", FieldValue.withString("string_value")) //
+                .field(time + 1, "field1", FieldValue.withDouble(0.2)) //
+                .field(time + 1, "field2", FieldValue.withString("string_value_2")) //
+                .build();
     }
 
     public static List<Rows> newListOfRows(final String... metrics) {
@@ -58,12 +58,12 @@ public class TestUtil {
 
     public static Storage.WriteResponse newSuccessWriteResp(final int success) {
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
-            .setCode(Result.SUCCESS) //
-            .build();
+                .setCode(Result.SUCCESS) //
+                .build();
         return Storage.WriteResponse.newBuilder() //
-            .setHeader(header) //
-            .setSuccess(success) //
-            .build();
+                .setHeader(header) //
+                .setSuccess(success) //
+                .build();
     }
 
     public static Storage.WriteResponse newFailedWriteResp(final int errCode, final int failed) {
@@ -72,13 +72,13 @@ public class TestUtil {
 
     public static Storage.WriteResponse newFailedWriteResp(final int errCode, final String err, final int failed) {
         final Common.ResponseHeader errHeader = Common.ResponseHeader.newBuilder() //
-            .setCode(errCode) //
-            .setError(err) //
-            .build();
+                .setCode(errCode) //
+                .setError(err) //
+                .build();
         return Storage.WriteResponse.newBuilder() //
-            .setHeader(errHeader) //
-            .setFailed(failed) //
-            .build();
+                .setHeader(errHeader) //
+                .setFailed(failed) //
+                .build();
     }
 
     @SuppressWarnings("unchecked")

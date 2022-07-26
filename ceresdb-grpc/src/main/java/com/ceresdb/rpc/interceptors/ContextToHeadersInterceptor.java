@@ -47,8 +47,7 @@ public class ContextToHeadersInterceptor implements ClientInterceptor {
     }
 
     private static final class HeaderAttachingClientCall<ReqT, RespT>
-                                                                      extends
-                                                                      ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
+            extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
 
         // Non private to avoid synthetic class
         HeaderAttachingClientCall(ClientCall<ReqT, RespT> delegate) {

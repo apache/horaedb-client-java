@@ -37,7 +37,7 @@ import com.ceresdb.common.util.SystemPropertyUtil;
  */
 public class SignalHandlersLoader {
 
-    private static final Logger  LOG           = LoggerFactory.getLogger(SignalHandlersLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SignalHandlersLoader.class);
 
     private static final boolean USE_OS_SIGNAL = SystemPropertyUtil.getBool(OptKeys.USE_OS_SIGNAL, true);
 

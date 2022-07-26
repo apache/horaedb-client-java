@@ -62,10 +62,10 @@ public interface LimitedPolicy {
             }
 
             final String err = String.format(
-                "Limited by `AbortPolicy`, acquirePermits=%d, maxPermits=%d, availablePermits=%d.", //
-                permits, //
-                limiter.maxPermits(), //
-                limiter.availablePermits());
+                    "Limited by `AbortPolicy`, acquirePermits=%d, maxPermits=%d, availablePermits=%d.", //
+                    permits, //
+                    limiter.maxPermits(), //
+                    limiter.availablePermits());
             throw new LimitedException(err);
         }
     }
@@ -115,14 +115,14 @@ public interface LimitedPolicy {
                 return true;
             }
 
-            final String err = String.format(
-                "Limited by `AbortOnBlockingTimeoutPolicy[timeout=%d, unit=%s]`, acquirePermits=%d, " + //
-                        "maxPermits=%d, availablePermits=%d.", //
-                timeout(), //
-                unit(), //
-                permits, //
-                limiter.maxPermits(), //
-                limiter.availablePermits());
+            final String err = String
+                    .format("Limited by `AbortOnBlockingTimeoutPolicy[timeout=%d, unit=%s]`, acquirePermits=%d, " + //
+                            "maxPermits=%d, availablePermits=%d.", //
+                            timeout(), //
+                            unit(), //
+                            permits, //
+                            limiter.maxPermits(), //
+                            limiter.availablePermits());
             throw new LimitedException(err);
         }
     }

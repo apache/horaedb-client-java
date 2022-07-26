@@ -29,7 +29,7 @@ import com.ceresdb.common.util.internal.ThrowUtil;
  */
 public class CeresDBxMetricParser implements MetricParser {
 
-    private final String         ql;
+    private final String ql;
 
     private boolean              parsed;
     private StatementType        statementType = StatementType.Unknown;

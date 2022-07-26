@@ -37,8 +37,8 @@ public class LogScheduledThreadPoolExecutor extends ScheduledThreadPoolExecutor 
 
     private static final Logger LOG = LoggerFactory.getLogger(LogScheduledThreadPoolExecutor.class);
 
-    private final int           corePoolSize;
-    private final String        name;
+    private final int    corePoolSize;
+    private final String name;
 
     public LogScheduledThreadPoolExecutor(int corePoolSize, String name) {
         super(corePoolSize);

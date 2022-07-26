@@ -116,15 +116,13 @@ public interface MarshallerRegistry {
     enum DefaultMarshallerRegistry implements MarshallerRegistry {
         INSTANCE;
 
-        private final Map<Class<? extends Message>, Map<MethodDescriptor.MethodType, MethodDescriptor>>  methods   =
-                                                                                                                new ConcurrentHashMap<>();
-        private final Map<Class<? extends Message>, Message>                                             requests  =
-                                                                                                                new ConcurrentHashMap<>();
-        private final Map<Class<? extends Message>, Message>                                             responses =
-                                                                                                                new ConcurrentHashMap<>();
+        private final Map<Class<? extends Message>, Map<MethodDescriptor.MethodType, MethodDescriptor>> methods   = new ConcurrentHashMap<>();
+        private final Map<Class<? extends Message>, Message>                                            requests  = new ConcurrentHashMap<>();
+        private final Map<Class<? extends Message>, Message>                                            responses = new ConcurrentHashMap<>();
 
         @Override
-        public String getMethodName(final Class<? extends Message> reqCls, final MethodDescriptor.MethodType methodType) {
+        public String getMethodName(final Class<? extends Message> reqCls,
+                                    final MethodDescriptor.MethodType methodType) {
             final Map<MethodDescriptor.MethodType, MethodDescriptor> methods = this.methods.get(reqCls);
             Requires.requireNonNull(methods, "Could not find method by " + reqCls);
             final MethodDescriptor md = methods.get(methodType);
@@ -134,11 +132,7 @@ public interface MarshallerRegistry {
 
         @Override
         public Set<MethodDescriptor> getAllMethodDescriptors() {
-            return this.methods
-                    .values()
-                    .stream()
-                    .flatMap(map -> map.values().stream())
-                    .collect(Collectors.toSet());
+            return this.methods.values().stream().flatMap(map -> map.values().stream()).collect(Collectors.toSet());
         }
 
         @Override

@@ -98,7 +98,8 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
      */
     default <Req, Resp> Resp invokeSync(final Endpoint endpoint, //
                                         final Req request, //
-                                        final long timeoutMs) throws RemotingException {
+                                        final long timeoutMs)
+            throws RemotingException {
         return invokeSync(endpoint, request, null, timeoutMs);
     }
 
@@ -116,7 +117,8 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
     <Req, Resp> Resp invokeSync(final Endpoint endpoint, //
                                 final Req request, //
                                 final Context ctx, //
-                                final long timeoutMs) throws RemotingException;
+                                final long timeoutMs)
+            throws RemotingException;
 
     /**
      * Executes a asynchronous call with a response {@link Observer}.
@@ -131,7 +133,8 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
     default <Req, Resp> void invokeAsync(final Endpoint endpoint, //
                                          final Req request, //
                                          final Observer<Resp> observer, //
-                                         final long timeoutMs) throws RemotingException {
+                                         final long timeoutMs)
+            throws RemotingException {
         invokeAsync(endpoint, request, null, observer, timeoutMs);
     }
 
@@ -150,7 +153,8 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
                                  final Req request, //
                                  final Context ctx, //
                                  final Observer<Resp> observer, //
-                                 final long timeoutMs) throws RemotingException;
+                                 final long timeoutMs)
+            throws RemotingException;
 
     /**
      * Executes a server-streaming call with a response {@link Observer}.
@@ -167,7 +171,8 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
     <Req, Resp> void invokeServerStreaming(final Endpoint endpoint, //
                                            final Req request, //
                                            final Context ctx, //
-                                           final Observer<Resp> observer) throws RemotingException;
+                                           final Observer<Resp> observer)
+            throws RemotingException;
 
     /**
      * Executes a client-streaming call with a request {@link Observer}
@@ -181,8 +186,7 @@ public interface RpcClient extends Lifecycle<RpcOptions>, Display {
      * @param <Resp>        response message type
      * @return request {@link Observer}.
      */
-    <Req, Resp> Observer<Req> invokeClientStreaming(final Endpoint endpoint,
-                                                    final Req defaultReqIns,
-                                                    final Context ctx,
-                                                    final Observer<Resp> respObserver) throws RemotingException;
+    <Req, Resp> Observer<Req> invokeClientStreaming(final Endpoint endpoint, final Req defaultReqIns, final Context ctx,
+                                                    final Observer<Resp> respObserver)
+            throws RemotingException;
 }

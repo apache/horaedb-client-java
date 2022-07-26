@@ -43,7 +43,7 @@ import com.ceresdb.common.util.Files;
 @SPI(priority = 96)
 public class ShowRouteCacheSignalHandler implements SignalHandler {
 
-    private static final Logger LOG       = LoggerFactory.getLogger(ShowRouteCacheSignalHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShowRouteCacheSignalHandler.class);
 
     private static final String BASE_NAME = "CeresDB_route_cache.log";
 
@@ -61,12 +61,11 @@ public class ShowRouteCacheSignalHandler implements SignalHandler {
         try {
             final File file = FileOutputHelper.getOutputFile(BASE_NAME);
 
-            LOG.info("Logging all of the route cache items triggered by signal: {} to file: {}.",
-                    signalName, file.getAbsoluteFile());
+            LOG.info("Logging all of the route cache items triggered by signal: {} to file: {}.", signalName,
+                    file.getAbsoluteFile());
 
             try (PrintWriter out = new PrintWriter(
-                    new OutputStreamWriter(new FileOutputStream(file, true),
-                            StandardCharsets.UTF_8))) {
+                    new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
                 final Display.Printer printer = new Display.DefaultPrinter(out);
                 for (final CeresDBxClient ins : instances) {
                     printer.print("clientId=").println(ins.id());

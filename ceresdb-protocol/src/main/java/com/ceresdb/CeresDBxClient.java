@@ -62,7 +62,7 @@ import com.codahale.metrics.Meter;
  */
 public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>, Display {
 
-    private static final Logger                       LOG         = LoggerFactory.getLogger(CeresDBxClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CeresDBxClient.class);
 
     private static final Map<Integer, CeresDBxClient> INSTANCES   = new ConcurrentHashMap<>();
     private static final AtomicInteger                ID          = new AtomicInteger(0);
@@ -70,8 +70,8 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
     private static final String                       VERSION_KEY = "client.version";
     private static final String                       VERSION     = loadVersion();
 
-    private final int                                 id;
-    private final AtomicBoolean                       started     = new AtomicBoolean(false);
+    private final int           id;
+    private final AtomicBoolean started = new AtomicBoolean(false);
 
     private CeresDBxOptions opts;
     private RouterClient    routerClient;
@@ -79,10 +79,10 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
     private QueryClient     queryClient;
     // CeresDBxClient is only intended to manage the instance and does not
     // intend to broker any of its behavior
-    private Management      management;
+    private Management management;
     // Note: We do not close it to free resources, as we view it as shared
-    private Executor        asyncWritePool;
-    private Executor        asyncReadPool;
+    private Executor asyncWritePool;
+    private Executor asyncReadPool;
 
     static {
         // load all signal handlers
@@ -226,18 +226,18 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
     @Override
     public void display(final Printer out) {
         out.println("--- CeresDBxClient ---") //
-            .print("id=") //
-            .println(this.id) //
-            .print("version=") //
-            .println(version()) //
-            .print("clusterAddress=") //
-            .println(this.opts.getClusterAddress()) //
-            .print("tenant=") //
-            .println(this.opts.getTenant().getTenant()) //
-            .print("userAsyncWritePool=") //
-            .println(this.opts.getAsyncWritePool()) //
-            .print("userAsyncReadPool=") //
-            .println(this.opts.getAsyncReadPool());
+                .print("id=") //
+                .println(this.id) //
+                .print("version=") //
+                .println(version()) //
+                .print("clusterAddress=") //
+                .println(this.opts.getClusterAddress()) //
+                .print("tenant=") //
+                .println(this.opts.getTenant().getTenant()) //
+                .print("userAsyncWritePool=") //
+                .println(this.opts.getAsyncWritePool()) //
+                .print("userAsyncReadPool=") //
+                .println(this.opts.getAsyncReadPool());
 
         if (this.routerClient != null) {
             out.println("");
@@ -345,8 +345,8 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
     private static String loadVersion() {
         try {
             return Utils //
-                .loadProperties(CeresDBxClient.class.getClassLoader(), "client_version.properties") //
-                .getProperty(VERSION_KEY, "Unknown version");
+                    .loadProperties(CeresDBxClient.class.getClassLoader(), "client_version.properties") //
+                    .getProperty(VERSION_KEY, "Unknown version");
         } catch (final Exception ignored) {
             return "Unknown version(err)";
         }

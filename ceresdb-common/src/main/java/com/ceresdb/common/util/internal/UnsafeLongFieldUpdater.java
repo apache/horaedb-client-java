@@ -29,7 +29,7 @@ final class UnsafeLongFieldUpdater<U> implements LongFieldUpdater<U> {
     private final sun.misc.Unsafe unsafe;
 
     UnsafeLongFieldUpdater(sun.misc.Unsafe unsafe, Class<? super U> tClass, String fieldName)
-                                                                                             throws NoSuchFieldException {
+            throws NoSuchFieldException {
         final Field field = tClass.getDeclaredField(fieldName);
         if (unsafe == null) {
             throw new NullPointerException("unsafe");

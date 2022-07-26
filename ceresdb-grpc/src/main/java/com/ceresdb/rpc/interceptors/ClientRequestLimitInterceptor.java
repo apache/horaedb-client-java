@@ -45,10 +45,9 @@ import com.netflix.concurrency.limits.Limiter;
  */
 public class ClientRequestLimitInterceptor implements ClientInterceptor {
 
-    private static final Status             LIMIT_EXCEEDED_STATUS = Status.UNAVAILABLE
-                                                                      .withDescription("Client limit reached");
+    private static final Status LIMIT_EXCEEDED_STATUS = Status.UNAVAILABLE.withDescription("Client limit reached");
 
-    private static final AtomicBoolean      LIMIT_SWITCH          = new AtomicBoolean(true);
+    private static final AtomicBoolean LIMIT_SWITCH = new AtomicBoolean(true);
 
     private final Limiter<RequestLimitCtx>  limiter;
     private final Function<String, Boolean> filter;
@@ -74,13 +73,15 @@ public class ClientRequestLimitInterceptor implements ClientInterceptor {
 
         return MetricsUtil.timer(LimitMetricRegistry.RPC_LIMITER, "acquire_time", methodName)
                 .timeSupplier(() -> this.limiter.acquire(() -> methodName))
-                .map(listener -> (ClientCall<ReqT, RespT>) new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOpts)) {
+                .map(listener -> (ClientCall<ReqT, RespT>) new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(
+                        next.newCall(method, callOpts)) {
 
                     private final AtomicBoolean done = new AtomicBoolean(false);
 
                     @Override
                     public void start(final Listener<RespT> respListener, final Metadata headers) {
-                        super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(respListener) {
+                        super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(
+                                respListener) {
 
                             @Override
                             public void onClose(final Status status, final Metadata trailers) {
@@ -111,8 +112,7 @@ public class ClientRequestLimitInterceptor implements ClientInterceptor {
                             }
                         }
                     }
-                })
-                .orElseGet(() -> new ClientCall<ReqT, RespT>() {
+                }).orElseGet(() -> new ClientCall<ReqT, RespT>() {
 
                     private Listener<RespT> respListener;
 

@@ -61,10 +61,10 @@ public class MetricReporter {
     public void report() {
         synchronized (this) {
             report(this.registry.getGauges(this.filter), //
-                this.registry.getCounters(this.filter), //
-                this.registry.getHistograms(this.filter), //
-                this.registry.getMeters(this.filter), //
-                this.registry.getTimers(this.filter));
+                    this.registry.getCounters(this.filter), //
+                    this.registry.getHistograms(this.filter), //
+                    this.registry.getMeters(this.filter), //
+                    this.registry.getTimers(this.filter));
         }
     }
 
@@ -207,19 +207,19 @@ public class MetricReporter {
          */
         public MetricReporter build() {
             return new MetricReporter(this.registry, //
-                this.output, //
-                this.prefix, //
-                this.locale, //
-                this.clock, //
-                this.timeZone, //
-                this.rateUnit, //
-                this.durationUnit, //
-                this.filter, //
-                this.disabledMetricAttributes);
+                    this.output, //
+                    this.prefix, //
+                    this.locale, //
+                    this.clock, //
+                    this.timeZone, //
+                    this.rateUnit, //
+                    this.durationUnit, //
+                    this.filter, //
+                    this.disabledMetricAttributes);
         }
     }
 
-    private static final int           CONSOLE_WIDTH = 80;
+    private static final int CONSOLE_WIDTH = 80;
 
     private final MetricRegistry       registry;
     private final Set<MetricAttribute> disabledMetricAttributes;
@@ -256,8 +256,8 @@ public class MetricReporter {
         this.durationFactor = durationUnit.toNanos(1);
         this.durationUnit = durationUnit.toString().toLowerCase(Locale.US);
         this.filter = filter;
-        this.disabledMetricAttributes = disabledMetricAttributes != null ? disabledMetricAttributes : Collections
-            .emptySet();
+        this.disabledMetricAttributes = disabledMetricAttributes != null ? disabledMetricAttributes :
+                Collections.emptySet();
     }
 
     @SuppressWarnings("rawtypes")
@@ -320,13 +320,13 @@ public class MetricReporter {
     private void printMeter(final Meter meter) {
         printIfEnabled(MetricAttribute.COUNT, String.format(this.locale, "             count = %d", meter.getCount()));
         printIfEnabled(MetricAttribute.MEAN_RATE, String.format(this.locale, "         mean rate = %2.2f events/%s",
-            convertRate(meter.getMeanRate()), this.rateUnit));
+                convertRate(meter.getMeanRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M1_RATE, String.format(this.locale, "     1-minute rate = %2.2f events/%s",
-            convertRate(meter.getOneMinuteRate()), this.rateUnit));
+                convertRate(meter.getOneMinuteRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M5_RATE, String.format(this.locale, "     5-minute rate = %2.2f events/%s",
-            convertRate(meter.getFiveMinuteRate()), this.rateUnit));
+                convertRate(meter.getFiveMinuteRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M15_RATE, String.format(this.locale, "    15-minute rate = %2.2f events/%s",
-            convertRate(meter.getFifteenMinuteRate()), this.rateUnit));
+                convertRate(meter.getFifteenMinuteRate()), this.rateUnit));
     }
 
     private void printCounter(final Map.Entry<String, Counter> entry) {
@@ -339,60 +339,60 @@ public class MetricReporter {
 
     private void printHistogram(final Histogram histogram) {
         printIfEnabled(MetricAttribute.COUNT,
-            String.format(this.locale, "             count = %d", histogram.getCount()));
+                String.format(this.locale, "             count = %d", histogram.getCount()));
         final Snapshot snapshot = histogram.getSnapshot();
         printIfEnabled(MetricAttribute.MIN, String.format(this.locale, "               min = %d", snapshot.getMin()));
         printIfEnabled(MetricAttribute.MAX, String.format(this.locale, "               max = %d", snapshot.getMax()));
         printIfEnabled(MetricAttribute.MEAN,
-            String.format(this.locale, "              mean = %2.2f", snapshot.getMean()));
+                String.format(this.locale, "              mean = %2.2f", snapshot.getMean()));
         printIfEnabled(MetricAttribute.STDDEV,
-            String.format(this.locale, "            stddev = %2.2f", snapshot.getStdDev()));
+                String.format(this.locale, "            stddev = %2.2f", snapshot.getStdDev()));
         printIfEnabled(MetricAttribute.P50,
-            String.format(this.locale, "            median = %2.2f", snapshot.getMedian()));
+                String.format(this.locale, "            median = %2.2f", snapshot.getMedian()));
         printIfEnabled(MetricAttribute.P75,
-            String.format(this.locale, "              75%% <= %2.2f", snapshot.get75thPercentile()));
+                String.format(this.locale, "              75%% <= %2.2f", snapshot.get75thPercentile()));
         printIfEnabled(MetricAttribute.P95,
-            String.format(this.locale, "              95%% <= %2.2f", snapshot.get95thPercentile()));
+                String.format(this.locale, "              95%% <= %2.2f", snapshot.get95thPercentile()));
         printIfEnabled(MetricAttribute.P98,
-            String.format(this.locale, "              98%% <= %2.2f", snapshot.get98thPercentile()));
+                String.format(this.locale, "              98%% <= %2.2f", snapshot.get98thPercentile()));
         printIfEnabled(MetricAttribute.P99,
-            String.format(this.locale, "              99%% <= %2.2f", snapshot.get99thPercentile()));
+                String.format(this.locale, "              99%% <= %2.2f", snapshot.get99thPercentile()));
         printIfEnabled(MetricAttribute.P999,
-            String.format(this.locale, "            99.9%% <= %2.2f", snapshot.get999thPercentile()));
+                String.format(this.locale, "            99.9%% <= %2.2f", snapshot.get999thPercentile()));
     }
 
     private void printTimer(final Timer timer) {
         final Snapshot snapshot = timer.getSnapshot();
         printIfEnabled(MetricAttribute.COUNT, String.format(this.locale, "             count = %d", timer.getCount()));
         printIfEnabled(MetricAttribute.MEAN_RATE, String.format(this.locale, "         mean rate = %2.2f calls/%s",
-            convertRate(timer.getMeanRate()), this.rateUnit));
+                convertRate(timer.getMeanRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M1_RATE, String.format(this.locale, "     1-minute rate = %2.2f calls/%s",
-            convertRate(timer.getOneMinuteRate()), this.rateUnit));
+                convertRate(timer.getOneMinuteRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M5_RATE, String.format(this.locale, "     5-minute rate = %2.2f calls/%s",
-            convertRate(timer.getFiveMinuteRate()), this.rateUnit));
+                convertRate(timer.getFiveMinuteRate()), this.rateUnit));
         printIfEnabled(MetricAttribute.M15_RATE, String.format(this.locale, "    15-minute rate = %2.2f calls/%s",
-            convertRate(timer.getFifteenMinuteRate()), this.rateUnit));
+                convertRate(timer.getFifteenMinuteRate()), this.rateUnit));
 
         printIfEnabled(MetricAttribute.MIN, String.format(this.locale, "               min = %2.2f %s",
-            convertDuration(snapshot.getMin()), this.durationUnit));
+                convertDuration(snapshot.getMin()), this.durationUnit));
         printIfEnabled(MetricAttribute.MAX, String.format(this.locale, "               max = %2.2f %s",
-            convertDuration(snapshot.getMax()), this.durationUnit));
+                convertDuration(snapshot.getMax()), this.durationUnit));
         printIfEnabled(MetricAttribute.MEAN, String.format(this.locale, "              mean = %2.2f %s",
-            convertDuration(snapshot.getMean()), this.durationUnit));
+                convertDuration(snapshot.getMean()), this.durationUnit));
         printIfEnabled(MetricAttribute.STDDEV, String.format(this.locale, "            stddev = %2.2f %s",
-            convertDuration(snapshot.getStdDev()), this.durationUnit));
+                convertDuration(snapshot.getStdDev()), this.durationUnit));
         printIfEnabled(MetricAttribute.P50, String.format(this.locale, "            median = %2.2f %s",
-            convertDuration(snapshot.getMedian()), this.durationUnit));
+                convertDuration(snapshot.getMedian()), this.durationUnit));
         printIfEnabled(MetricAttribute.P75, String.format(this.locale, "              75%% <= %2.2f %s",
-            convertDuration(snapshot.get75thPercentile()), this.durationUnit));
+                convertDuration(snapshot.get75thPercentile()), this.durationUnit));
         printIfEnabled(MetricAttribute.P95, String.format(this.locale, "              95%% <= %2.2f %s",
-            convertDuration(snapshot.get95thPercentile()), this.durationUnit));
+                convertDuration(snapshot.get95thPercentile()), this.durationUnit));
         printIfEnabled(MetricAttribute.P98, String.format(this.locale, "              98%% <= %2.2f %s",
-            convertDuration(snapshot.get98thPercentile()), this.durationUnit));
+                convertDuration(snapshot.get98thPercentile()), this.durationUnit));
         printIfEnabled(MetricAttribute.P99, String.format(this.locale, "              99%% <= %2.2f %s",
-            convertDuration(snapshot.get99thPercentile()), this.durationUnit));
+                convertDuration(snapshot.get99thPercentile()), this.durationUnit));
         printIfEnabled(MetricAttribute.P999, String.format(this.locale, "            99.9%% <= %2.2f %s",
-            convertDuration(snapshot.get999thPercentile()), this.durationUnit));
+                convertDuration(snapshot.get999thPercentile()), this.durationUnit));
     }
 
     private void printWithBanner(final String s, final char c) {

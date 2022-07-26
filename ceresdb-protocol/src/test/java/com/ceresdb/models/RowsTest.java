@@ -31,28 +31,28 @@ public class RowsTest {
     @Test(expected = IllegalArgumentException.class)
     public void keywordInTagsTest() {
         Series.newBuilder("test_metric") //
-            .tag("timestamp", "ts") //
-            .tag("tag2", "v") //
-            .toRowsBuilder() //
-            .field(Clock.defaultClock().getTick(), "test", FieldValue.withFloat(0.1f)).build();
+                .tag("timestamp", "ts") //
+                .tag("tag2", "v") //
+                .toRowsBuilder() //
+                .field(Clock.defaultClock().getTick(), "test", FieldValue.withFloat(0.1f)).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void keywordInFieldsTest() {
         Series.newBuilder("test_metric") //
-            .tag("tag1", "ts") //
-            .tag("tag2", "v") //
-            .toRowsBuilder() //
-            .field(Clock.defaultClock().getTick(), "tsid", FieldValue.withFloat(0.1f)) //
-            .build();
+                .tag("tag1", "ts") //
+                .tag("tag2", "v") //
+                .toRowsBuilder() //
+                .field(Clock.defaultClock().getTick(), "tsid", FieldValue.withFloat(0.1f)) //
+                .build();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void unmodifiableTagsTest() {
         final Series series = Series.newBuilder("test_metric") //
-            .tag("tag1", "ts") //
-            .tag("tag2", "v") //
-            .build();
+                .tag("tag1", "ts") //
+                .tag("tag2", "v") //
+                .build();
 
         series.getTags().put("not_allowed", TagValue.withString("test"));
     }
@@ -60,11 +60,11 @@ public class RowsTest {
     @Test(expected = UnsupportedOperationException.class)
     public void unmodifiableFieldsTest() {
         final Rows rs = Series.newBuilder("test_metric") //
-            .tag("tag1", "ts") //
-            .tag("tag2", "v") //
-            .toRowsBuilder() //
-            .field(Clock.defaultClock().getTick(), "test", FieldValue.withFloat(0.1f)) //
-            .build();
+                .tag("tag1", "ts") //
+                .tag("tag2", "v") //
+                .toRowsBuilder() //
+                .field(Clock.defaultClock().getTick(), "test", FieldValue.withFloat(0.1f)) //
+                .build();
 
         rs.getFields().put(Clock.defaultClock().getTick(), new HashMap<>());
     }

@@ -45,21 +45,21 @@ import com.ceresdb.common.SPI;
 @SuppressWarnings("PMD")
 public final class ServiceLoader<S> implements Iterable<S> {
 
-    private static final Logger            LOG       = LoggerFactory.getLogger(ServiceLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceLoader.class);
 
-    private static final String            PREFIX    = "META-INF/services/";
+    private static final String PREFIX = "META-INF/services/";
 
     // the class or interface representing the service being loaded
-    private final Class<S>                 service;
+    private final Class<S> service;
 
     // the class loader used to locate, load, and instantiate providers
-    private final ClassLoader              loader;
+    private final ClassLoader loader;
 
     // cached providers, in instantiation order
     private final LinkedHashMap<String, S> providers = new LinkedHashMap<>();
 
     // the current lazy-lookup iterator
-    private LazyIterator                   lookupIterator;
+    private LazyIterator lookupIterator;
 
     public static <S> ServiceLoader<S> load(final Class<S> service) {
         return ServiceLoader.load(service, Thread.currentThread().getContextClassLoader());
@@ -179,7 +179,8 @@ public final class ServiceLoader<S> implements Iterable<S> {
     // parse a single line from the given configuration file, adding the name
     // on the line to the names list.
     private int parseLine(final Class<?> service, final URL u, final BufferedReader r, final int lc,
-                          final List<String> names) throws IOException, ServiceConfigurationError {
+                          final List<String> names)
+            throws IOException, ServiceConfigurationError {
 
         String ln = r.readLine();
         if (ln == null) {

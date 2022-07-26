@@ -40,7 +40,7 @@ import com.ceresdb.common.util.MetricsUtil;
 @SPI(priority = 97)
 public class MetricsSignalHandler implements SignalHandler {
 
-    private static final Logger LOG       = LoggerFactory.getLogger(MetricsSignalHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetricsSignalHandler.class);
 
     private static final String BASE_NAME = "CeresDB_client_metrics.log";
 
@@ -54,13 +54,13 @@ public class MetricsSignalHandler implements SignalHandler {
             final File file = FileOutputHelper.getOutputFile(BASE_NAME);
 
             LOG.info("Printing CeresDB client metrics triggered by signal: {} to file: {}.", signalName,
-                file.getAbsoluteFile());
+                    file.getAbsoluteFile());
 
             try (PrintStream out = new PrintStream(new FileOutputStream(file, true))) {
                 final MetricReporter reporter = MetricReporter.forRegistry(MetricsUtil.metricRegistry()) //
-                    .outputTo(out) //
-                    .prefixedWith("-- CeresDB") //
-                    .build();
+                        .outputTo(out) //
+                        .prefixedWith("-- CeresDB") //
+                        .build();
                 reporter.report();
                 out.flush();
             }

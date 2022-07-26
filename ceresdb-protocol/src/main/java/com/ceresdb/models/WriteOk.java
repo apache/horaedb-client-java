@@ -34,8 +34,8 @@ public class WriteOk {
         return COLLECT_WROTE_DETAIL;
     }
 
-    private int                success;
-    private int                failed;
+    private int success;
+    private int failed;
 
     /**
      * Empty if {@link #COLLECT_WROTE_DETAIL == false}.

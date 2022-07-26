@@ -35,10 +35,10 @@ import com.ceresdb.rpc.Observer;
  */
 public class BlockingStreamIterator implements Iterator<Stream<Record>> {
 
-    private static final QueryOk        EOF     = QueryOk.emptyOk();
+    private static final QueryOk EOF = QueryOk.emptyOk();
 
-    private final long                  timeout;
-    private final TimeUnit              unit;
+    private final long     timeout;
+    private final TimeUnit unit;
 
     private final BlockingQueue<Object> staging = new LinkedBlockingQueue<>();
     private final Observer<QueryOk>     observer;

@@ -29,7 +29,7 @@ public class StringBuilderHelper {
     private static final ThreadLocal<StringBuilderHolder> HOLDER_THREAD_LOCAL;
 
     static {
-        MAX_BUF_SIZE = 1024 << 3;     // 8k
+        MAX_BUF_SIZE = 1024 << 3; // 8k
         HOLDER_THREAD_LOCAL = ThreadLocal.withInitial(StringBuilderHolder::new);
     }
 

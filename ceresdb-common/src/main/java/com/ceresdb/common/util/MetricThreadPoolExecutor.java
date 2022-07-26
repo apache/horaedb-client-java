@@ -59,8 +59,8 @@ public class MetricThreadPoolExecutor extends LogThreadPoolExecutor {
     @Override
     protected void afterExecute(final Runnable r, final Throwable t) {
         ThreadPoolMetricRegistry.metricRegistry() //
-            .timer("thread_pool." + getName()) //
-            .update(ThreadPoolMetricRegistry.finish(), TimeUnit.MILLISECONDS);
+                .timer("thread_pool." + getName()) //
+                .update(ThreadPoolMetricRegistry.finish(), TimeUnit.MILLISECONDS);
         super.afterExecute(r, t);
     }
 }

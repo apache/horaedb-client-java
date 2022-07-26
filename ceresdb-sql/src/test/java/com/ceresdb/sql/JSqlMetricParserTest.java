@@ -57,8 +57,8 @@ public class JSqlMetricParserTest {
 
     @Test
     public void extractMetricNamesTest() {
-        final MetricParser parser = getParser("select func1(table1.a), func2(table2.b), * from table1 inner join "
-                                              + "table2 on table1.id=table2.id");
+        final MetricParser parser = getParser(
+                "select func1(table1.a), func2(table2.b), * from table1 inner join " + "table2 on table1.id=table2.id");
         final List<String> metricNames = parser.metricNames();
 
         Assert.assertEquals(Arrays.asList("table1", "table2"), metricNames);
@@ -93,22 +93,17 @@ public class JSqlMetricParserTest {
 
     @Test
     public void extractFromCreateTableWithPrimaryKeyTest() {
-        final MetricParser parser = getParser("CREATE TABLE with_primary_key(\n" +
-                        "    ts TIMESTAMP NOT NULL,\n" +
-                        "    c1 STRING NOT NULL,\n" +
-                        "    c2 STRING NULL,\n" +
-                        "    c3 DOUBLE NULL,\n" +
-                        "    c4 STRING NULL,\n" +
-                        "    c5 STRING NULL,\n" +
-                        "    TIMESTAMP KEY(ts),\n" +
-                        "    PRIMARY KEY(c1, ts)\n" +
-                        ") ENGINE=Analytic WITH (ttl='7d', update_mode='APPEND');");
+        final MetricParser parser = getParser(
+                "CREATE TABLE with_primary_key(\n" + "    ts TIMESTAMP NOT NULL,\n" + "    c1 STRING NOT NULL,\n"
+                                              + "    c2 STRING NULL,\n" + "    c3 DOUBLE NULL,\n"
+                                              + "    c4 STRING NULL,\n" + "    c5 STRING NULL,\n"
+                                              + "    TIMESTAMP KEY(ts),\n" + "    PRIMARY KEY(c1, ts)\n"
+                                              + ") ENGINE=Analytic WITH (ttl='7d', update_mode='APPEND');");
         final List<String> metricNames = parser.metricNames();
 
         Assert.assertEquals(Collections.singletonList("with_primary_key"), metricNames);
 
-        final List<String> columns = parser.createColumns()
-                .stream()
+        final List<String> columns = parser.createColumns().stream()
                 .map(col -> col.columnType() + "-" + col.columnName() + "-" + col.valueType())
                 .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList("Timestamp-ts-TIMESTAMP", "Field-c1-STRING", "Field-c2-STRING",
@@ -117,24 +112,17 @@ public class JSqlMetricParserTest {
 
     @Test
     public void extractFromCreateTableWithPrimaryKeyTagTest() {
-        final MetricParser parser = getParser("CREATE TABLE with_primary_key_tag(\n" +
-                        "    ts TIMESTAMP NOT NULL,\n" +
-                        "    c1 STRING TAG NOT NULL,\n" +
-                        "    c2 STRING TAG NULL,\n" +
-                        "    c3 STRING TAG NULL,\n" +
-                        "    c4 DOUBLE NULL,\n" +
-                        "    c5 STRING NULL,\n" +
-                        "    c6 STRING NULL,\n" +
-                        "    c7 TIMESTAMP NULL,\n" +
-                        "    TIMESTAMP KEY(ts),\n" +
-                        "    PRIMARY KEY(c1, ts)\n" +
-                        ") ENGINE=Analytic;");
+        final MetricParser parser = getParser("CREATE TABLE with_primary_key_tag(\n" + "    ts TIMESTAMP NOT NULL,\n"
+                                              + "    c1 STRING TAG NOT NULL,\n" + "    c2 STRING TAG NULL,\n"
+                                              + "    c3 STRING TAG NULL,\n" + "    c4 DOUBLE NULL,\n"
+                                              + "    c5 STRING NULL,\n" + "    c6 STRING NULL,\n"
+                                              + "    c7 TIMESTAMP NULL,\n" + "    TIMESTAMP KEY(ts),\n"
+                                              + "    PRIMARY KEY(c1, ts)\n" + ") ENGINE=Analytic;");
         final List<String> metricNames = parser.metricNames();
 
         Assert.assertEquals(Collections.singletonList("with_primary_key_tag"), metricNames);
 
-        final List<String> columns = parser.createColumns()
-                .stream()
+        final List<String> columns = parser.createColumns().stream()
                 .map(col -> col.columnType() + "-" + col.columnName() + "-" + col.valueType())
                 .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList("Timestamp-ts-TIMESTAMP", "Tag-c1-STRING", "Tag-c2-STRING", "Tag-c3-STRING",
@@ -143,22 +131,16 @@ public class JSqlMetricParserTest {
 
     @Test
     public void extractFromCreateTableWithTagTest() {
-        final MetricParser parser = getParser("CREATE TABLE with_tag(\n" +
-                        "    ts TIMESTAMP NOT NULL,\n" +
-                        "    c1 STRING TAG NOT NULL,\n" +
-                        "    c2 STRING TAG NULL,\n" +
-                        "    c3 STRING TAG NULL,\n" +
-                        "    c4 DOUBLE NULL,\n" +
-                        "    c5 STRING NULL,\n" +
-                        "    c6 STRING NULL,\n" +
-                        "    TIMESTAMP KEY(ts)\n" +
-                        ") ENGINE=Analytic;");
+        final MetricParser parser = getParser("CREATE TABLE with_tag(\n" + "    ts TIMESTAMP NOT NULL,\n"
+                                              + "    c1 STRING TAG NOT NULL,\n" + "    c2 STRING TAG NULL,\n"
+                                              + "    c3 STRING TAG NULL,\n" + "    c4 DOUBLE NULL,\n"
+                                              + "    c5 STRING NULL,\n" + "    c6 STRING NULL,\n"
+                                              + "    TIMESTAMP KEY(ts)\n" + ") ENGINE=Analytic;");
         final List<String> metricNames = parser.metricNames();
 
         Assert.assertEquals(Collections.singletonList("with_tag"), metricNames);
 
-        final List<String> columns = parser.createColumns()
-                .stream()
+        final List<String> columns = parser.createColumns().stream()
                 .map(col -> col.columnType() + "-" + col.columnName() + "-" + col.valueType())
                 .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList("Timestamp-ts-TIMESTAMP", "Tag-c1-STRING", "Tag-c2-STRING", "Tag-c3-STRING",

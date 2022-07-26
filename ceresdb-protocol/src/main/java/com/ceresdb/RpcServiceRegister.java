@@ -28,41 +28,42 @@ import com.ceresdb.rpc.RpcFactoryProvider;
  */
 public class RpcServiceRegister {
 
-    private static final double WRITE_LIMIT_PERCENT     = writeLimitPercent();
+    private static final double WRITE_LIMIT_PERCENT = writeLimitPercent();
 
     private static final String STORAGE_METHOD_TEMPLATE = "storage.StorageService/%s";
 
     public static void registerStorageService() {
         // register protobuf serializer
         RpcFactoryProvider.getRpcFactory().register(
-            MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Route"), MethodDescriptor.MethodType.UNARY), //
-            Storage.RouteRequest.class, //
-            Storage.RouteRequest.getDefaultInstance(), //
-            Storage.RouteResponse.getDefaultInstance());
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Route"), MethodDescriptor.MethodType.UNARY),
+                //
+                Storage.RouteRequest.class, //
+                Storage.RouteRequest.getDefaultInstance(), //
+                Storage.RouteResponse.getDefaultInstance());
         RpcFactoryProvider.getRpcFactory().register(
-            MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Write"), MethodDescriptor.MethodType.UNARY,
-                WRITE_LIMIT_PERCENT), //
-            Storage.WriteRequest.class, //
-            Storage.WriteRequest.getDefaultInstance(), //
-            Storage.WriteResponse.getDefaultInstance());
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Write"), MethodDescriptor.MethodType.UNARY,
+                        WRITE_LIMIT_PERCENT), //
+                Storage.WriteRequest.class, //
+                Storage.WriteRequest.getDefaultInstance(), //
+                Storage.WriteResponse.getDefaultInstance());
         RpcFactoryProvider.getRpcFactory().register(
-            MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "StreamWrite"),
-                MethodDescriptor.MethodType.CLIENT_STREAMING), //
-            Storage.WriteRequest.class, //
-            Storage.WriteRequest.getDefaultInstance(), //
-            Storage.WriteResponse.getDefaultInstance());
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "StreamWrite"),
+                        MethodDescriptor.MethodType.CLIENT_STREAMING), //
+                Storage.WriteRequest.class, //
+                Storage.WriteRequest.getDefaultInstance(), //
+                Storage.WriteResponse.getDefaultInstance());
         RpcFactoryProvider.getRpcFactory().register(
-            MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Query"), MethodDescriptor.MethodType.UNARY,
-                1 - WRITE_LIMIT_PERCENT), //
-            Storage.QueryRequest.class, //
-            Storage.QueryRequest.getDefaultInstance(), //
-            Storage.QueryResponse.getDefaultInstance());
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "Query"), MethodDescriptor.MethodType.UNARY,
+                        1 - WRITE_LIMIT_PERCENT), //
+                Storage.QueryRequest.class, //
+                Storage.QueryRequest.getDefaultInstance(), //
+                Storage.QueryResponse.getDefaultInstance());
         RpcFactoryProvider.getRpcFactory().register(
-            MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "StreamQuery"),
-                MethodDescriptor.MethodType.SERVER_STREAMING), //
-            Storage.QueryRequest.class, //
-            Storage.QueryRequest.getDefaultInstance(), //
-            Storage.QueryResponse.getDefaultInstance());
+                MethodDescriptor.of(String.format(STORAGE_METHOD_TEMPLATE, "StreamQuery"),
+                        MethodDescriptor.MethodType.SERVER_STREAMING), //
+                Storage.QueryRequest.class, //
+                Storage.QueryRequest.getDefaultInstance(), //
+                Storage.QueryResponse.getDefaultInstance());
     }
 
     private static double writeLimitPercent() {

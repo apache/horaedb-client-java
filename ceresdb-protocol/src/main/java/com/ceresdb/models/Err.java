@@ -33,21 +33,21 @@ import com.ceresdb.common.Streamable;
  */
 public class Err implements Streamable<Err> {
     // error code from server
-    private int                code;
+    private int code;
     // error message
-    private String             error;
+    private String error;
     // the server address where the error occurred
-    private Endpoint           errTo;
+    private Endpoint errTo;
     // the data of wrote failed, can be used to retry
-    private Collection<Rows>   failedWrites;
+    private Collection<Rows> failedWrites;
     // other successful server results are merged here
-    private WriteOk            subOk;
+    private WriteOk subOk;
     // the QL failed to query
-    private String             failedQl;
+    private String failedQl;
     // the metrics of failed to query
     private Collection<String> failedMetrics;
     // child err merged here
-    private Collection<Err>    children;
+    private Collection<Err> children;
 
     public int getCode() {
         return code;

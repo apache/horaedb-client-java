@@ -40,7 +40,7 @@ import net.sf.jsqlparser.statement.select.Select;
  */
 public class JSqlMetricParser implements MetricParser {
 
-    private final String  ql;
+    private final String ql;
 
     private boolean       parsed;
     private StatementType statementType = StatementType.Unknown;

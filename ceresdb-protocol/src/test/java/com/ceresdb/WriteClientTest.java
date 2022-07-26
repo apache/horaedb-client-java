@@ -82,36 +82,36 @@ public class WriteClientTest {
     @Test
     public void writeAllSuccessTest() throws ExecutionException, InterruptedException {
         final List<Rows> data = TestUtil.newListOfRows("write_client_test_metric1", //
-            "write_client_test_metric2", //
-            "write_client_test_metric3");
+                "write_client_test_metric2", //
+                "write_client_test_metric3");
 
         final Endpoint ep1 = Endpoint.of("127.0.0.1", 8081);
         final Endpoint ep2 = Endpoint.of("127.0.0.2", 8081);
         final Endpoint ep3 = Endpoint.of("127.0.0.3", 8081);
 
         final Common.ResponseHeader header = Common.ResponseHeader.newBuilder() //
-            .setCode(Result.SUCCESS) //
-            .build();
+                .setCode(Result.SUCCESS) //
+                .build();
         final Storage.WriteResponse resp = Storage.WriteResponse.newBuilder() //
-            .setHeader(header) //
-            .setSuccess(2) //
-            .build();
+                .setHeader(header) //
+                .setSuccess(2) //
+                .build();
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep1), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep2), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.routeFor(Mockito.any())) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 4694599978937545735L;
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 4694599978937545735L;
 
-                {
-                    put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
+                    {
+                        put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
 
         final CompletableFuture<Result<WriteOk, Err>> f = this.writeClient.write(data, Context.newDefault());
         final Result<WriteOk, Err> ret = f.get();
@@ -124,8 +124,8 @@ public class WriteClientTest {
     @Test
     public void write3And1InvalidRoute() throws ExecutionException, InterruptedException {
         final List<Rows> data = TestUtil.newListOfRows("write_client_test_metric1", //
-            "write_client_test_metric2", //
-            "write_client_test_metric3");
+                "write_client_test_metric2", //
+                "write_client_test_metric3");
 
         final Endpoint ep1 = Endpoint.of("127.0.0.1", 8081);
         final Endpoint ep2 = Endpoint.of("127.0.0.2", 8081);
@@ -136,41 +136,40 @@ public class WriteClientTest {
         final Storage.WriteResponse errResp = TestUtil.newFailedWriteResp(Result.INVALID_ROUTE, 2);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep1), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep2), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp));
+                .thenReturn(Utils.completedCf(errResp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep4), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric1", //
-                    "write_client_test_metric2", "write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -8646902388192715970L;
+                .thenReturn(Utils.completedCf(resp));
+        Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric1", //
+                "write_client_test_metric2", "write_client_test_metric3")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -8646902388192715970L;
 
-                {
-                    put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any())).thenReturn(
-            Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -3271323053870289591L;
+                    {
+                        put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -3271323053870289591L;
 
-                {
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep4));
-                }
-            }));
+                    {
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep4));
+                    }
+                }));
         Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 4340010451723257789L;
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 4340010451723257789L;
 
-                {
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep4));
-                }
-            }));
+                    {
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep4));
+                    }
+                }));
 
         final CompletableFuture<Result<WriteOk, Err>> f = this.writeClient.write(data, Context.newDefault());
         final Result<WriteOk, Err> ret = f.get();
@@ -183,8 +182,8 @@ public class WriteClientTest {
     @Test
     public void write3And1InvalidRouteAndRetryFailed() throws ExecutionException, InterruptedException {
         final List<Rows> data = TestUtil.newListOfRows("write_client_test_metric1", //
-            "write_client_test_metric2", //
-            "write_client_test_metric3");
+                "write_client_test_metric2", //
+                "write_client_test_metric3");
 
         final Endpoint ep1 = Endpoint.of("127.0.0.1", 8081);
         final Endpoint ep2 = Endpoint.of("127.0.0.2", 8081);
@@ -194,39 +193,38 @@ public class WriteClientTest {
         final Storage.WriteResponse errResp = TestUtil.newFailedWriteResp(Result.INVALID_ROUTE, 2);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep1), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep2), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric1",
-                "write_client_test_metric2", "write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -7535390185627686991L;
+                .thenReturn(Utils.completedCf(errResp));
+        Mockito.when(this.routerClient.routeFor(Mockito.eq(
+                TestUtil.asSet("write_client_test_metric1", "write_client_test_metric2", "write_client_test_metric3")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -7535390185627686991L;
 
-                {
-                    put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any())).thenReturn(
-            Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -3191375160670801662L;
+                    {
+                        put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -3191375160670801662L;
 
-                {
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
+                    {
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
         Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 1341458669202248824L;
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 1341458669202248824L;
 
-                {
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
+                    {
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
 
         final CompletableFuture<Result<WriteOk, Err>> f = this.writeClient.write(data, Context.newDefault());
         final Result<WriteOk, Err> ret = f.get();
@@ -242,8 +240,8 @@ public class WriteClientTest {
     @Test
     public void write3And2FailedAndRetryFailed() throws ExecutionException, InterruptedException {
         final List<Rows> data = TestUtil.newListOfRows("write_client_test_metric1", //
-            "write_client_test_metric2", //
-            "write_client_test_metric3");
+                "write_client_test_metric2", //
+                "write_client_test_metric3");
 
         final Endpoint ep1 = Endpoint.of("127.0.0.1", 8081);
         final Endpoint ep2 = Endpoint.of("127.0.0.2", 8081);
@@ -253,54 +251,51 @@ public class WriteClientTest {
         final Storage.WriteResponse errResp = TestUtil.newFailedWriteResp(Result.SHOULD_RETRY, 2);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep1), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep2), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp));
+                .thenReturn(Utils.completedCf(errResp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric1",
-                "write_client_test_metric2", "write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -5936788008084035345L;
+                .thenReturn(Utils.completedCf(errResp));
+        Mockito.when(this.routerClient.routeFor(Mockito.eq(
+                TestUtil.asSet("write_client_test_metric1", "write_client_test_metric2", "write_client_test_metric3")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -5936788008084035345L;
 
-                {
-                    put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any())).thenReturn(
-            Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -4748944007591733357L;
+                    {
+                        put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -4748944007591733357L;
 
-                {
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric2",
-                "write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -1811964578845864624L;
+                    {
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient
+                .routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric2", "write_client_test_metric3")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -1811964578845864624L;
 
-                {
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric3",
-                "write_client_test_metric2")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 3940955382371644111L;
+                    {
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient
+                .routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric3", "write_client_test_metric2")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 3940955382371644111L;
 
-                {
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
+                    {
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
 
         final CompletableFuture<Result<WriteOk, Err>> f = this.writeClient.write(data, Context.newDefault());
         final Result<WriteOk, Err> ret = f.get();
@@ -316,8 +311,8 @@ public class WriteClientTest {
     @Test
     public void write3And2FailedAndSomeNoRetry() throws ExecutionException, InterruptedException {
         final List<Rows> data = TestUtil.newListOfRows("write_client_test_metric1", //
-            "write_client_test_metric2", //
-            "write_client_test_metric3");
+                "write_client_test_metric2", //
+                "write_client_test_metric3");
 
         final Endpoint ep1 = Endpoint.of("127.0.0.1", 8081);
         final Endpoint ep2 = Endpoint.of("127.0.0.2", 8081);
@@ -328,40 +323,39 @@ public class WriteClientTest {
         final Storage.WriteResponse errResp2 = TestUtil.newFailedWriteResp(400, 2);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep1), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(resp));
+                .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep2), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp1));
+                .thenReturn(Utils.completedCf(errResp1));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
-            .thenReturn(Utils.completedCf(errResp2));
-        Mockito.when(
-            this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric1",
-                "write_client_test_metric2", "write_client_test_metric3")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = 1040769477529210661L;
+                .thenReturn(Utils.completedCf(errResp2));
+        Mockito.when(this.routerClient.routeFor(Mockito.eq(
+                TestUtil.asSet("write_client_test_metric1", "write_client_test_metric2", "write_client_test_metric3")))) //
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = 1040769477529210661L;
 
-                {
-                    put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any())).thenReturn(
-            Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -6892083230027668740L;
+                    {
+                        put("write_client_test_metric1", Route.of("write_client_test_metric1", ep1));
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -6892083230027668740L;
 
-                {
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                    put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
-                }
-            }));
+                    {
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                        put("write_client_test_metric3", Route.of("write_client_test_metric3", ep3));
+                    }
+                }));
         Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_metric2")))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
-                private static final long serialVersionUID = -9174308983134252825L;
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                    private static final long serialVersionUID = -9174308983134252825L;
 
-                {
-                    put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
-                }
-            }));
+                    {
+                        put("write_client_test_metric2", Route.of("write_client_test_metric2", ep2));
+                    }
+                }));
 
         final CompletableFuture<Result<WriteOk, Err>> f = this.writeClient.write(data, Context.newDefault());
         final Result<WriteOk, Err> ret = f.get();
@@ -384,7 +378,8 @@ public class WriteClientTest {
         writeSplit(8, 8);
     }
 
-    private void writeSplit(final int maxWriteSize, final int partOfSuccess) throws ExecutionException, InterruptedException {
+    private void writeSplit(final int maxWriteSize, final int partOfSuccess)
+            throws ExecutionException, InterruptedException {
         // re-init
         this.writeClient.shutdownGracefully();
         final WriteOptions writeOpts = new WriteOptions();
@@ -443,51 +438,48 @@ public class WriteClientTest {
         final String testMetric = "stream_metric_test";
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
         Mockito.when(this.routerClient.routeFor(Mockito.eq(Collections.singleton(testMetric)))) //
-            .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
+                .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
 
-                private static final long serialVersionUID = 8473563130528272901L;
+                    private static final long serialVersionUID = 8473563130528272901L;
 
-                {
-                    put(testMetric, Route.of(testMetric, ep));
-                }
-            }));
+                    {
+                        put(testMetric, Route.of(testMetric, ep));
+                    }
+                }));
         final CompletableFuture<WriteOk> f = new CompletableFuture<>();
         final AtomicInteger dataCount = new AtomicInteger();
-        Mockito.when(
-                this.routerClient.invokeClientStreaming(Mockito.any(), Mockito.any(Storage.WriteRequest.class),
-                        Mockito.any(), Mockito.any())).thenReturn(new Observer<Storage.WriteRequest>() {
+        Mockito.when(this.routerClient.invokeClientStreaming(Mockito.any(), Mockito.any(Storage.WriteRequest.class),
+                Mockito.any(), Mockito.any())).thenReturn(new Observer<Storage.WriteRequest>() {
 
-            @Override
-            public void onNext(final Storage.WriteRequest value) {
-                final int c = value.getMetricsList()
-                    .stream() //
-                    .flatMap(wmc -> wmc.getEntriesList().stream()) //
-                    .map(Storage.WriteEntry::getFieldGroupsCount)
-                    .reduce(0, Integer::sum);
-                dataCount.addAndGet(c);
-            }
+                    @Override
+                    public void onNext(final Storage.WriteRequest value) {
+                        final int c = value.getMetricsList().stream() //
+                                .flatMap(wmc -> wmc.getEntriesList().stream()) //
+                                .map(Storage.WriteEntry::getFieldGroupsCount).reduce(0, Integer::sum);
+                        dataCount.addAndGet(c);
+                    }
 
-            @Override
-            public void onError(final Throwable err) {
-                // ignored
-            }
+                    @Override
+                    public void onError(final Throwable err) {
+                        // ignored
+                    }
 
-            @Override
-            public void onCompleted() {
-                f.complete(WriteOk.ok(dataCount.get(), 0, null));
-            }
-        });
+                    @Override
+                    public void onCompleted() {
+                        f.complete(WriteOk.ok(dataCount.get(), 0, null));
+                    }
+                });
 
         final StreamWriteBuf<Rows, WriteOk> writer = this.writeClient.streamWrite(testMetric);
         final CompletableFuture<WriteOk> ret = writer //
-            .write(TestUtil.newRow(testMetric)) //
-            .write(TestUtil.newRow(testMetric)) //
-            .write(TestUtil.newRow(testMetric)) //
-            .flush() //
-            .write(TestUtil.newRow(testMetric)) //
-            .flush() //
-            .writeAndFlush(TestUtil.newListOfRows(testMetric, testMetric)) //
-            .completed();
+                .write(TestUtil.newRow(testMetric)) //
+                .write(TestUtil.newRow(testMetric)) //
+                .write(TestUtil.newRow(testMetric)) //
+                .flush() //
+                .write(TestUtil.newRow(testMetric)) //
+                .flush() //
+                .writeAndFlush(TestUtil.newListOfRows(testMetric, testMetric)) //
+                .completed();
 
         f.whenComplete((r, e) -> {
             if (e != null) {
@@ -550,35 +542,29 @@ public class WriteClientTest {
         Assert.assertNotNull(writeReq);
         Assert.assertEquals(2, writeReq.getMetricsCount());
         final List<String> metrics = writeReq.getMetricsList() //
-                                        .stream() //
-                                        .map(Storage.WriteMetric::getMetric) //
-                                        .collect(Collectors.toList());
+                .stream() //
+                .map(Storage.WriteMetric::getMetric) //
+                .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList("metric1", "metric2"), metrics);
 
         {
-            final Optional<Storage.WriteMetric> opl = writeReq.getMetricsList()
-                    .stream()
+            final Optional<Storage.WriteMetric> opl = writeReq.getMetricsList().stream()
                     .filter(wm -> wm.getMetric().equals("metric1")) //
                     .findFirst(); //
             Assert.assertTrue(opl.isPresent());
 
             final Storage.WriteMetric metric = opl.get();
-            Assert.assertEquals(3 , metric.getTagNamesCount());
-            Assert.assertEquals(3 , metric.getFieldNamesCount());
+            Assert.assertEquals(3, metric.getTagNamesCount());
+            Assert.assertEquals(3, metric.getFieldNamesCount());
             Assert.assertEquals(2, metric.getEntriesCount());
 
             {
-                final Optional<Storage.WriteEntry> opl2 = metric.getEntriesList()
-                        .stream()
-                        .filter(w -> {
-                            final Set<String> tagVSet = w.getTagsList()
-                                    .stream()
-                                    .map(tag -> tag.getValue().getStringValue())
-                                    .collect(Collectors.toSet());
+                final Optional<Storage.WriteEntry> opl2 = metric.getEntriesList().stream().filter(w -> {
+                    final Set<String> tagVSet = w.getTagsList().stream().map(tag -> tag.getValue().getStringValue())
+                            .collect(Collectors.toSet());
 
-                            return tagVSet.contains("v1") && tagVSet.contains("v2") && tagVSet.contains("v3");
-                        })
-                        .findFirst();
+                    return tagVSet.contains("v1") && tagVSet.contains("v2") && tagVSet.contains("v3");
+                }).findFirst();
                 Assert.assertTrue(opl2.isPresent());
                 Assert.assertEquals(0, opl2.get().getTags(0).getNameIndex());
                 Assert.assertEquals(1, opl2.get().getTags(1).getNameIndex());
@@ -595,29 +581,23 @@ public class WriteClientTest {
         }
 
         {
-            final Optional<Storage.WriteMetric> opl = writeReq.getMetricsList()
-                    .stream()
+            final Optional<Storage.WriteMetric> opl = writeReq.getMetricsList().stream()
                     .filter(wm -> wm.getMetric().equals("metric2")) //
                     .findFirst(); //
             Assert.assertTrue(opl.isPresent());
 
             final Storage.WriteMetric metric = opl.get();
-            Assert.assertEquals(3 , metric.getTagNamesCount());
-            Assert.assertEquals(3 , metric.getFieldNamesCount());
+            Assert.assertEquals(3, metric.getTagNamesCount());
+            Assert.assertEquals(3, metric.getFieldNamesCount());
             Assert.assertEquals(1, metric.getEntriesCount());
 
             {
-                final Optional<Storage.WriteEntry> opl2 = metric.getEntriesList()
-                        .stream()
-                        .filter(w -> {
-                            final Set<String> tagVSet = w.getTagsList()
-                                    .stream()
-                                    .map(tag -> tag.getValue().getStringValue())
-                                    .collect(Collectors.toSet());
+                final Optional<Storage.WriteEntry> opl2 = metric.getEntriesList().stream().filter(w -> {
+                    final Set<String> tagVSet = w.getTagsList().stream().map(tag -> tag.getValue().getStringValue())
+                            .collect(Collectors.toSet());
 
-                            return tagVSet.contains("v1") && tagVSet.contains("v2") && tagVSet.contains("v3");
-                        })
-                        .findFirst();
+                    return tagVSet.contains("v1") && tagVSet.contains("v2") && tagVSet.contains("v3");
+                }).findFirst();
                 Assert.assertTrue(opl2.isPresent());
                 Assert.assertEquals(0, opl2.get().getTags(0).getNameIndex());
                 Assert.assertEquals(1, opl2.get().getTags(1).getNameIndex());

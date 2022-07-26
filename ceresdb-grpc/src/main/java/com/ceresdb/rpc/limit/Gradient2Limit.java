@@ -68,7 +68,7 @@ import com.netflix.concurrency.limits.limit.measurement.Measurement;
  * In this state the system goes back to steady state after a prolonged period of excessive load.  Requests aren't rejected
  * and the sample RTT remains low. During this state the long term RTT may take some time to go back to normal and could
  * potentially be several multiples higher than the current RTT.
- * 
+ *
  * Refer to {@link com.netflix.concurrency.limits.limit.Gradient2Limit}
  */
 public class Gradient2Limit extends AbstractLimit {
@@ -76,16 +76,16 @@ public class Gradient2Limit extends AbstractLimit {
     private static final Logger LOG = LoggerFactory.getLogger(Gradient2Limit.class);
 
     public static class Builder {
-        private int initialLimit = 20;
-        private int minLimit = 20;
+        private int initialLimit   = 20;
+        private int minLimit       = 20;
         private int maxConcurrency = 200;
 
-        private double smoothing = 0.2;
-        private Function<Integer, Integer> queueSize = concurrency -> 4;
-        private MetricRegistry registry = EmptyMetricRegistry.INSTANCE;
-        private int longWindow = 600;
-        private double rttTolerance = 1.5;
-        private boolean logOnLimitChange = true;
+        private double                     smoothing        = 0.2;
+        private Function<Integer, Integer> queueSize        = concurrency -> 4;
+        private MetricRegistry             registry         = EmptyMetricRegistry.INSTANCE;
+        private int                        longWindow       = 600;
+        private double                     rttTolerance     = 1.5;
+        private boolean                    logOnLimitChange = true;
 
         /**
          * Initial limit used by the limiter
@@ -227,15 +227,15 @@ public class Gradient2Limit extends AbstractLimit {
     /**
      * Maximum allowed limit providing an upper bound failsafe
      */
-    private final int maxLimit;
-    private final int minLimit;
-    private final Function<Integer, Integer> queueSize;
-    private final double smoothing;
+    private final int                           maxLimit;
+    private final int                           minLimit;
+    private final Function<Integer, Integer>    queueSize;
+    private final double                        smoothing;
     private final MetricRegistry.SampleListener longRttSampleListener;
     private final MetricRegistry.SampleListener shortRttSampleListener;
     private final MetricRegistry.SampleListener queueSizeSampleListener;
-    private final double tolerance;
-    private final boolean logOnLimitChange;
+    private final double                        tolerance;
+    private final boolean                       logOnLimitChange;
 
     private Gradient2Limit(Builder builder) {
         super(builder.initialLimit);
@@ -292,12 +292,8 @@ public class Gradient2Limit extends AbstractLimit {
 
         if (this.logOnLimitChange && (int) currLimit != (int) newLimit) {
             LOG.info("New limit={}, previous limit={}, shortRtt={} ms, longRtt={} ms, queueSize={}, gradient={}.",
-                    (int) newLimit,
-                    (int) currLimit,
-                    getLastRtt(TimeUnit.MICROSECONDS) / 1000.0,
-                    getRttNoLoad(TimeUnit.MICROSECONDS) / 1000.0,
-                    queueSize,
-                    gradient);
+                    (int) newLimit, (int) currLimit, getLastRtt(TimeUnit.MICROSECONDS) / 1000.0,
+                    getRttNoLoad(TimeUnit.MICROSECONDS) / 1000.0, queueSize, gradient);
         }
 
         this.estimatedLimit = newLimit;

@@ -35,7 +35,7 @@ import com.ceresdb.common.util.Requires;
  */
 public class Rows {
 
-    private Series                                   series;
+    private Series series;
 
     /**
      * Map<timestamp, Map<name, fieldValue>>

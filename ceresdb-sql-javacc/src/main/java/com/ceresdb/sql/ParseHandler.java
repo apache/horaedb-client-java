@@ -24,7 +24,7 @@ public abstract class ParseHandler {
 
     /**
      * Handle macro like "#include('/tmp/template.sql')".
-     * 
+     *
      * @param name       name of the macro
      * @param parameters parameters
      * @return output of the macro, could be null or empty string
@@ -35,7 +35,7 @@ public abstract class ParseHandler {
 
     /**
      * Handle parameter.
-     * 
+     *
      * @param database    database
      * @param tables      tables
      * @param columnIndex columnIndex(starts from 1 not 0)
@@ -47,7 +47,7 @@ public abstract class ParseHandler {
 
     /**
      * Handle statement.
-     * 
+     *
      * @param sql        sql statement
      * @param stmtType   statement type
      * @param database   database

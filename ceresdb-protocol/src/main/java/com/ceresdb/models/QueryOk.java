@@ -105,6 +105,6 @@ public class QueryOk implements Streamable<byte[]> {
     private static void ensureAvroType(final Schema schema) {
         Requires.requireNonNull(schema, "NUll.schema");
         Requires.requireTrue(schema.getType() == Schema.Type.Avro, "Invalid schema type %s, [Avro] type is required",
-            schema);
+                schema);
     }
 }
