@@ -35,9 +35,7 @@ public class ReadmeTest {
         final long t0 = System.currentTimeMillis();
         final long t1 = t0 + 1000;
         final long t2 = t1 + 1000;
-        final Rows data = Series.newBuilder("machine_metric")
-                .tag("city", "Singapore")
-                .tag("ip", "127.0.0.1")
+        final Rows data = Series.newBuilder("machine_metric").tag("city", "Singapore").tag("ip", "127.0.0.1")
                 .toRowsBuilder()
                 // 下面针对 cpu、mem 两列，一次写入了三行数据（3 个时间戳），CeresDB 鼓励这种实践，SDK 可以通过高效的压缩来减少网络传输，并且对 server 端写入非常友好
                 .field(t0, "cpu", FieldValue.withDouble(0.23)) // 第 1 行第 1 列
