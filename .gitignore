@@ -30,3 +30,6 @@ target
 .classpath
 .project
 .settings
+
+# IDEA files
+*.iml
