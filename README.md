@@ -129,7 +129,7 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 ## Data ingestion example
 ```java
 // CeresDBx options
-final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8081) //
+final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
         .tenant("test", "sub_test", "test_token") // tenant info
         // maximum retry times when write fails
         // (only some error codes will be retried, such as the routing table failure)
@@ -149,7 +149,7 @@ final long t1 = t0 + 1000;
 final long t2 = t1 + 1000;
 final Rows data = Series.newBuilder("machine_metric")
     .tag("city", "Singapore")
-    .tag("ip", "127.0.01")
+    .tag("ip", "127.0.0.1")
     .toRowsBuilder()
     // codes below organizes 3 lines data (3 timestamps) for the `cpu` and `mem` column, this will just transport once through network. CeresDB encourage practices like this, because the SDK could use efficient compression algorithm to reduce network overhead and also be friedly to the sever side.
     .field(t0, "cpu", FieldValue.withDouble(0.23)) // first row, first column
@@ -167,9 +167,9 @@ final Result<WriteOk, Err> wr = wf.get();
 Assert.assertTrue(wr.isOk());
 Assert.assertEquals(3, wr.getOk().getSuccess());
 // `Result` class referenced the Rust language practice, provides rich functions (such as mapXXX, andThen) transforming the result value to improve programming efficiency. You can refer to the API docs for detail usage.
-Assert.assertEquals(3, wr.mapOr(0, WriteOk::getSuccess()));
+Assert.assertEquals(3, wr.mapOr(0, WriteOk::getSuccess).intValue());
 Assert.assertEquals(0, wr.getOk().getFailed());
-Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed));
+Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
 
 final QueryRequest queryRequest = QueryRequest.newBuilder()
         .forMetrics("machine_metric") // table name is optional. If not provided, SQL parser will parse the `ql` to get the table name and do the routing automaticly
