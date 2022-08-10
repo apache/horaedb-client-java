@@ -17,9 +17,7 @@ import java.util.stream.Collectors;
  */
 public class ReadmeTest {
 
-    @Ignore
-    @Test
-    public void readmeTest() throws ExecutionException, InterruptedException {
+    @Ignore @Test public void readmeTest() throws ExecutionException, InterruptedException {
         final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) // ceresdb default grpc port 8831
                 .tenant("test", "sub_test", "test_token") // tenant info
                 // maximum retry times when write fails
