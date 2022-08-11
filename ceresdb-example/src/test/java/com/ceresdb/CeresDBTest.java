@@ -67,8 +67,7 @@ public class CeresDBTest {
     private CeresDBxOptions opts;
     private CeresDBxClient  client;
 
-    @Before
-    public void before() {
+    @Before public void before() {
         final RpcOptions rpcOpts = RpcOptions.newDefault();
         rpcOpts.setBlockOnLimit(false);
         rpcOpts.setInitialLimit(32);
@@ -122,8 +121,7 @@ public class CeresDBTest {
         return result ? "success" : "failed";
     }
 
-    @After
-    public void after() {
+    @After public void after() {
         final SqlResult descResult = this.client.management().executeSql("DROP TABLE %s", TEST_TABLE_NAME);
         LOG.info("DROP TABLE: {}.", descResult);
         MetricsUtil.reportImmediately();
@@ -134,9 +132,7 @@ public class CeresDBTest {
         return opts;
     }
 
-    @Ignore
-    @Test
-    public void comprehensiveTest() throws ExecutionException, InterruptedException {
+    @Ignore @Test public void comprehensiveTest() throws ExecutionException, InterruptedException {
         final Calendar time = Calendar.getInstance();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
         final String timeString = format.format(time.getTime());
@@ -165,7 +161,7 @@ public class CeresDBTest {
         ok.mapToRecord().forEach(rd -> {
             LOG.info("Field descriptor: {}", rd.getFieldDescriptors());
             LOG.info("Data: ts={}, c1={}, c2={}, c3={}, c4={}, c5={}, c6={}, c7={}, c8={}, c9={}," + //
-            "c10={}, c11={}, c12={}, c13={}, c14={}, c15={}, c16={}", rd.getTimestamp("ts"), //
+                     "c10={}, c11={}, c12={}, c13={}, c14={}, c15={}, c16={}", rd.getTimestamp("ts"), //
                     rd.getString("c1"), //
                     rd.getInt64("c2"), //
                     rd.getDouble("c3"), //
@@ -185,12 +181,12 @@ public class CeresDBTest {
 
         final Management management = this.client.management();
 
-        final SqlResult alterResult1 = management.executeSql("ALTER TABLE %s ADD COLUMN (c18 UINT64, c19 STRING TAG)",
-                TEST_TABLE_NAME);
+        final SqlResult alterResult1 = management
+                .executeSql("ALTER TABLE %s ADD COLUMN (c18 UINT64, c19 STRING TAG)", TEST_TABLE_NAME);
         LOG.info("ALTER TABLE 1: {}.", alterResult1);
 
-        final SqlResult alterResult2 = management.executeSql("ALTER TABLE %s ADD COLUMN c20 STRING TAG",
-                TEST_TABLE_NAME);
+        final SqlResult alterResult2 = management
+                .executeSql("ALTER TABLE %s ADD COLUMN c20 STRING TAG", TEST_TABLE_NAME);
         LOG.info("ALTER TABLE 2: {}.", alterResult2);
 
         final SqlResult descResult = management.executeSql("DESCRIBE %s", TEST_TABLE_NAME);
@@ -246,22 +242,17 @@ public class CeresDBTest {
         return rows;
     }
 
-    @Ignore
-    @Test
-    public void holdConnectionTest() throws ExecutionException, InterruptedException {
+    @Ignore @Test public void holdConnectionTest() throws ExecutionException, InterruptedException {
         comprehensiveTest();
         for (int i = 0; i < 1000; i++) {
             Thread.sleep(1000);
         }
     }
 
-    @SuppressWarnings("all")
-    @Ignore
-    @Test
-    public void loopToWriteTest() throws Exception {
+    @SuppressWarnings("all") @Ignore @Test public void loopToWriteTest() throws Exception {
         final int concurrence = 32;
         final List<CompletableFuture<Result<WriteOk, Err>>> fs = new ArrayList<>();
-        for (;;) {
+        for (; ; ) {
             try {
                 for (int i = 0; i < concurrence; i++) {
                     fs.add(writeAsync(Calendar.getInstance(), 32));
@@ -278,9 +269,7 @@ public class CeresDBTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void streamWriteTest() {
+    @Ignore @Test public void streamWriteTest() {
         final StreamWriteBuf<Rows, WriteOk> writeBuf = this.client.streamWrite(TEST_TABLE_NAME);
         final CompletableFuture<WriteOk> future = writeBuf.write(makeRows(Calendar.getInstance(), 2)) //
                 .write(makeRows(Calendar.getInstance(), 3)) //
@@ -293,9 +282,7 @@ public class CeresDBTest {
         Assert.assertEquals(35, future.join().getSuccess());
     }
 
-    @Ignore
-    @Test
-    public void streamQueryTest() {
+    @Ignore @Test public void streamQueryTest() {
         final Calendar time = Calendar.getInstance();
         final StreamWriteBuf<Rows, WriteOk> writeBuf = this.client.streamWrite(TEST_TABLE_NAME);
         for (int i = 0; i < 1000; i++) {
