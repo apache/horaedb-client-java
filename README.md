@@ -151,7 +151,7 @@ final Rows data = Series.newBuilder("machine_metric")
     .tag("city", "Singapore")
     .tag("ip", "127.0.0.1")
     .toRowsBuilder()
-    // codes below organizes 3 lines data (3 timestamps) for the `cpu` and `mem` column, this will just transport once through network. CeresDB encourage practices like this, because the SDK could use efficient compression algorithm to reduce network overhead and also be friedly to the sever side.
+    // codes below organizes 3 lines data (3 timestamps) for the `cpu` and `mem` column, this will just transport once through network. CeresDB encourage practices like this, because the SDK could use efficient compression algorithm to reduce network traffic and also be friendly to the sever side.
     .field(t0, "cpu", FieldValue.withDouble(0.23)) // first row, first column
     .field(t0, "mem", FieldValue.withDouble(0.55)) // first row, second column
     .field(t1, "cpu", FieldValue.withDouble(0.25)) // second row, first column
