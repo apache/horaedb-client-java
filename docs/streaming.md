@@ -77,7 +77,7 @@ final CompletableFuture<WriteOk> ret = writer
     .completed(); // 调用 completed 会结束这个`流`，server 会返回总体的写入结果
 ```
 
-### 流失查询 API 说明
+### 流式查询 API 说明
 
 ```java
 /**

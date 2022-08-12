@@ -48,7 +48,7 @@
 
 | name | description |
 | --- | --- |
-| managementAddress | 管理服务地址，通常和几区地址 IP/Host 相同，但端口不同 |
+| managementAddress | 管理服务地址，通常和集群地址 IP/Host 相同，但端口不同 |
 | tenant | 租户信息 |
 | checkSql | 是否在客户端提前检查 sql 有效性，默认 true |
 

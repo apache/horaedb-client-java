@@ -122,6 +122,7 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
     "TIMESTAMP KEY(ts)) ENGINE=Analytic"
 );
 ```
+详情见 [table](docs/table.md)
 
 ## 写入 Example
 ```java
@@ -164,6 +165,10 @@ Assert.assertEquals(3, wr.mapOr(0, WriteOk::getSuccess).intValue());
 Assert.assertEquals(0, wr.getOk().getFailed());
 Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
 
+```
+
+## 查询 Example
+```java
 final QueryRequest queryRequest = QueryRequest.newBuilder()
         .forMetrics("machine_metric") // 表名可选填，不填的话 SQL Parser 会自动解析 ql 涉及到的表名并完成自动路由
         .ql("select timestamp, cpu, mem from machine_metric") //
@@ -177,6 +182,8 @@ Assert.assertTrue(qr.isOk());
 final QueryOk queryOk = qr.getOk();
 
 final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
+final Stream<User> users = queryOk.map(bytes -> parseUser(bytes));
+
 ```
 
 ## Licensing
