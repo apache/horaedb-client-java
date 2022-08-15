@@ -94,13 +94,41 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为
 ## 需要
 编译需要 Java 8 及以上
 
-## 建表
+## 初始化 CeresDB Client
+```java
+// CeresDBx options
+final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
+        .tenant("test", "sub_test", "test_token") // tenant info
+        // maximum retry times when write fails
+        // (only some error codes will be retried, such as the routing table failure)
+        .writeMaxRetries(1)
+        // maximum retry times when read fails
+        // (only some error codes will be retried, such as the routing table failure)
+        .readMaxRetries(1)
+        .build();
+
+final CeresDBxClient client = new CeresDBxClient();
+        if (!client.init(this.opts)) {
+        throw new IllegalStateException("Fail to start CeresDBxClient");
+        }
+```
+配置详情见 [configuration](docs/configuration.md)
+
+
+## 建表 Example
 CeresDB 是一个 Schema-less 的时序数据引擎，你可以不必创建 schema 就立刻写入数据（CeresDB 会根据你的第一次写入帮你创建一个默认的 schema）。
 当然你也可以自行创建一个 schema 来更精细化的管理的表（比如索引等）
 
 下面的建表语句（使用 SDK 的 SQL API）包含了 CeresDB 支持的所有字段类型：
 
 ```java
+final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) // 默认 gprc 端口号
+        .managementAddress("127.0.0.1", 5440) // 注意，直接使用 sql 需要连接 CeresDB 的 http 端口
+        .tenant("test", "sub_test", "test_token") // 租户信息
+        .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
+        .readMaxRetries(1) // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
+        .build();
+
 SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" +
     "ts TIMESTAMP NOT NULL," +
     "c1 STRING TAG NOT NULL," +
@@ -124,19 +152,9 @@ SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" 
 ```
 详情见 [table](docs/table.md)
 
+
 ## 写入 Example
 ```java
-// CeresDBx options
-final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
-        .tenant("test", "sub_test", "test_token") // 租户信息
-        .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
-        .readMaxRetries(1) // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
-        .build();
-
-final CeresDBxClient client = new CeresDBxClient();
-if (!client.init(this.opts)) {
-    throw new IllegalStateException("Fail to start CeresDBxClient");
-}
 
 final long t0 = System.currentTimeMillis();
 final long t1 = t0 + 1000;
@@ -166,6 +184,7 @@ Assert.assertEquals(0, wr.getOk().getFailed());
 Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
 
 ```
+详情见 [write](docs/write.md)
 
 ## 查询 Example
 ```java
@@ -185,6 +204,39 @@ final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
 final Stream<User> users = queryOk.map(bytes -> parseUser(bytes));
 
 ```
+详情见 [read](docs/read.md)
+
+## 流式读写 Example
+CeresDB 支持流式读写，适用于大规模数据读写。
+```java
+final Calendar time = Calendar.getInstance();
+final StreamWriteBuf<Rows, WriteOk> writeBuf = client.streamWrite("machine_metric");
+        for (int i = 0; i < 1000; i++) {
+        time.add(Calendar.MILLISECOND, 1);
+        Collection<Rows> rows = new ArrayList<>();
+        final long t0 = System.currentTimeMillis();
+        final long t1 = t0 + 1000;
+        final long t2 = t1 + 1000;
+        final Rows data = Series.newBuilder("machine_metric").tag("city", "Singapore").tag("ip", "127.0.0.1")
+        .toRowsBuilder()
+        .field(t0, "cpu", FieldValue.withDouble(0.23)) 
+        .field(t0, "mem", FieldValue.withDouble(0.55)) 
+        .field(t1, "cpu", FieldValue.withDouble(0.25))
+        .field(t1, "mem", FieldValue.withDouble(0.56))
+        .field(t2, "cpu", FieldValue.withDouble(0.21))
+        .field(t2, "mem", FieldValue.withDouble(0.52))
+        .build();
+        rows.add(data);
+        writeBuf.writeAndFlush(data);
+        }
+final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
+        Assert.assertEquals(1000, writeOk.join().getSuccess());
+
+final QueryRequest req = QueryRequest.newBuilder().ql("select * from %s", "machine_metric").build();
+final Iterator<Record> it = client.blockingStreamQuery(req, 3, TimeUnit.SECONDS);
+```
+详情见 [streaming](docs/streaming.md)
+
 
 ## Licensing
 遵守 [Apache License 2.0](./LICENSE).
