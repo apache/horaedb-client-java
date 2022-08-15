@@ -84,8 +84,7 @@ public class ReadmeTest {
         Assert.assertEquals(0, wr.getOk().getFailed());
         Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
 
-        final QueryRequest queryRequest = QueryRequest.newBuilder().forMetrics(
-                "machine_metric") // table name is optional. If not provided, SQL parser will parse the `ql` to get the table name and do the routing automaticly
+        final QueryRequest queryRequest = QueryRequest.newBuilder().forMetrics("machine_metric") // table name is optional. If not provided, SQL parser will parse the `ql` to get the table name and do the routing automaticly
                 .ql("select timestamp, cpu, mem from machine_metric") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> qf = client.query(queryRequest);
