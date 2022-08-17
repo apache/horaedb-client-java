@@ -31,6 +31,7 @@ import com.ceresdb.common.Tenant;
  */
 public class AuthUtil {
 
+    // TODO: fix ceresdbx typo
     public static final String HEAD_TIMESTAMP           = "x-ceresdbx-timestamp";
     public static final String HEAD_ACCESS_TENANT       = "x-ceresdbx-access-tenant";
     public static final String HEAD_ACCESS_TOKEN        = "x-ceresdbx-access-token";
