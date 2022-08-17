@@ -37,7 +37,7 @@ X.Y.Z
 
 ## 0.0.3.beta2
 - Features
-  - CeresDBxClient builder 提供简化参数版构造方法
+  - CeresDBClient builder 提供简化参数版构造方法
 - Fixes
   -
 - Breaking Changes
