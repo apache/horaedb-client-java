@@ -14,7 +14,7 @@ options {
     COMMON_TOKEN_ACTION = true;
 }
 
-PARSER_BEGIN(CeresDBxSqlParser)
+PARSER_BEGIN(CeresDBSqlParser)
 
 package com.ceresdb.sql;
 
@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CeresDBxSqlParser {
+public class CeresDBSqlParser {
     private static final boolean DEBUG = false;
 
-    private static final Logger log = LoggerFactory.getLogger(CeresDBxSqlParser.class);
+    private static final Logger log = LoggerFactory.getLogger(CeresDBSqlParser.class);
 
-    private final List<CeresDBxSqlStatement> statements = new ArrayList<>();
+    private final List<CeresDBSqlStatement> statements = new ArrayList<>();
 
     private ParseHandler handler;
 
@@ -58,18 +58,18 @@ public class CeresDBxSqlParser {
         return !(getToken(1).kind == AND && token_source.parentToken == BETWEEN);
     }
 
-    public static CeresDBxSqlStatement[] parse(String sql) {
+    public static CeresDBSqlStatement[] parse(String sql) {
         return parse(sql, null);
     }
 
-    public static CeresDBxSqlStatement[] parse(String sql, ParseHandler handler) {
-        CeresDBxSqlStatement[] stmts = new CeresDBxSqlStatement[] { new CeresDBxSqlStatement(sql, StatementType.UNKNOWN) };
+    public static CeresDBSqlStatement[] parse(String sql, ParseHandler handler) {
+        CeresDBSqlStatement[] stmts = new CeresDBSqlStatement[] { new CeresDBSqlStatement(sql, StatementType.UNKNOWN) };
 
         if (sql == null || sql.isEmpty()) {
             return stmts;
         }
 
-        CeresDBxSqlParser p = new CeresDBxSqlParser(sql, handler);
+        CeresDBSqlParser p = new CeresDBSqlParser(sql, handler);
         try {
             stmts = p.sql();
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class CeresDBxSqlParser {
         return stmts;
     }
 
-    public CeresDBxSqlParser(String sql, ParseHandler handler) {
+    public CeresDBSqlParser(String sql, ParseHandler handler) {
         this(new StringReader(sql));
 
         this.handler = handler;
@@ -91,7 +91,7 @@ public class CeresDBxSqlParser {
 
     public void addStatement() {
         if (token_source.isValid()) {
-            CeresDBxSqlStatement sqlStmt = token_source.build(handler);
+            CeresDBSqlStatement sqlStmt = token_source.build(handler);
             // FIXME remove the restriction once we can handle insertion with format well
             if (statements.size() == 0 || sqlStmt.isRecognized()) {
                 statements.add(sqlStmt);
@@ -102,7 +102,7 @@ public class CeresDBxSqlParser {
     }
 }
 
-PARSER_END(CeresDBxSqlParser)
+PARSER_END(CeresDBSqlParser)
 
 TOKEN_MGR_DECLS: {
     // whitespaces and comments are invalid
@@ -123,10 +123,10 @@ TOKEN_MGR_DECLS: {
     final Map<String, Integer> positions = new HashMap<>();
 
     public void CommonTokenAction(Token t) {
-        if (t.kind != CeresDBxSqlParserConstants.SEMICOLON) {
+        if (t.kind != CeresDBSqlParserConstants.SEMICOLON) {
             builder.append(t.image);
 
-            if (t.kind != CeresDBxSqlParserConstants.EOF) {
+            if (t.kind != CeresDBSqlParserConstants.EOF) {
                 validTokens++;
             }
         }
@@ -194,16 +194,16 @@ TOKEN_MGR_DECLS: {
         positions.clear();
     }
 
-    CeresDBxSqlStatement build(ParseHandler handler) {
+    CeresDBSqlStatement build(ParseHandler handler) {
         String sqlStmt = builder.toString();
-        CeresDBxSqlStatement s = null;
+        CeresDBSqlStatement s = null;
         if (handler != null) {
             s = handler.handleStatement(
                 sqlStmt, stmtType, database, tables, parameters, positions);
         }
 
         if (s == null) {
-            s = new CeresDBxSqlStatement(
+            s = new CeresDBSqlStatement(
                 sqlStmt, stmtType, database, tables, parameters, positions);
         }
         
@@ -242,7 +242,7 @@ SKIP: {
 }
 
 // top-level statements
-CeresDBxSqlStatement[] sql(): {} {
+CeresDBSqlStatement[] sql(): {} {
     stmts()
     { addStatement(); }
     (
@@ -251,7 +251,7 @@ CeresDBxSqlStatement[] sql(): {} {
         { addStatement(); }
     )*
     <EOF>
-    { return statements.toArray(new CeresDBxSqlStatement[statements.size()]); }
+    { return statements.toArray(new CeresDBSqlStatement[statements.size()]); }
 }
 
 void stmts(): { Token t; } {

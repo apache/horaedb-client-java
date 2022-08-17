@@ -2,7 +2,7 @@
 
 ```
                    ┌─────────────────────┐
-                   │   CeresDBxClient    │
+                   │   CeresDBClient    │
                    └─────────────────────┘
                               │
                               ▼
@@ -34,13 +34,13 @@
            │                            │
            ▼                            ▼                            ▼
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │
+│   CeresDB  Node1    │      │   CeresDB  Node2    │      │         ...         │
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘
 ```
 
 ## 名词解释
-- CeresDBxClient
-  - CeresDBx 的 java client 实现，面向使用用户，提供写入、查询等 API
+- CeresDBClient
+  - CeresDB 的 java client 实现，面向使用用户，提供写入、查询等 API
 - QueryClient
   - 查询的默认实现，纯异步
   - 包含异步获取路由表，路由表失效自动重试
@@ -66,7 +66,7 @@ CompletableFuture<Result<QueryOk, Err>> query(QueryRequest req, Context ctx);
 ### 参数说明:
 | name | desc |
 | --- | --- |
-| `QueryRequest req` | 查询条件，包含 metrics 和 ql 字段，metrics 为建议字段，填写话会有更高效的路由, 不填写的话会自动解析 ql 语句以便进行路由(需要引入 ceresdbx-sql 模块); ql 为查询语言的文本表示。 |
+| `QueryRequest req` | 查询条件，包含 metrics 和 ql 字段，metrics 为建议字段，填写话会有更高效的路由, 不填写的话会自动解析 ql 语句以便进行路由(需要引入 ceresdb-sql 模块); ql 为查询语言的文本表示。 |
 | `Context ctx` | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
 
 ### 返回值说明

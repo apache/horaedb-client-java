@@ -27,7 +27,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ceresdb.CeresDBxClient;
+import com.ceresdb.CeresDBClient;
 import com.ceresdb.common.Display;
 import com.ceresdb.common.SPI;
 import com.ceresdb.common.signal.FileOutputHelper;
@@ -53,7 +53,7 @@ public class ShowRouteCacheSignalHandler implements SignalHandler {
             return;
         }
 
-        final List<CeresDBxClient> instances = CeresDBxClient.instances();
+        final List<CeresDBClient> instances = CeresDBClient.instances();
         if (instances.isEmpty()) {
             return;
         }
@@ -67,7 +67,7 @@ public class ShowRouteCacheSignalHandler implements SignalHandler {
             try (PrintWriter out = new PrintWriter(
                     new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
                 final Display.Printer printer = new Display.DefaultPrinter(out);
-                for (final CeresDBxClient ins : instances) {
+                for (final CeresDBClient ins : instances) {
                     printer.print("clientId=").println(ins.id());
                     ins.routerClient().iterator().forEachRemaining(printer::println);
                 }

@@ -3,7 +3,7 @@
 
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBxClient    │  
+                   │   CeresDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -35,13 +35,13 @@
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │  
+│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
 ## 名词解释
-- CeresDBxClient
-    - CeresDBx 的 java client 实现，面向使用用户，提供写入、查询等 API
+- CeresDBClient
+    - CeresDB 的 java client 实现，面向使用用户，提供写入、查询等 API
 - WriteClient
     - 写数据的默认实现，纯异步写入
     - 包含异步获取路由表，自动拆分请求

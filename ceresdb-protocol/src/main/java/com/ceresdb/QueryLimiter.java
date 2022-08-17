@@ -22,11 +22,11 @@ import com.ceresdb.models.QueryRequest;
 import com.ceresdb.models.Result;
 
 /**
- * Like rust: pub type QueryLimiter = CeresDBxLimiter<QueryRequest, Result<QueryOk, Err>>
+ * Like rust: pub type QueryLimiter = CeresDBLimiter<QueryRequest, Result<QueryOk, Err>>
  *
  * @author jiachun.fjc
  */
-public abstract class QueryLimiter extends CeresDBxLimiter<QueryRequest, Result<QueryOk, Err>> {
+public abstract class QueryLimiter extends CeresDBLimiter<QueryRequest, Result<QueryOk, Err>> {
 
     public QueryLimiter(int maxInFlight, LimitedPolicy policy, String metricPrefix) {
         super(maxInFlight, policy, metricPrefix);

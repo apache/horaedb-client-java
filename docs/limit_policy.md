@@ -1,5 +1,5 @@
 ## 关于 LimitedPolicy
-CeresDBxClient 默认会对写入/查询进行限流（默认写请求最大在途数据条目 16384，查询最大在途请求数目 8），
+CeresDBClient 默认会对写入/查询进行限流（默认写请求最大在途数据条目 16384，查询最大在途请求数目 8），
 限流方式为对在途请求的数据条数/查询请求数进行限制，可参见 WriteOptions/QueryOptions 中的配置，
 其中 LimitedPolicy 为被限流后的处理策略，需要注意的是，如果用户一个写入请求中包含的数据条数就超过设置的最大许可数，
 那么当在途请求为 0 的情况下会放行这次请求，下面为所有策略进行一个简单介绍
@@ -16,7 +16,7 @@ CeresDBxClient 默认会对写入/查询进行限流（默认写请求最大在�
 注意：AbortOnBlockingTimeoutPolicy(3s) 为写入限流的默认策略，AbortOnBlockingTimeoutPolicy(10s) 为查询限流的默认策略
 
 ## 自适应限流
-除了上面介绍的上层限流器，CeresDBxClient 还在底层通信层提供了基于 TCP Vegas 和 Gradient Concurrency-limits 算法的自适应限流器。
+除了上面介绍的上层限流器，CeresDBClient 还在底层通信层提供了基于 TCP Vegas 和 Gradient Concurrency-limits 算法的自适应限流器。
 
 ### Vegas
 Vegas 是一种主动调整 cwnd 的拥塞控制算法，主要思想是设置两个阈值，alpha 和 beta，然后通过计算目标速率 (Expected)
@@ -51,4 +51,4 @@ newLimit = currentLimit * (1 - smoothing) + newLimit * smoothing
 - 默认自适应限流算法是 Gradient，可以通过设置 `com.ceresdb.rpc.RpcOptions.limitKind = Vegas` 改为 Vegas
   或者是设置为 设置 `com.ceresdb.rpc.RpcOptions.limitKind = None` 进行关闭
 - 默认达到限流值会快速失败，也可以通过设置 `com.ceresdb.rpc.RpcOptions.blockOnLimit = true` 将策略改为阻塞直至超时
-- 默认情况下写、读请求共享这个限流器，默认写、读分别可以获得 70% 和 30% 的通行许可，可以通过启动参数 -DCeresDBx.rpc.write.limit_percent=xxx 来设置写的比例，读的比例为 1 - writeLimitPercent
+- 默认情况下写、读请求共享这个限流器，默认写、读分别可以获得 70% 和 30% 的通行许可，可以通过启动参数 -DCeresDB.rpc.write.limit_percent=xxx 来设置写的比例，读的比例为 1 - writeLimitPercent

@@ -23,7 +23,7 @@ import com.ceresdb.common.util.ServiceLoader;
  *
  * @author jiachun.fjc
  */
-final class CeresDBxManagementProvider {
+final class CeresDBManagementProvider {
 
     private static final Class<Management> MANAGEMENT_CLS;
 

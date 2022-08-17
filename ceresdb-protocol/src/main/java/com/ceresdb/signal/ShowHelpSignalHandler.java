@@ -36,7 +36,7 @@ public class ShowHelpSignalHandler implements SignalHandler {
     @Override
     public void handle(final String signalName) {
         final String outDir = FileOutputHelper.getOutDir();
-        LOG.info("-- CeresDBxClient Signal Help --");
+        LOG.info("-- CeresDBClient Signal Help --");
         LOG.info("    Signal output dir: {}", outDir);
         for (final FileSignal fileSignal : FileSignal.values()) {
             formatLog(outDir, fileSignal);

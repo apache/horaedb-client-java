@@ -4,7 +4,7 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 ## 介绍
-CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为高性能的、分布式的、Schema-less 的云原生时序数据库。它可以同时支持时间序列和数据分析型的工作负载。
+CeresDBClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为高性能的、分布式的、Schema-less 的云原生时序数据库。它可以同时支持时间序列和数据分析型的工作负载。
 
 ## 功能特性
 - 通信层基于 SPI 可扩展，默认提供 gRPC 的实现
@@ -16,7 +16,7 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为
 
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBxClient    │  
+                   │   CeresDBClient    │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -48,14 +48,14 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │  
+│   CeresDB Node1     │      │   CeresDB  Node2    │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
 ## 查询流程
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBxClient    │  
+                   │   CeresDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -87,7 +87,7 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │  
+│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
@@ -96,8 +96,8 @@ CeresDBxClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为
 
 ## 初始化 CeresDB Client
 ```java
-// CeresDBx options
-final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
+// CeresDB options
+final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) //
         .tenant("test", "sub_test", "test_token") // tenant info
         // maximum retry times when write fails
         // (only some error codes will be retried, such as the routing table failure)
@@ -107,9 +107,9 @@ final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
         .readMaxRetries(1)
         .build();
 
-final CeresDBxClient client = new CeresDBxClient();
+final CeresDBClient client = new CeresDBClient();
         if (!client.init(this.opts)) {
-        throw new IllegalStateException("Fail to start CeresDBxClient");
+        throw new IllegalStateException("Fail to start CeresDBClient");
         }
 ```
 配置详情见 [configuration](docs/configuration.md)
@@ -122,7 +122,7 @@ CeresDB 是一个 Schema-less 的时序数据引擎，你可以不必创建 sche
 下面的建表语句（使用 SDK 的 SQL API）包含了 CeresDB 支持的所有字段类型：
 
 ```java
-final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) // 默认 gprc 端口号
+final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // 默认 gprc 端口号
         .managementAddress("127.0.0.1", 5440) // 注意，直接使用 sql 需要连接 CeresDB 的 http 端口
         .tenant("test", "sub_test", "test_token") // 租户信息
         .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）

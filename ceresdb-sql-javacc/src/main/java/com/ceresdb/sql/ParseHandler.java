@@ -56,7 +56,7 @@ public abstract class ParseHandler {
      * @param positions  keyword positions
      * @return sql statement, or null means no change
      */
-    public CeresDBxSqlStatement handleStatement(final String sql, //
+    public CeresDBSqlStatement handleStatement(final String sql, //
                                                 final StatementType stmtType, //
                                                 final String database, //
                                                 final List<String> tables, //

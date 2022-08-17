@@ -58,9 +58,9 @@
 
 ### Metrics demo:
 ```
--- CeresDBx 21-7-16 17:24:12 ===============================================================
+-- CeresDB 21-7-16 17:24:12 ===============================================================
 
--- CeresDBx -- Counters --------------------------------------------------------------------
+-- CeresDB -- Counters --------------------------------------------------------------------
 -- CeresDB 21-12-28 14:22:36 ==============================================================
 
 -- CeresDB -- Counters --------------------------------------------------------------------
@@ -585,7 +585,7 @@ write_limiter_acquire_wait_time
 
 ### Display demo:
 ```
---- CeresDBxClient ---
+--- CeresDBClient ---
 id=1
 version=1.0.0.Final
 clusterAddress=127.0.0.1:8831
@@ -600,7 +600,7 @@ routeCache.size=1
 --- GrpcClient ---
 started=true
 opts=RpcOptions{defaultRpcTimeout=10000, rpcThreadPoolSize=0, rpcThreadPoolQueueSize=16, maxInboundMessageSize=67108864, flowControlWindow=67108864, idleTimeoutSeconds=300, keepAliveTimeSeconds=3, keepAliveTimeoutSeconds=3, keepAliveWithoutCalls=true, openVegasLimiter=true, vegasInitialLimit=50, blockOnLimit=false, tenant=Tenant{tenant='public', childTenant='sub_test', token='test_token'}}
-connectionObservers=[com.ceresdb.CeresDBxClient$RpcConnectionObserver@465f5824]
+connectionObservers=[com.ceresdb.CeresDBClient$RpcConnectionObserver@465f5824]
 asyncPool=DirectExecutor{name='grpc_executor'}
 interceptors=[com.ceresdb.rpc.interceptors.MetricInterceptor@62b47ad1, com.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor@77533e32, com.ceresdb.rpc.interceptors.ContextToHeadersInterceptor@1a52427d, com.ceresdb.rpc.interceptors.AuthHeadersInterceptor@2670a76b]
 managedChannelPool={127.0.0.1:8831=ManagedChannelOrphanWrapper{delegate=ManagedChannelImpl{logId=1, target=127.0.0.1:8831}}}

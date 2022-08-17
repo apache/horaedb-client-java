@@ -24,11 +24,11 @@ import com.ceresdb.models.Rows;
 import com.ceresdb.models.WriteOk;
 
 /**
- * Like rust: pub type WriteLimiter = CeresDBxLimiter<Collection<Rows>, Result<WriteOk, Err>>
+ * Like rust: pub type WriteLimiter = CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>>
  *
  * @author jiachun.fjc
  */
-public abstract class WriteLimiter extends CeresDBxLimiter<Collection<Rows>, Result<WriteOk, Err>> {
+public abstract class WriteLimiter extends CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>> {
 
     public WriteLimiter(int maxInFlight, LimitedPolicy policy, String metric) {
         super(maxInFlight, policy, metric);

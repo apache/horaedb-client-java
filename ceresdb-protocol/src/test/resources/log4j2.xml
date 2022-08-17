@@ -6,8 +6,8 @@
             <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>
         </Console>
 
-<!--        <RollingFile name="RollingFile" filename="log/CeresDBxClient.log"-->
-<!--                     filepattern="log/%d{YYYYMMddHHmmss}-CeresDBxClient.log">-->
+<!--        <RollingFile name="RollingFile" filename="log/CeresDBClient.log"-->
+<!--                     filepattern="log/%d{YYYYMMddHHmmss}-CeresDBClient.log">-->
 <!--            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n"/>-->
 <!--            <Policies>-->
 <!--                <SizeBasedTriggeringPolicy size="100 MB"/>-->

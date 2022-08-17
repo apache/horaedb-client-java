@@ -17,7 +17,7 @@
 package com.ceresdb;
 
 import com.ceresdb.models.*;
-import com.ceresdb.options.CeresDBxOptions;
+import com.ceresdb.options.CeresDBOptions;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,8 +35,8 @@ public class ReadmeTest {
     @Ignore
     @Test
     public void readmeTest() throws ExecutionException, InterruptedException {
-        final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
-                .managementAddress("127.0.0.1", 5440) // CeresDB default http port 3307
+        final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
+                .managementAddress("127.0.0.1", 5000) // CeresDB default http port 3307
                 .tenant("test", "sub_test", "test_token") // tenant info
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
@@ -45,13 +45,13 @@ public class ReadmeTest {
                 // (only some error codes will be retried, such as the routing table failure)
                 .readMaxRetries(1).build();
 
-        final CeresDBxClient client = new CeresDBxClient();
+        final CeresDBClient client = new CeresDBClient();
         if (!client.init(opts)) {
-            throw new IllegalStateException("Fail to start CeresDBxClient");
+            throw new IllegalStateException("Fail to start CeresDBClient");
         }
 
         // Create table manually, creating table schema ahead of data ingestion is not required
-        String createTableSql = "CREATE TABLE MY_FIRST_TABLE(" + "ts TIMESTAMP NOT NULL," + "c1 STRING TAG NOT NULL,"
+        String createTableSql = "CREATE TABLE MY_FIRST_TABLE111111(" + "ts TIMESTAMP NOT NULL," + "c1 STRING TAG NOT NULL,"
                                 + "c2 STRING TAG NOT NULL," + "c3 DOUBLE NULL," + "c4 STRING NULL," + "c5 INT64 NULL,"
                                 + "c6 FLOAT NULL," + "c7 INT32 NULL," + "c8 INT16 NULL," + "c9 INT8 NULL,"
                                 + "c10 BOOLEAN NULL," + "c11 UINT64 NULL," + "c12 UINT32 NULL," + "c13 UINT16 NULL,"
