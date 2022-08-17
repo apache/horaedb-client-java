@@ -37,7 +37,7 @@ The label below（modifier）：
 
 ## 0.0.3.beta2
 - Features
-  - CeresDBxClient builder provide a simplified method for constructing parametric version
+  - CeresDBClient builder provide a simplified method for constructing parametric version
 - Fixes
   -
 - Breaking Changes
@@ -72,7 +72,7 @@ The label below（modifier）：
   - Remove SIG_TERM、SIGHUP signals，Only SIGUSR2 used to avoid incompatibility with some environments. At the same time, a small file is created to realize various signal processing. Please refer to the user's documentation for details
   - Update rpc-limiter， maxLimit change from 4096 to 1024，initialLimit change from 512 to 64
   - Add rpc-limiter unit test
-  - Specify logger output in CeresDBxClient for metrics reporter to avoid the burden of configuring logger conf for users
+  - Specify logger output in CeresDBClient for metrics reporter to avoid the burden of configuring logger conf for users
   - Fix Stream API NPE bug
 - Breaking Changes
   - Add OptKeys，summarize all system properties configuration，unify naming rules，and some keys have changed
@@ -99,13 +99,13 @@ The label below（modifier）：
 - Breaking Changes
   - QueryOptions#setRoutedClient 改为 QueryOptions#setRouterClient
   - QueryOptions#getRoutedClient 改为 QueryOptions#getRouterClient
-  - CeresDBxOptions.Builder.limitedPolicy 改为 CeresDBxOptions.Builder.writeLimitedPolicy
+  - CeresDBOptions.Builder.limitedPolicy 改为 CeresDBOptions.Builder.writeLimitedPolicy
 
 ## 0.0.2.RC13 (2021-12-27)
 - Features
   - Prints table names when writing failed
   - RouterClient cleaner and refresher use shard pool to reduce resource used
-  - CeresDBxClient display to the log regularly (once every 30 minutes)
+  - CeresDBClient display to the log regularly (once every 30 minutes)
   - Default value of maximum single write batch change from 1024 to 512，and maximum in transit write in lines change from 4096 to 16384
   - RouteClient receive SIGUSR2 signal to route cache items to file
   - NamedThreadFactory add Factory ID to identify duplicate Factory Name
@@ -179,7 +179,7 @@ The label below（modifier）：
 
 ## 0.0.2.RC4 (2021-11-24)
 - Features
-  - ceresdbx-sql-javacc module support inner/left/right join SQL parse，Support to resolve multiple queries tables
+  - ceresdb-sql-javacc module support inner/left/right join SQL parse，Support to resolve multiple queries tables
 - Fixes
   - Cancel the reuse of avro record when querying data to avoid data being accidentally overwritten
 - Breaking Changes
@@ -196,7 +196,7 @@ The label below（modifier）：
   - By default, avro schema's name validate is turned off to support `select count (*) from` queries without using aliases
   - Management API module checks the SQL validity on the client by default
 - Fixes
-  - Because the syntax of creating tables on the ceresdbx server is changed, modify the parser of the client to support the latest syntax
+  - Because the syntax of creating tables on the ceresdb server is changed, modify the parser of the client to support the latest syntax
 - Breaking Changes
 
 ## 0.0.2.RC1 (2021-11-01)

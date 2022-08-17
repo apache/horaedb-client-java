@@ -72,7 +72,7 @@ X.Y.Z
   - 移除 SIG_TERM、SIGHUP 信号占用，仅使用 SIGUSR2 信号，避免和某些环境不兼容，同时利用创建一个小文件来实现各种不同的信号处理，详细请参考使用文档
   - 修改 rpc-limiter， maxLimit 调整为 1024（原 4096），initialLimit 调整为 64（原 512）
   - 增加 rpc-limiter 单元测试
-  - 为 metrics reporter 指定 CeresDBxClient 内的 logger output，避免给用户配置 logger conf 带来负担
+  - 为 metrics reporter 指定 CeresDBClient 内的 logger output，避免给用户配置 logger conf 带来负担
   - 修复 Stream API NPE bug
 - Breaking Changes
   - 增加 OptKeys，汇总所有 system properties 配置，统一命名规则，部分 key 已变化
@@ -99,13 +99,13 @@ X.Y.Z
 - Breaking Changes
   - QueryOptions#setRoutedClient 改为 QueryOptions#setRouterClient
   - QueryOptions#getRoutedClient 改为 QueryOptions#getRouterClient
-  - CeresDBxOptions.Builder.limitedPolicy 改为 CeresDBxOptions.Builder.writeLimitedPolicy
+  - CeresDBOptions.Builder.limitedPolicy 改为 CeresDBOptions.Builder.writeLimitedPolicy
 
 ## 0.0.2.RC13 (2021-12-27)
 - Features
   - 写入失败时日志打印这一批失败的表名
   - RouterClient 的 cleaner 和 refresher 采用共享 Pool 以减少资源占用
-  - CeresDBxClient 定时 Display 到日志中（30 分钟执行一次）
+  - CeresDBClient 定时 Display 到日志中（30 分钟执行一次）
   - 单次写入最大单批从默认 1024 调整为 512，最大在途写入行数从默认 4096 调整为 16384
   - RouteClient 接收 SIGUSR2 信号将 route cache items 输出到文件
   - NamedThreadFactory 增加 Factory ID 来识别重复的 Factory Name
@@ -179,7 +179,7 @@ X.Y.Z
 
 ## 0.0.2.RC4 (2021-11-24)
 - Features
-  - ceresdbx-sql-javacc 模块支持解析 inner/left/right join SQL 解析，支持解析多个查询 tables
+  - ceresdb-sql-javacc 模块支持解析 inner/left/right join SQL 解析，支持解析多个查询 tables
 - Fixes
   - 取消查询数据时 avro record 的复用，避免数据被不小心覆盖
 - Breaking Changes
@@ -196,7 +196,7 @@ X.Y.Z
   - 默认关闭 avro schema 的 name validate 以支持 `select count(*) from` 这种不必使用别名查询
   - Management API 模块默认在客户端对 sql 有效性进行检查
 - Fixes
-  - 因为 CeresDBx server 端建表语法变更，修改 client 的 parser 以支持最新语法
+  - 因为 CeresDB server 端建表语法变更，修改 client 的 parser 以支持最新语法
 - Breaking Changes
 
 ## 0.0.2.RC1 (2021-11-01)
