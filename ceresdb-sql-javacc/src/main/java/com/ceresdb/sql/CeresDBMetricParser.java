@@ -31,8 +31,8 @@ public class CeresDBMetricParser implements MetricParser {
 
     private final String ql;
 
-    private boolean              parsed;
-    private StatementType        statementType = StatementType.Unknown;
+    private boolean             parsed;
+    private StatementType       statementType = StatementType.Unknown;
     private CeresDBSqlStatement stmt;
 
     public CeresDBMetricParser(String ql) {

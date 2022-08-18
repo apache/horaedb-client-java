@@ -65,18 +65,18 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private static final Logger LOG = LoggerFactory.getLogger(CeresDBClient.class);
 
     private static final Map<Integer, CeresDBClient> INSTANCES   = new ConcurrentHashMap<>();
-    private static final AtomicInteger                ID          = new AtomicInteger(0);
-    private static final String                       ID_KEY      = "client.id";
-    private static final String                       VERSION_KEY = "client.version";
-    private static final String                       VERSION     = loadVersion();
+    private static final AtomicInteger               ID          = new AtomicInteger(0);
+    private static final String                      ID_KEY      = "client.id";
+    private static final String                      VERSION_KEY = "client.version";
+    private static final String                      VERSION     = loadVersion();
 
     private final int           id;
     private final AtomicBoolean started = new AtomicBoolean(false);
 
     private CeresDBOptions opts;
-    private RouterClient    routerClient;
-    private WriteClient     writeClient;
-    private QueryClient     queryClient;
+    private RouterClient   routerClient;
+    private WriteClient    writeClient;
+    private QueryClient    queryClient;
     // CeresDBClient is only intended to manage the instance and does not
     // intend to broker any of its behavior
     private Management management;

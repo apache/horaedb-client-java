@@ -52,7 +52,7 @@ public class CeresDBClientTest {
     private CeresDBClient  client;
     private CeresDBOptions opts;
     @Mock
-    private WriteClient     writeClient;
+    private WriteClient    writeClient;
 
     @Before
     public void before() {

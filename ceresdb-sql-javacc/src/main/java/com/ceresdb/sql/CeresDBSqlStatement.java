@@ -52,11 +52,11 @@ public class CeresDBSqlStatement {
     }
 
     public CeresDBSqlStatement(String sql, //
-                                StatementType stmtType, //
-                                String database, //
-                                List<String> tables, //
-                                List<Integer> parameters, //
-                                Map<String, Integer> positions) {
+                               StatementType stmtType, //
+                               String database, //
+                               List<String> tables, //
+                               List<Integer> parameters, //
+                               Map<String, Integer> positions) {
         this.sql = sql;
         this.stmtType = stmtType;
 
