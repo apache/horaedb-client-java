@@ -124,7 +124,7 @@ CeresDB 是一个 Schema-less 的时序数据引擎，你可以不必创建 sche
 ```java
 final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // 默认 gprc 端口号
         .managementAddress("127.0.0.1", 5440) // 注意，直接使用 sql 需要连接 CeresDB 的 http 端口
-        .tenant("test", "sub_test", "test_token") // 租户信息
+        .tenant("public", "sub_test", "test_token") // 租户信息
         .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
         .readMaxRetries(1) // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
         .build();

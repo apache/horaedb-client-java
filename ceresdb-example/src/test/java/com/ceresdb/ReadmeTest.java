@@ -37,7 +37,7 @@ public class ReadmeTest {
     public void readmeTest() throws ExecutionException, InterruptedException {
         final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
                 .managementAddress("127.0.0.1", 5000) // CeresDB default http port 3307
-                .tenant("test", "sub_test", "test_token") // tenant info
+                .tenant("public", "sub_test", "test_token") // tenant info
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
                 .writeMaxRetries(1)
