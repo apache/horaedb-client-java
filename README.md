@@ -6,7 +6,7 @@
 [中文](./README_CN.md)
 
 ## Introduction
-CeresDBxClient is a high-performance Java client for CeresDB.
+CeresDBClient is a high-performance Java client for CeresDB.
 CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
@@ -19,7 +19,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBxClient    │  
+                   │   CeresDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -51,14 +51,14 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │  
+│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
 ## Data query process
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBxClient    │  
+                   │   CeresDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -90,7 +90,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDBx Node1    │      │   CeresDBx Node2    │      │         ...         │  
+│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
@@ -100,9 +100,9 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 
 ## Init CeresDB client
 ```java
-// CeresDBx options
-final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
-        .tenant("test", "sub_test", "test_token") // tenant info
+// CeresDB options
+final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) //// CeresDB default grpc port 8831
+        .tenant("public", "sub_test", "test_token") // tenant info
         // maximum retry times when write fails
         // (only some error codes will be retried, such as the routing table failure)
         .writeMaxRetries(1)
@@ -111,9 +111,9 @@ final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) //
         .readMaxRetries(1)
         .build();
 
-final CeresDBxClient client = new CeresDBxClient();
+final CeresDBClient client = new CeresDBClient();
         if (!client.init(this.opts)) {
-        throw new IllegalStateException("Fail to start CeresDBxClient");
+        throw new IllegalStateException("Fail to start CeresDBClient");
         }
 ```
 For more configuration options, see [configuration](docs/configuration.md)

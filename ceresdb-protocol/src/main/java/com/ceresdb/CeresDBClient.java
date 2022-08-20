@@ -42,7 +42,7 @@ import com.ceresdb.models.QueryRequest;
 import com.ceresdb.models.Result;
 import com.ceresdb.models.Rows;
 import com.ceresdb.models.WriteOk;
-import com.ceresdb.options.CeresDBxOptions;
+import com.ceresdb.options.CeresDBOptions;
 import com.ceresdb.options.ManagementOptions;
 import com.ceresdb.options.QueryOptions;
 import com.ceresdb.options.RouterOptions;
@@ -60,24 +60,24 @@ import com.codahale.metrics.Meter;
  *
  * @author jiachun.fjc
  */
-public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>, Display {
+public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, Display {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CeresDBxClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CeresDBClient.class);
 
-    private static final Map<Integer, CeresDBxClient> INSTANCES   = new ConcurrentHashMap<>();
-    private static final AtomicInteger                ID          = new AtomicInteger(0);
-    private static final String                       ID_KEY      = "client.id";
-    private static final String                       VERSION_KEY = "client.version";
-    private static final String                       VERSION     = loadVersion();
+    private static final Map<Integer, CeresDBClient> INSTANCES   = new ConcurrentHashMap<>();
+    private static final AtomicInteger               ID          = new AtomicInteger(0);
+    private static final String                      ID_KEY      = "client.id";
+    private static final String                      VERSION_KEY = "client.version";
+    private static final String                      VERSION     = loadVersion();
 
     private final int           id;
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private CeresDBxOptions opts;
-    private RouterClient    routerClient;
-    private WriteClient     writeClient;
-    private QueryClient     queryClient;
-    // CeresDBxClient is only intended to manage the instance and does not
+    private CeresDBOptions opts;
+    private RouterClient   routerClient;
+    private WriteClient    writeClient;
+    private QueryClient    queryClient;
+    // CeresDBClient is only intended to manage the instance and does not
     // intend to broker any of its behavior
     private Management management;
     // Note: We do not close it to free resources, as we view it as shared
@@ -94,17 +94,17 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         Runtime.getRuntime().addShutdownHook(new Thread(MetricsUtil::stopScheduledReporterAndDestroy));
     }
 
-    public CeresDBxClient() {
+    public CeresDBClient() {
         this.id = ID.incrementAndGet();
     }
 
     @Override
-    public boolean init(final CeresDBxOptions opts) {
+    public boolean init(final CeresDBOptions opts) {
         if (!this.started.compareAndSet(false, true)) {
-            throw new IllegalStateException("CeresDBx client has started");
+            throw new IllegalStateException("CeresDB client has started");
         }
 
-        this.opts = CeresDBxOptions.check(opts).copy();
+        this.opts = CeresDBOptions.check(opts).copy();
 
         final RpcClient rpcClient = initRpcClient(this.opts);
         this.routerClient = initRouteClient(this.opts, rpcClient);
@@ -151,7 +151,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         if (this.started.get() && INSTANCES.containsKey(this.id)) {
             return;
         }
-        throw new IllegalStateException(String.format("CeresDBxClient(%d) is not started", this.id));
+        throw new IllegalStateException(String.format("CeresDBClient(%d) is not started", this.id));
     }
 
     @Override
@@ -225,7 +225,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
 
     @Override
     public void display(final Printer out) {
-        out.println("--- CeresDBxClient ---") //
+        out.println("--- CeresDBClient ---") //
                 .print("id=") //
                 .println(this.id) //
                 .print("version=") //
@@ -264,7 +264,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
 
     @Override
     public String toString() {
-        return "CeresDBxClient{" + //
+        return "CeresDBClient{" + //
                "id=" + id + //
                "version=" + version() + //
                ", started=" + started + //
@@ -275,11 +275,11 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
                '}';
     }
 
-    public static List<CeresDBxClient> instances() {
+    public static List<CeresDBClient> instances() {
         return new ArrayList<>(INSTANCES.values());
     }
 
-    private static RpcClient initRpcClient(final CeresDBxOptions opts) {
+    private static RpcClient initRpcClient(final CeresDBOptions opts) {
         final RpcOptions rpcOpts = opts.getRpcOptions();
         rpcOpts.setTenant(opts.getTenant());
         final RpcClient rpcClient = RpcFactoryProvider.getRpcFactory().createRpcClient();
@@ -290,7 +290,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         return rpcClient;
     }
 
-    private static RouterClient initRouteClient(final CeresDBxOptions opts, final RpcClient rpcClient) {
+    private static RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
         final RouterOptions routerOpts = opts.getRouterOptions();
         routerOpts.setRpcClient(rpcClient);
         final RouterClient routerClient = new RouterClient();
@@ -300,7 +300,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         return routerClient;
     }
 
-    private static WriteClient initWriteClient(final CeresDBxOptions opts, //
+    private static WriteClient initWriteClient(final CeresDBOptions opts, //
                                                final RouterClient routerClient, //
                                                final Executor asyncPool) {
         final WriteOptions writeOpts = opts.getWriteOptions();
@@ -313,7 +313,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         return writeClient;
     }
 
-    private static QueryClient initQueryClient(final CeresDBxOptions opts, //
+    private static QueryClient initQueryClient(final CeresDBOptions opts, //
                                                final RouterClient routerClient, //
                                                final Executor asyncPool) {
         final QueryOptions queryOpts = opts.getQueryOptions();
@@ -326,15 +326,15 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
         return queryClient;
     }
 
-    private static Management initManagementClient(final CeresDBxOptions opts, final RouterClient routerClient) {
+    private static Management initManagementClient(final CeresDBOptions opts, final RouterClient routerClient) {
         final ManagementOptions mOpts = opts.getManagementOptions();
         if (mOpts == null) {
             return null;
         }
-        if (!CeresDBxManagementProvider.hasManagement()) {
+        if (!CeresDBManagementProvider.hasManagement()) {
             return null;
         }
-        final Management management = CeresDBxManagementProvider.createManagement();
+        final Management management = CeresDBManagementProvider.createManagement();
         mOpts.setRouterClient(routerClient);
         if (!management.init(mOpts)) {
             return null;
@@ -345,7 +345,7 @@ public class CeresDBxClient implements Write, Query, Lifecycle<CeresDBxOptions>,
     private static String loadVersion() {
         try {
             return Utils //
-                    .loadProperties(CeresDBxClient.class.getClassLoader(), "client_version.properties") //
+                    .loadProperties(CeresDBClient.class.getClassLoader(), "client_version.properties") //
                     .getProperty(VERSION_KEY, "Unknown version");
         } catch (final Exception ignored) {
             return "Unknown version(err)";

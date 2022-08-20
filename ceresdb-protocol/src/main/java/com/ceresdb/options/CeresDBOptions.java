@@ -26,11 +26,11 @@ import com.ceresdb.common.util.Requires;
 import com.ceresdb.rpc.RpcOptions;
 
 /**
- * CeresDBx client options.
+ * CeresDB client options.
  *
  * @author jiachun.fjc
  */
-public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
+public class CeresDBOptions implements Copiable<CeresDBOptions> {
     private Endpoint          clusterAddress;
     private Executor          asyncWritePool;
     private Executor          asyncReadPool;
@@ -114,8 +114,8 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
     }
 
     @Override
-    public CeresDBxOptions copy() {
-        final CeresDBxOptions copy = new CeresDBxOptions();
+    public CeresDBOptions copy() {
+        final CeresDBOptions copy = new CeresDBOptions();
         copy.clusterAddress = this.clusterAddress;
         copy.asyncWritePool = this.asyncWritePool;
         copy.asyncReadPool = this.asyncReadPool;
@@ -142,7 +142,7 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
 
     @Override
     public String toString() {
-        return "CeresDBxOptions{" + //
+        return "CeresDBOptions{" + //
                "clusterAddress=" + clusterAddress + //
                ", asyncWritePool=" + asyncWritePool + //
                ", asyncReadPool=" + asyncReadPool + //
@@ -155,19 +155,19 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
                '}';
     }
 
-    public static CeresDBxOptions check(final CeresDBxOptions opts) {
-        Requires.requireNonNull(opts, "CeresDBxOptions.opts");
-        Requires.requireNonNull(opts.getClusterAddress(), "CeresDBxOptions.clusterAddress");
-        Requires.requireNonNull(opts.getTenant(), "CeresDBxOptions.tenant");
-        Requires.requireNonNull(opts.getRpcOptions(), "CeresDBxOptions.rpcOptions");
-        Requires.requireNonNull(opts.getRouterOptions(), "CeresDBxOptions.RouterOptions");
-        Requires.requireNonNull(opts.getWriteOptions(), "CeresDBxOptions.writeOptions");
-        Requires.requireNonNull(opts.getQueryOptions(), "CeresDBxOptions.queryOptions");
+    public static CeresDBOptions check(final CeresDBOptions opts) {
+        Requires.requireNonNull(opts, "CeresDBOptions.opts");
+        Requires.requireNonNull(opts.getClusterAddress(), "CeresDBOptions.clusterAddress");
+        Requires.requireNonNull(opts.getTenant(), "CeresDBOptions.tenant");
+        Requires.requireNonNull(opts.getRpcOptions(), "CeresDBOptions.rpcOptions");
+        Requires.requireNonNull(opts.getRouterOptions(), "CeresDBOptions.RouterOptions");
+        Requires.requireNonNull(opts.getWriteOptions(), "CeresDBOptions.writeOptions");
+        Requires.requireNonNull(opts.getQueryOptions(), "CeresDBOptions.queryOptions");
         return opts;
     }
 
     /**
-     * Create a new builder for CeresDBxOptions.
+     * Create a new builder for CeresDBOptions.
      *
      * @param clusterAddress cluster address, for read/write data
      * @return builder
@@ -177,7 +177,7 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
     }
 
     /**
-     * Create a new builder for CeresDBxOptions.
+     * Create a new builder for CeresDBOptions.
      *
      * @param clusterHost cluster ip/host, for read/write data
      * @param clusterPort cluster port
@@ -188,7 +188,7 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
     }
 
     /**
-     * Create a new builder for CeresDBxOptions.
+     * Create a new builder for CeresDBOptions.
      *
      * @param clusterHost    cluster ip/host, for read/write data
      * @param clusterPort    cluster port
@@ -437,8 +437,8 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
          *
          * @return nice things
          */
-        public CeresDBxOptions build() {
-            final CeresDBxOptions opts = new CeresDBxOptions();
+        public CeresDBOptions build() {
+            final CeresDBOptions opts = new CeresDBOptions();
             opts.clusterAddress = this.clusterAddress;
             opts.asyncWritePool = asyncWritePool;
             opts.asyncReadPool = asyncReadPool;
@@ -464,7 +464,7 @@ public class CeresDBxOptions implements Copiable<CeresDBxOptions> {
                 mOpts.setTenant(this.tenant);
                 opts.managementOptions = mOpts;
             }
-            return CeresDBxOptions.check(opts);
+            return CeresDBOptions.check(opts);
         }
     }
 }

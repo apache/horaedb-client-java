@@ -10,7 +10,7 @@
 按照帮助信息执行即可
 
 ```
- - -- CeresDBxClient Signal Help --
+ - -- CeresDBClient Signal Help --
  -     Signal output dir: /Users/xxx/xxx
  -
  -     How to clear route cache:

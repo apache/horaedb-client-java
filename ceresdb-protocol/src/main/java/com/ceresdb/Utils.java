@@ -59,7 +59,7 @@ import com.ceresdb.rpc.Observer;
 import com.google.protobuf.ByteStringHelper;
 
 /**
- * Utils for CeresDBxClient.
+ * Utils for CeresDBClient.
  *
  * @author jiachun.fjc
  */
@@ -107,7 +107,7 @@ public final class Utils {
     }
 
     /**
-     * Auto report self(CeresDBxClient) period.
+     * Auto report self(CeresDBClient) period.
      *
      * @return period with minutes
      */

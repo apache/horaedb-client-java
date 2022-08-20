@@ -17,7 +17,7 @@
 package com.ceresdb;
 
 import com.ceresdb.models.*;
-import com.ceresdb.options.CeresDBxOptions;
+import com.ceresdb.options.CeresDBOptions;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,9 +35,9 @@ public class ReadmeTest {
     @Ignore
     @Test
     public void readmeTest() throws ExecutionException, InterruptedException {
-        final CeresDBxOptions opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
-                .managementAddress("127.0.0.1", 5440) // CeresDB default http port 3307
-                .tenant("test", "sub_test", "test_token") // tenant info
+        final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
+                .managementAddress("127.0.0.1", 5000) // CeresDB default http port 3307
+                .tenant("public", "sub_test", "test_token") // tenant info
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
                 .writeMaxRetries(1)
@@ -45,9 +45,9 @@ public class ReadmeTest {
                 // (only some error codes will be retried, such as the routing table failure)
                 .readMaxRetries(1).build();
 
-        final CeresDBxClient client = new CeresDBxClient();
+        final CeresDBClient client = new CeresDBClient();
         if (!client.init(opts)) {
-            throw new IllegalStateException("Fail to start CeresDBxClient");
+            throw new IllegalStateException("Fail to start CeresDBClient");
         }
 
         // Create table manually, creating table schema ahead of data ingestion is not required

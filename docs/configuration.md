@@ -1,19 +1,19 @@
 ## Global Options (System properties / Java -Dxxx)
 | name | description |
 | --- | --- |
-| "CeresDBx.available_cpus" | CeresDB 可用 cpu 数量指定，默认使用当前环境的全部 cpu 数量 |
-| "CeresDBx.grpc.conn.failures.reset_threshold" | gRPC reset connection 的阈值，默认 3 |
-| "CeresDBx.client.read.write.rw_logging" | 写查的简洁日志输出开关，默认 true |
-| "CeresDBx.client.write.collect_wrote_detail" | 写入成功后是否保留写入的 metric 列表，默认为 false |
-| "CeresDBx.client.use_os_signal" | 是否使用 OS Signal，默认会使用 SIGUSR2 |
-| "CeresDBx.signal.out_dir" | Signal 接收器输出内容到指定磁盘目录，默认为进程启动目录 |
-| "CeresDBx.avro.name_validate" | 是否开启 Avro name 校验，默认 false |
-| "CeresDBx.rpc.write.limit_percent" | RPC 层自适应限流器 `写` 操作占比（默认 0.7），剩下的留给 `读` 操作 |
-| "CeresDBx.reporter.period_minutes" | Metrics reporter 定时输出周期，默认 30 分钟 |
-| "CeresDBx.http.read_timeout_ms" | 基于 http 协议的管理类 API 的 http 读超时时间，默认 10000ms |
-| "CeresDBx.http.write_timeout_ms" | 基于 http 协议的管理类 API 的 http 写超时时间，默认 10000ms |
+| "CeresDB.available_cpus" | CeresDB 可用 cpu 数量指定，默认使用当前环境的全部 cpu 数量 |
+| "CeresDB.grpc.conn.failures.reset_threshold" | gRPC reset connection 的阈值，默认 3 |
+| "CeresDB.client.read.write.rw_logging" | 写查的简洁日志输出开关，默认 true |
+| "CeresDB.client.write.collect_wrote_detail" | 写入成功后是否保留写入的 metric 列表，默认为 false |
+| "CeresDB.client.use_os_signal" | 是否使用 OS Signal，默认会使用 SIGUSR2 |
+| "CeresDB.signal.out_dir" | Signal 接收器输出内容到指定磁盘目录，默认为进程启动目录 |
+| "CeresDB.avro.name_validate" | 是否开启 Avro name 校验，默认 false |
+| "CeresDB.rpc.write.limit_percent" | RPC 层自适应限流器 `写` 操作占比（默认 0.7），剩下的留给 `读` 操作 |
+| "CeresDB.reporter.period_minutes" | Metrics reporter 定时输出周期，默认 30 分钟 |
+| "CeresDB.http.read_timeout_ms" | 基于 http 协议的管理类 API 的 http 读超时时间，默认 10000ms |
+| "CeresDB.http.write_timeout_ms" | 基于 http 协议的管理类 API 的 http 写超时时间，默认 10000ms |
 
-## CeresDBxOptions
+## CeresDBOptions
 | name | description |
 | --- | --- |
 | clusterAddress | 集群地址（稳定可用的地址），路由表将从这个地址获取 |

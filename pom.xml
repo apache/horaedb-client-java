@@ -276,9 +276,9 @@
                     <excludes>
                         <exclude>**/proto/*</exclude>
                         <exclude>**/sql/AbstractCharStream.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParser.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParserConstants.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParserTokenManager.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParser.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserConstants.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserTokenManager.java</exclude>
                         <exclude>**/sql/ParseException.java</exclude>
                         <exclude>**/sql/SimpleCharStream.java</exclude>
                         <exclude>**/sql/Token.java</exclude>
@@ -344,9 +344,9 @@
                         <exclude>**/UnsafeUtil.java</exclude>
                         <exclude>**/proto/*</exclude>
                         <exclude>**/sql/AbstractCharStream.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParser.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParserConstants.java</exclude>
-                        <exclude>**/sql/CeresDBxSqlParserTokenManager.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParser.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserConstants.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserTokenManager.java</exclude>
                         <exclude>**/sql/ParseException.java</exclude>
                         <exclude>**/sql/SimpleCharStream.java</exclude>
                         <exclude>**/sql/Token.java</exclude>

@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class CeresDBxSqlStatement {
+public class CeresDBSqlStatement {
     public static final String               DEFAULT_DATABASE   = "system";
     public static final String               DEFAULT_TABLE      = "unknown";
     public static final List<String>         DEFAULT_TABLES     = Collections.singletonList(DEFAULT_TABLE);
@@ -43,20 +43,20 @@ public class CeresDBxSqlStatement {
     private final List<Integer>        parameters;
     private final Map<String, Integer> positions;
 
-    public CeresDBxSqlStatement(String sql) {
+    public CeresDBSqlStatement(String sql) {
         this(sql, StatementType.UNKNOWN, null, null, null, null);
     }
 
-    public CeresDBxSqlStatement(String sql, StatementType stmtType) {
+    public CeresDBSqlStatement(String sql, StatementType stmtType) {
         this(sql, stmtType, null, null, null, null);
     }
 
-    public CeresDBxSqlStatement(String sql, //
-                                StatementType stmtType, //
-                                String database, //
-                                List<String> tables, //
-                                List<Integer> parameters, //
-                                Map<String, Integer> positions) {
+    public CeresDBSqlStatement(String sql, //
+                               StatementType stmtType, //
+                               String database, //
+                               List<String> tables, //
+                               List<Integer> parameters, //
+                               Map<String, Integer> positions) {
         this.sql = sql;
         this.stmtType = stmtType;
 
@@ -197,7 +197,7 @@ public class CeresDBxSqlStatement {
 
     @Override
     public String toString() {
-        return "CeresDBxSqlStatement{" + //
+        return "CeresDBSqlStatement{" + //
                "sql='" + sql + '\'' + //
                ", stmtType=" + stmtType + //
                ", database='" + database + '\'' + //
@@ -231,7 +231,7 @@ public class CeresDBxSqlStatement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CeresDBxSqlStatement other = (CeresDBxSqlStatement) obj;
+        final CeresDBSqlStatement other = (CeresDBSqlStatement) obj;
         if (database == null) {
             if (other.database != null) {
                 return false;

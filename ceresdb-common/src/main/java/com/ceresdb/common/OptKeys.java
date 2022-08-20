@@ -24,17 +24,17 @@ package com.ceresdb.common;
 public final class OptKeys {
 
     public static final String OS_NAME                   = "os.name";
-    public static final String RW_LOGGING                = "CeresDBx.client.read.write.rw_logging";
-    public static final String COLLECT_WROTE_DETAIL      = "CeresDBx.client.write.collect_wrote_detail";
-    public static final String USE_OS_SIGNAL             = "CeresDBx.client.use_os_signal";
-    public static final String REPORT_PERIOD             = "CeresDBx.reporter.period_minutes";
-    public static final String SIG_OUT_DIR               = "CeresDBx.signal.out_dir";
-    public static final String HTTP_READ_TIMEOUT_MS      = "CeresDBx.http.read_timeout_ms";
-    public static final String HTTP_WRITE_TIMEOUT_MS     = "CeresDBx.http.write_timeout_ms";
-    public static final String GRPC_CONN_RESET_THRESHOLD = "CeresDBx.grpc.conn.failures.reset_threshold";
-    public static final String AVAILABLE_CPUS            = "CeresDBx.available_cpus";
-    public static final String NAME_VALIDATE             = "CeresDBx.avro.name_validate";
-    public static final String WRITE_LIMIT_PERCENT       = "CeresDBx.rpc.write.limit_percent";
+    public static final String RW_LOGGING                = "CeresDB.client.read.write.rw_logging";
+    public static final String COLLECT_WROTE_DETAIL      = "CeresDB.client.write.collect_wrote_detail";
+    public static final String USE_OS_SIGNAL             = "CeresDB.client.use_os_signal";
+    public static final String REPORT_PERIOD             = "CeresDB.reporter.period_minutes";
+    public static final String SIG_OUT_DIR               = "CeresDB.signal.out_dir";
+    public static final String HTTP_READ_TIMEOUT_MS      = "CeresDB.http.read_timeout_ms";
+    public static final String HTTP_WRITE_TIMEOUT_MS     = "CeresDB.http.write_timeout_ms";
+    public static final String GRPC_CONN_RESET_THRESHOLD = "CeresDB.grpc.conn.failures.reset_threshold";
+    public static final String AVAILABLE_CPUS            = "CeresDB.available_cpus";
+    public static final String NAME_VALIDATE             = "CeresDB.avro.name_validate";
+    public static final String WRITE_LIMIT_PERCENT       = "CeresDB.rpc.write.limit_percent";
 
     private OptKeys() {
     }

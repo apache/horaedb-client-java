@@ -35,13 +35,13 @@ import com.codahale.metrics.Histogram;
  *
  * @author jiachun.fjc
  */
-public abstract class CeresDBxLimiter<In, Out> {
+public abstract class CeresDBLimiter<In, Out> {
 
     private final Limiter       limiter;
     private final LimitedPolicy policy;
     private final Histogram     acquireAvailablePermits;
 
-    public CeresDBxLimiter(int maxInFlight, LimitedPolicy policy, String metricPrefix) {
+    public CeresDBLimiter(int maxInFlight, LimitedPolicy policy, String metricPrefix) {
         this.limiter = maxInFlight > 0 ? new InFlightLimiter(maxInFlight, metricPrefix) : null;
         this.policy = policy;
         this.acquireAvailablePermits = MetricsUtil.histogram(metricPrefix, "available_permits");

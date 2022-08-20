@@ -25,10 +25,10 @@ import com.ceresdb.common.SPI;
  * @author jiachun.fjc
  */
 @SPI(priority = 1)
-public class CeresDBxMetricParserFactory implements MetricParserFactory {
+public class CeresDBMetricParserFactory implements MetricParserFactory {
 
     @Override
     public MetricParser getParser(final String ql) {
-        return new CeresDBxMetricParser(ql);
+        return new CeresDBMetricParser(ql);
     }
 }

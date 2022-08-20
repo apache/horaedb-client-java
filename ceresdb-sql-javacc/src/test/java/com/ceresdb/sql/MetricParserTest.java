@@ -37,7 +37,7 @@ public class MetricParserTest {
     public void loadFromSPITest() {
         final MetricParserFactory factory = ServiceLoader.load(MetricParserFactory.class) //
                 .firstOrDefault(() -> MetricParserFactory.DEFAULT);
-        Assert.assertTrue(factory instanceof CeresDBxMetricParserFactory);
+        Assert.assertTrue(factory instanceof CeresDBMetricParserFactory);
     }
 
     @Test

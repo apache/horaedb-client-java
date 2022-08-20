@@ -19,7 +19,7 @@ package com.ceresdb;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import com.ceresdb.CeresDBxClient;
+import com.ceresdb.CeresDBClient;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +36,7 @@ import com.ceresdb.models.Err;
 import com.ceresdb.models.Result;
 import com.ceresdb.models.Rows;
 import com.ceresdb.models.WriteOk;
-import com.ceresdb.options.CeresDBxOptions;
+import com.ceresdb.options.CeresDBOptions;
 import com.ceresdb.util.TestUtil;
 
 /**
@@ -44,24 +44,24 @@ import com.ceresdb.util.TestUtil;
  * @author jiachun.fjc
  */
 @RunWith(value = MockitoJUnitRunner.class)
-public class CeresDBxClientTest {
+public class CeresDBClientTest {
 
-    private static final ReferenceFieldUpdater<CeresDBxClient, WriteClient> WC_UPDATER = Updaters //
-            .newReferenceFieldUpdater(CeresDBxClient.class, "writeClient");
+    private static final ReferenceFieldUpdater<CeresDBClient, WriteClient> WC_UPDATER = Updaters //
+            .newReferenceFieldUpdater(CeresDBClient.class, "writeClient");
 
-    private CeresDBxClient  client;
-    private CeresDBxOptions opts;
+    private CeresDBClient  client;
+    private CeresDBOptions opts;
     @Mock
-    private WriteClient     writeClient;
+    private WriteClient    writeClient;
 
     @Before
     public void before() {
-        this.opts = CeresDBxOptions.newBuilder("127.0.0.1", 8081) //
+        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8081) //
                 .tenant("test", "sub_test", "test_token") //
                 .writeMaxRetries(1) //
                 .readMaxRetries(1) //
                 .build();
-        this.client = new CeresDBxClient();
+        this.client = new CeresDBClient();
     }
 
     @After
@@ -85,9 +85,9 @@ public class CeresDBxClientTest {
     @Test
     public void instancesTest() {
         this.client.init(this.opts);
-        Assert.assertEquals(1, CeresDBxClient.instances().size());
+        Assert.assertEquals(1, CeresDBClient.instances().size());
         this.client.shutdownGracefully();
-        Assert.assertTrue(CeresDBxClient.instances().isEmpty());
+        Assert.assertTrue(CeresDBClient.instances().isEmpty());
     }
 
     @SuppressWarnings("unchecked")

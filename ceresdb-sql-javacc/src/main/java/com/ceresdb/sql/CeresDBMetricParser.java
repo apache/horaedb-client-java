@@ -27,15 +27,15 @@ import com.ceresdb.common.util.internal.ThrowUtil;
  *
  * @author jiachun.fjc
  */
-public class CeresDBxMetricParser implements MetricParser {
+public class CeresDBMetricParser implements MetricParser {
 
     private final String ql;
 
-    private boolean              parsed;
-    private StatementType        statementType = StatementType.Unknown;
-    private CeresDBxSqlStatement stmt;
+    private boolean             parsed;
+    private StatementType       statementType = StatementType.Unknown;
+    private CeresDBSqlStatement stmt;
 
-    public CeresDBxMetricParser(String ql) {
+    public CeresDBMetricParser(String ql) {
         this.ql = ql;
     }
 
@@ -68,7 +68,7 @@ public class CeresDBxMetricParser implements MetricParser {
         this.parsed = true;
 
         try {
-            final CeresDBxSqlStatement stmt = CeresDBxSqlParser.parse(this.ql)[0];
+            final CeresDBSqlStatement stmt = CeresDBSqlParser.parse(this.ql)[0];
 
             switch (stmt.getStatementType()) {
                 case SELECT:

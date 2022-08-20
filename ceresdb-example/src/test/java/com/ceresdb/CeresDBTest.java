@@ -51,7 +51,7 @@ import com.ceresdb.models.Series;
 import com.ceresdb.models.SqlResult;
 import com.ceresdb.models.TagValue;
 import com.ceresdb.models.WriteOk;
-import com.ceresdb.options.CeresDBxOptions;
+import com.ceresdb.options.CeresDBOptions;
 import com.ceresdb.rpc.RpcOptions;
 
 /**
@@ -64,8 +64,8 @@ public class CeresDBTest {
 
     private String TEST_TABLE_NAME = "all_type_test_table_%d";
 
-    private CeresDBxOptions opts;
-    private CeresDBxClient  client;
+    private CeresDBOptions opts;
+    private CeresDBClient  client;
 
     @Before
     public void before() {
@@ -74,13 +74,13 @@ public class CeresDBTest {
         rpcOpts.setInitialLimit(32);
         rpcOpts.setLimitKind(RpcOptions.LimitKind.Gradient);
         rpcOpts.setLogOnLimitChange(true);
-        this.opts = CeresDBxOptions.newBuilder("127.0.0.1", 8831, 5000) //
+        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, 5000) //
                 .tenant("public", "sub_test", "test_token") //
                 .rpcOptions(rpcOpts) //
                 .writeMaxRetries(0) //
                 .readMaxRetries(1) //
                 .build();
-        this.client = new CeresDBxClient();
+        this.client = new CeresDBClient();
         final boolean ret = this.client.init(this.opts);
 
         TEST_TABLE_NAME = String.format(TEST_TABLE_NAME, System.currentTimeMillis());
@@ -111,7 +111,7 @@ public class CeresDBTest {
                                                                      "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
                 TEST_TABLE_NAME));
 
-        LOG.info("Start CeresDBx client {}, with options: {}, create table {}: {}.", result(ret), this.opts,
+        LOG.info("Start CeresDB client {}, with options: {}, create table {}: {}.", result(ret), this.opts,
                 TEST_TABLE_NAME, result);
 
         final SqlResult existsResult2 = management.executeSql("EXISTS TABLE %s", TEST_TABLE_NAME);
@@ -130,7 +130,7 @@ public class CeresDBTest {
         this.client.shutdownGracefully();
     }
 
-    public CeresDBxOptions getOpts() {
+    public CeresDBOptions getOpts() {
         return opts;
     }
 

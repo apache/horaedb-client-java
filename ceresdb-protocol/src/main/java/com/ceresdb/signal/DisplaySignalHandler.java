@@ -27,7 +27,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ceresdb.CeresDBxClient;
+import com.ceresdb.CeresDBClient;
 import com.ceresdb.common.Display;
 import com.ceresdb.common.SPI;
 import com.ceresdb.common.signal.FileOutputHelper;
@@ -53,7 +53,7 @@ public class DisplaySignalHandler implements SignalHandler {
             return;
         }
 
-        final List<CeresDBxClient> instances = CeresDBxClient.instances();
+        final List<CeresDBClient> instances = CeresDBClient.instances();
         if (instances.isEmpty()) {
             return;
         }
@@ -61,20 +61,20 @@ public class DisplaySignalHandler implements SignalHandler {
         try {
             final File file = FileOutputHelper.getOutputFile(BASE_NAME);
 
-            LOG.info("Displaying CeresDBx clients triggered by signal: {} to file: {}.", signalName,
+            LOG.info("Displaying CeresDB clients triggered by signal: {} to file: {}.", signalName,
                     file.getAbsoluteFile());
 
             try (PrintWriter out = new PrintWriter(
                     new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
                 final Display.Printer printer = new Display.DefaultPrinter(out);
-                for (final CeresDBxClient ins : instances) {
+                for (final CeresDBClient ins : instances) {
                     ins.display(printer);
                 }
                 out.flush();
             }
             Files.fsync(file);
         } catch (final IOException e) {
-            LOG.error("Fail to display CeresDBx clients: {}.", instances, e);
+            LOG.error("Fail to display CeresDB clients: {}.", instances, e);
         }
     }
 }

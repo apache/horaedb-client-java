@@ -21,7 +21,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ceresdb.CeresDBxClient;
+import com.ceresdb.CeresDBClient;
 import com.ceresdb.common.SPI;
 import com.ceresdb.common.signal.FileSignal;
 import com.ceresdb.common.signal.FileSignals;
@@ -45,12 +45,12 @@ public class ClearRouteCacheSignalHandler implements SignalHandler {
 
         LOG.info("Clear all route cache triggered by signal: {}.", signalName);
 
-        final List<CeresDBxClient> instances = CeresDBxClient.instances();
+        final List<CeresDBClient> instances = CeresDBClient.instances();
         if (instances.isEmpty()) {
             return;
         }
 
-        for (final CeresDBxClient ins : instances) {
+        for (final CeresDBClient ins : instances) {
             final int count = ins.routerClient().clearRouteCache();
             LOG.info("Clearing the client route cache, count={}, client id={}.", count, ins.id());
         }

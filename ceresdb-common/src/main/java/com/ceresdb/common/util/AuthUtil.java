@@ -31,10 +31,10 @@ import com.ceresdb.common.Tenant;
  */
 public class AuthUtil {
 
-    public static final String HEAD_TIMESTAMP           = "x-ceresdbx-timestamp";
-    public static final String HEAD_ACCESS_TENANT       = "x-ceresdbx-access-tenant";
-    public static final String HEAD_ACCESS_TOKEN        = "x-ceresdbx-access-token";
-    public static final String HEAD_ACCESS_CHILD_TENANT = "x-ceresdbx-access-child-tenant";
+    public static final String HEAD_TIMESTAMP           = "x-ceresdb-timestamp";
+    public static final String HEAD_ACCESS_TENANT       = "x-ceresdb-access-tenant";
+    public static final String HEAD_ACCESS_TOKEN        = "x-ceresdb-access-token";
+    public static final String HEAD_ACCESS_CHILD_TENANT = "x-ceresdb-access-child-tenant";
 
     public static Map<String, String> authHeaders(final Tenant tenant) {
         if (tenant == null) {
