@@ -97,6 +97,14 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 ## Requirements
 - Java 8 or later is required for compilation 
 
+## Import
+```java
+<dependency>
+  <groupId>io.ceresdb</groupId>
+  <artifactId>ceresdb-all</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
 
 ## Init CeresDB client
 ```java
