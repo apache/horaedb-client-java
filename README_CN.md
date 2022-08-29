@@ -94,6 +94,15 @@ CeresDBClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为�
 ## 需要
 编译需要 Java 8 及以上
 
+## 引用
+```java
+<dependency>
+  <groupId>io.ceresdb</groupId>
+  <artifactId>ceresdb-all</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
 ## 初始化 CeresDB Client
 ```java
 // CeresDB options
