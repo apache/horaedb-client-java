@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.sql;
+package io.ceresdb.sql;
 
 import java.util.ArrayList;
 import java.util.Collections;

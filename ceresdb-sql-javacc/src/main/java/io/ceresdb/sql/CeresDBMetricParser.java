@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.sql;
+package io.ceresdb.sql;
 
 import java.util.List;
 
-import com.ceresdb.MetricParser;
-import com.ceresdb.Utils;
-import com.ceresdb.common.util.internal.ThrowUtil;
+import io.ceresdb.MetricParser;
+import io.ceresdb.Utils;
+import io.ceresdb.common.util.internal.ThrowUtil;
 
 /**
  * Parse metric QL.

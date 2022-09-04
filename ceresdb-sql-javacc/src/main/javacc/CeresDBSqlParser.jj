@@ -16,7 +16,7 @@ options {
 
 PARSER_BEGIN(CeresDBSqlParser)
 
-package com.ceresdb.sql;
+package io.ceresdb.sql;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

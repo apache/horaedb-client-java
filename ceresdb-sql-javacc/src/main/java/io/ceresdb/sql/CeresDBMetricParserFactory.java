@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.sql;
+package io.ceresdb.sql;
 
-import com.ceresdb.MetricParser;
-import com.ceresdb.MetricParserFactory;
-import com.ceresdb.common.SPI;
+import io.ceresdb.MetricParser;
+import io.ceresdb.MetricParserFactory;
+import io.ceresdb.common.SPI;
 
 /**
  *
