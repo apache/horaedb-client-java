@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.http;
+package io.ceresdb.http;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import com.ceresdb.common.OptKeys;
-import com.ceresdb.common.util.SystemPropertyUtil;
+import io.ceresdb.common.OptKeys;
+import io.ceresdb.common.util.SystemPropertyUtil;
 import com.google.gson.Gson;
 
 import okhttp3.MediaType;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.http;
+package io.ceresdb.http;
 
 import java.util.Collection;
 import java.io.IOException;
@@ -25,22 +25,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ceresdb.Management;
-import com.ceresdb.MetricParser;
-import com.ceresdb.MetricParserFactory;
-import com.ceresdb.MetricParserFactoryProvider;
-import com.ceresdb.Route;
-import com.ceresdb.RouterClient;
-import com.ceresdb.common.Endpoint;
-import com.ceresdb.common.Tenant;
-import com.ceresdb.common.util.AuthUtil;
-import com.ceresdb.common.util.Requires;
-import com.ceresdb.common.util.Strings;
-import com.ceresdb.common.util.internal.ThrowUtil;
-import com.ceresdb.http.errors.ManagementException;
-import com.ceresdb.models.SqlResult;
-import com.ceresdb.options.ManagementOptions;
-import com.ceresdb.rpc.Context;
+import io.ceresdb.Management;
+import io.ceresdb.MetricParser;
+import io.ceresdb.MetricParserFactory;
+import io.ceresdb.MetricParserFactoryProvider;
+import io.ceresdb.Route;
+import io.ceresdb.RouterClient;
+import io.ceresdb.common.Endpoint;
+import io.ceresdb.common.Tenant;
+import io.ceresdb.common.util.AuthUtil;
+import io.ceresdb.common.util.Requires;
+import io.ceresdb.common.util.Strings;
+import io.ceresdb.common.util.internal.ThrowUtil;
+import io.ceresdb.http.errors.ManagementException;
+import io.ceresdb.models.SqlResult;
+import io.ceresdb.options.ManagementOptions;
+import io.ceresdb.rpc.Context;
 import com.google.gson.Gson;
 
 import okhttp3.Request;
