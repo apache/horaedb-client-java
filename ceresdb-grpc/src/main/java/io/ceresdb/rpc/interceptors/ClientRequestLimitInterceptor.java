@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc.interceptors;
+package io.ceresdb.rpc.interceptors;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -29,9 +29,9 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
 
-import com.ceresdb.common.util.MetricsUtil;
-import com.ceresdb.rpc.limit.LimitMetricRegistry;
-import com.ceresdb.rpc.limit.RequestLimitCtx;
+import io.ceresdb.common.util.MetricsUtil;
+import io.ceresdb.rpc.limit.LimitMetricRegistry;
+import io.ceresdb.rpc.limit.RequestLimitCtx;
 import com.netflix.concurrency.limits.Limiter;
 
 /**

@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc.interceptors;
-
-import java.util.Map;
+package io.ceresdb.rpc.interceptors;
 
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -26,32 +24,19 @@ import io.grpc.ForwardingClientCall;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 
-import com.ceresdb.common.Tenant;
-import com.ceresdb.common.util.AuthUtil;
-import com.ceresdb.common.util.Requires;
-import com.ceresdb.common.util.Strings;
+import io.ceresdb.rpc.Context;
 
 /**
- * CeresDB auth interceptor.
+ * Add RPC context to Grpc headers.
  *
  * @author jiachun.fjc
  */
-public class AuthHeadersInterceptor implements ClientInterceptor {
+public class ContextToHeadersInterceptor implements ClientInterceptor {
 
-    private static final ThreadLocal<String> CURRENT_CHILD_TENANT = new ThreadLocal<>();
+    private static final ThreadLocal<Context> CURRENT_CTX = new ThreadLocal<>();
 
-    private final Tenant tenant;
-
-    public AuthHeadersInterceptor(Tenant tenant) {
-        this.tenant = Requires.requireNonNull(tenant, "tenant");
-    }
-
-    public static void setCurrentChildTenant(final String childTenant) {
-        CURRENT_CHILD_TENANT.set(childTenant);
-    }
-
-    public static String getCurrentChildTenant() {
-        return CURRENT_CHILD_TENANT.get();
+    public static void setCurrentCtx(final Context ctx) {
+        CURRENT_CTX.set(ctx);
     }
 
     @Override
@@ -61,27 +46,24 @@ public class AuthHeadersInterceptor implements ClientInterceptor {
         return new HeaderAttachingClientCall<>(next.newCall(method, callOpts));
     }
 
-    private final class HeaderAttachingClientCall<ReqT, RespT>
+    private static final class HeaderAttachingClientCall<ReqT, RespT>
             extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
 
         // Non private to avoid synthetic class
-        HeaderAttachingClientCall(ClientCall<ReqT, RespT> call) {
-            super(call);
+        HeaderAttachingClientCall(ClientCall<ReqT, RespT> delegate) {
+            super(delegate);
         }
 
         @Override
         public void start(final Listener<RespT> respListener, final Metadata headers) {
-            final Map<String, String> extraHeaders = AuthUtil.authHeaders(tenant);
-
-            final String childTenant = getCurrentChildTenant();
-            if (Strings.isNotBlank(childTenant)) {
-                AuthUtil.replaceChildTenant(extraHeaders, childTenant);
+            final Context ctx = CURRENT_CTX.get();
+            if (ctx != null) {
+                ctx.entrySet().forEach(e -> headers.put( //
+                        Metadata.Key.of(e.getKey(), Metadata.ASCII_STRING_MARSHALLER), //
+                        String.valueOf(e.getValue())) //
+                );
             }
-
-            if (!extraHeaders.isEmpty()) {
-                extraHeaders.forEach((k, v) -> headers.put(Metadata.Key.of(k, Metadata.ASCII_STRING_MARSHALLER), v));
-            }
-
+            CURRENT_CTX.remove();
             super.start(respListener, headers);
         }
     }

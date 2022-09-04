@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc.limit;
+package io.ceresdb.rpc.limit;
 
-import com.ceresdb.common.util.Requires;
+import io.ceresdb.common.util.Requires;
 import com.netflix.concurrency.limits.MetricIds;
 import com.netflix.concurrency.limits.MetricRegistry;
 import com.netflix.concurrency.limits.MetricRegistry.SampleListener;

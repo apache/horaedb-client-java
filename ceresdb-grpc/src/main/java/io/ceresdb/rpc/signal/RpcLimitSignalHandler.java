@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc.signal;
+package io.ceresdb.rpc.signal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ceresdb.common.SPI;
-import com.ceresdb.common.signal.FileSignal;
-import com.ceresdb.common.signal.FileSignals;
-import com.ceresdb.common.signal.SignalHandler;
-import com.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor;
+import io.ceresdb.common.SPI;
+import io.ceresdb.common.signal.FileSignal;
+import io.ceresdb.common.signal.FileSignals;
+import io.ceresdb.common.signal.SignalHandler;
+import io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor;
 
 /**
  * A signal handler that can reset LIMIT_SWITCH by {@link ClientRequestLimitInterceptor#resetLimitSwitch()}.

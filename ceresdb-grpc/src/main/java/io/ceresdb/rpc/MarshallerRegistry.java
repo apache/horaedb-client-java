@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc;
+package io.ceresdb.rpc;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.ceresdb.common.util.Requires;
+import io.ceresdb.common.util.Requires;
 import com.google.protobuf.Message;
 
 /**

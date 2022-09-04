@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc.limit;
+package io.ceresdb.rpc.limit;
 
 import java.util.function.Supplier;
 
-import com.ceresdb.common.util.MetricsUtil;
+import io.ceresdb.common.util.MetricsUtil;
 import com.netflix.concurrency.limits.MetricRegistry;
 
 /**

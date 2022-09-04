@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.rpc;
+package io.ceresdb.rpc;
 
 import java.util.concurrent.TimeUnit;
 
