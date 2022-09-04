@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ceresdb.sql;
+package io.ceresdb.sql;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.ceresdb.MetricParser;
-import com.ceresdb.common.util.Requires;
+import io.ceresdb.MetricParser;
+import io.ceresdb.common.util.Requires;
 
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
