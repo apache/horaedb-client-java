@@ -4,7 +4,7 @@
 
     <groupId>io.ceresdb</groupId>
     <artifactId>ceresdb-client</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.0-RC</version>
     <packaging>pom</packaging>
 
     <name>ceresdb-client</name>

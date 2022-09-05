@@ -99,7 +99,7 @@ CeresDBClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为�
 <dependency>
   <groupId>io.ceresdb</groupId>
   <artifactId>ceresdb-all</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.0-RC</version>
 </dependency>
 ```
 
