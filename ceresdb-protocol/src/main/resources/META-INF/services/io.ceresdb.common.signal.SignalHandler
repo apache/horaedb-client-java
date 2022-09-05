@@ -1,0 +1,6 @@
+io.ceresdb.signal.ShowHelpSignalHandler
+io.ceresdb.signal.MetricsSignalHandler
+io.ceresdb.signal.DisplaySignalHandler
+io.ceresdb.signal.ClearRouteCacheSignalHandler
+io.ceresdb.signal.ShowRouteCacheSignalHandler
+io.ceresdb.signal.RwLoggingSignalHandler

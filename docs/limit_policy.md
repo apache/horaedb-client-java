@@ -48,7 +48,7 @@ newLimit = gradient * currentLimit + queueSize;
 newLimit = currentLimit * (1 - smoothing) + newLimit * smoothing
 ```
 
-- 默认自适应限流算法是 Gradient，可以通过设置 `com.ceresdb.rpc.RpcOptions.limitKind = Vegas` 改为 Vegas
-  或者是设置为 设置 `com.ceresdb.rpc.RpcOptions.limitKind = None` 进行关闭
-- 默认达到限流值会快速失败，也可以通过设置 `com.ceresdb.rpc.RpcOptions.blockOnLimit = true` 将策略改为阻塞直至超时
+- 默认自适应限流算法是 Gradient，可以通过设置 `io.ceresdb.rpc.RpcOptions.limitKind = Vegas` 改为 Vegas
+  或者是设置为 设置 `io.ceresdb.rpc.RpcOptions.limitKind = None` 进行关闭
+- 默认达到限流值会快速失败，也可以通过设置 `io.ceresdb.rpc.RpcOptions.blockOnLimit = true` 将策略改为阻塞直至超时
 - 默认情况下写、读请求共享这个限流器，默认写、读分别可以获得 70% 和 30% 的通行许可，可以通过启动参数 -DCeresDB.rpc.write.limit_percent=xxx 来设置写的比例，读的比例为 1 - writeLimitPercent
