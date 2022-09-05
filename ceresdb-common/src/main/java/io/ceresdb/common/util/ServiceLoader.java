@@ -371,6 +371,6 @@ public final class ServiceLoader<S> implements Iterable<S> {
      */
     @Override
     public String toString() {
-        return "com.ceresdb.CeresServiceLoader[" + this.service.getName() + "]";
+        return "io.ceresdb.ServiceLoader[" + this.service.getName() + "]";
     }
 }
