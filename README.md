@@ -6,7 +6,7 @@
 [中文](./README_CN.md)
 
 ## Introduction
-CeresDBClient is a high-performance Java client for CeresDB.
+CeresDB Client is a high-performance Java client for CeresDB.
 CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
