@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.ceresdb.proto.internal.Common;
+import io.ceresdb.proto.internal.Storage;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -55,8 +57,6 @@ import io.ceresdb.models.QueryRequest;
 import io.ceresdb.models.Record;
 import io.ceresdb.models.Result;
 import io.ceresdb.options.QueryOptions;
-import io.ceresdb.proto.Common;
-import io.ceresdb.proto.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 

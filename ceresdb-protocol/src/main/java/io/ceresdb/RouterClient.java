@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import io.ceresdb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,6 @@ import io.ceresdb.common.util.Spines;
 import io.ceresdb.common.util.TopKSelector;
 import io.ceresdb.errors.RouteTableException;
 import io.ceresdb.options.RouterOptions;
-import io.ceresdb.proto.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 import io.ceresdb.rpc.RpcClient;

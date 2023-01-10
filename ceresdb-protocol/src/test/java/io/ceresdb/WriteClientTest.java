@@ -29,6 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.ceresdb.proto.internal.Common;
+import io.ceresdb.proto.internal.Storage;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,8 +49,6 @@ import io.ceresdb.models.Rows;
 import io.ceresdb.models.Series;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.options.WriteOptions;
-import io.ceresdb.proto.Common;
-import io.ceresdb.proto.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 import io.ceresdb.util.TestUtil;

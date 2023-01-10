@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
+import io.ceresdb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,6 @@ import io.ceresdb.models.QueryOk;
 import io.ceresdb.models.QueryRequest;
 import io.ceresdb.models.Result;
 import io.ceresdb.options.QueryOptions;
-import io.ceresdb.proto.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 import com.codahale.metrics.Histogram;

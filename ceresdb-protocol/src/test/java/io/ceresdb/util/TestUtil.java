@@ -27,8 +27,8 @@ import io.ceresdb.models.FieldValue;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.Rows;
 import io.ceresdb.models.Series;
-import io.ceresdb.proto.Common;
-import io.ceresdb.proto.Storage;
+import io.ceresdb.proto.internal.Common;
+import io.ceresdb.proto.internal.Storage;
 
 /**
  * @author jiachun.fjc

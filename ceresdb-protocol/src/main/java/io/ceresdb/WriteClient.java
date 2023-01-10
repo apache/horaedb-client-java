@@ -49,7 +49,7 @@ import io.ceresdb.models.Rows;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.options.WriteOptions;
-import io.ceresdb.proto.Storage;
+import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 import com.codahale.metrics.Histogram;
