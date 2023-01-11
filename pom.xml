@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.ceresdb</groupId>
     <artifactId>ceresdb-client</artifactId>
-    <version>0.1.0-RC</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>ceresdb-client</name>
-    <description>CeresDBClient is a high-performance Java client for CeresDB. CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.</description>
-    <url>https://github.com/CeresDB/ceresdb-client-java</url>
+    <description>Official Java client implementation for CeresDB.</description>
+    <url>https://github.com/CeresDB</url>
 
     <licenses>
         <license>
@@ -21,12 +22,8 @@
 
     <developers>
         <developer>
-            <name>zuliang.wzl</name>
-            <email>zuliangwanghust@gmail.com</email>
-        </developer>
-        <developer>
-            <name>weirong.cwr</name>
-            <email>weirong.cwr@gmail.com</email>
+            <name>ceresdb team</name>
+            <email>ceresdbservice@gmail.com</email>
         </developer>
     </developers>
 
@@ -78,6 +75,8 @@
         <okio.version>2.8.0</okio.version>
         <project.encoding>UTF-8</project.encoding>
         <protobuf.version>3.21.7</protobuf.version>
+        <!-- according to https://maven.apache.org/maven-ci-friendly.html -->
+        <revision>0.1.0</revision>
         <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
@@ -453,8 +452,32 @@
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 
 </project>
