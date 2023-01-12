@@ -18,7 +18,7 @@ package io.ceresdb;
 
 import io.ceresdb.common.OptKeys;
 import io.ceresdb.common.util.SystemPropertyUtil;
-import io.ceresdb.proto.Storage;
+import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.MethodDescriptor;
 import io.ceresdb.rpc.RpcFactoryProvider;
 

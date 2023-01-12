@@ -53,8 +53,8 @@ import io.ceresdb.models.Schema;
 import io.ceresdb.models.TagValue;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
-import io.ceresdb.proto.Common;
-import io.ceresdb.proto.Storage;
+import io.ceresdb.proto.internal.Common;
+import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.Observer;
 import com.google.protobuf.ByteStringHelper;
 

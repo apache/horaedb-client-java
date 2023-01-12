@@ -15,6 +15,12 @@
             <artifactId>ceresdb-rpc</artifactId>
         </dependency>
 
+        <!-- an independent protocal lib for all ceresdb components -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ceresdb-proto-internal</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
