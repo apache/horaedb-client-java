@@ -60,7 +60,7 @@ import com.codahale.metrics.Meter;
  *
  * @author jiachun.fjc
  */
-public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, Display {
+public class CeresDBClient implements io.ceresdb.Write, Query, Lifecycle<CeresDBOptions>, Display {
 
     private static final Logger LOG = LoggerFactory.getLogger(CeresDBClient.class);
 
@@ -74,12 +74,12 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private final AtomicBoolean started = new AtomicBoolean(false);
 
     private CeresDBOptions opts;
-    private RouterClient   routerClient;
-    private WriteClient    writeClient;
-    private QueryClient    queryClient;
+    private io.ceresdb.RouterClient routerClient;
+    private io.ceresdb.WriteClient writeClient;
+    private io.ceresdb.QueryClient queryClient;
     // CeresDBClient is only intended to manage the instance and does not
     // intend to broker any of its behavior
-    private Management management;
+    private io.ceresdb.Management management;
     // Note: We do not close it to free resources, as we view it as shared
     private Executor asyncWritePool;
     private Executor asyncReadPool;
@@ -88,9 +88,9 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         // load all signal handlers
         SignalHandlersLoader.load();
         // register all rpc service
-        RpcServiceRegister.registerStorageService();
+        io.ceresdb.RpcServiceRegister.registerStorageService();
         // start scheduled metric reporter
-        MetricsUtil.startScheduledReporter(Utils.autoReportPeriodMin(), TimeUnit.MINUTES);
+        MetricsUtil.startScheduledReporter(io.ceresdb.Utils.autoReportPeriodMin(), TimeUnit.MINUTES);
         Runtime.getRuntime().addShutdownHook(new Thread(MetricsUtil::stopScheduledReporterAndDestroy));
     }
 
@@ -116,7 +116,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
 
         INSTANCES.put(this.id, this);
 
-        Utils.scheduleDisplaySelf(this, new LogPrinter(LOG));
+        io.ceresdb.Utils.scheduleDisplaySelf(this, new LogPrinter(LOG));
 
         return true;
     }
@@ -161,7 +161,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     }
 
     @Override
-    public StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric, final Context ctx) {
+    public io.ceresdb.StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric, final Context ctx) {
         ensureInitialized();
         return this.writeClient.streamWrite(metric, attachCtx(ctx));
     }
@@ -182,7 +182,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return this.management != null;
     }
 
-    public Management management() {
+    public io.ceresdb.Management management() {
         return this.management;
     }
 
@@ -211,15 +211,15 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return this.asyncReadPool;
     }
 
-    public RouterClient routerClient() {
+    public io.ceresdb.RouterClient routerClient() {
         return this.routerClient;
     }
 
-    public WriteClient writeClient() {
+    public io.ceresdb.WriteClient writeClient() {
         return this.writeClient;
     }
 
-    public QueryClient queryClient() {
+    public io.ceresdb.QueryClient queryClient() {
         return this.queryClient;
     }
 
@@ -290,51 +290,52 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return rpcClient;
     }
 
-    private static RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
+    private static io.ceresdb.RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
         final RouterOptions routerOpts = opts.getRouterOptions();
         routerOpts.setRpcClient(rpcClient);
-        final RouterClient routerClient = new RouterClient();
+
+        final io.ceresdb.RouterClient routerClient = routerOpts.getRouteMode().equals(io.ceresdb.RouteMode.STANDALONE)?new io.ceresdb.StandaloneRouterClient():new io.ceresdb.RouterClient();
         if (!routerClient.init(routerOpts)) {
             throw new IllegalStateException("Fail to start router client");
         }
         return routerClient;
     }
 
-    private static WriteClient initWriteClient(final CeresDBOptions opts, //
-                                               final RouterClient routerClient, //
-                                               final Executor asyncPool) {
+    private static io.ceresdb.WriteClient initWriteClient(final CeresDBOptions opts, //
+                                                          final io.ceresdb.RouterClient routerClient, //
+                                                          final Executor asyncPool) {
         final WriteOptions writeOpts = opts.getWriteOptions();
         writeOpts.setRoutedClient(routerClient);
         writeOpts.setAsyncPool(asyncPool);
-        final WriteClient writeClient = new WriteClient();
+        final io.ceresdb.WriteClient writeClient = new io.ceresdb.WriteClient();
         if (!writeClient.init(writeOpts)) {
             throw new IllegalStateException("Fail to start write client");
         }
         return writeClient;
     }
 
-    private static QueryClient initQueryClient(final CeresDBOptions opts, //
-                                               final RouterClient routerClient, //
-                                               final Executor asyncPool) {
+    private static io.ceresdb.QueryClient initQueryClient(final CeresDBOptions opts, //
+                                                          final io.ceresdb.RouterClient routerClient, //
+                                                          final Executor asyncPool) {
         final QueryOptions queryOpts = opts.getQueryOptions();
         queryOpts.setRouterClient(routerClient);
         queryOpts.setAsyncPool(asyncPool);
-        final QueryClient queryClient = new QueryClient();
+        final io.ceresdb.QueryClient queryClient = new io.ceresdb.QueryClient();
         if (!queryClient.init(queryOpts)) {
             throw new IllegalStateException("Fail to start query client");
         }
         return queryClient;
     }
 
-    private static Management initManagementClient(final CeresDBOptions opts, final RouterClient routerClient) {
+    private static io.ceresdb.Management initManagementClient(final CeresDBOptions opts, final io.ceresdb.RouterClient routerClient) {
         final ManagementOptions mOpts = opts.getManagementOptions();
         if (mOpts == null) {
             return null;
         }
-        if (!CeresDBManagementProvider.hasManagement()) {
+        if (!io.ceresdb.CeresDBManagementProvider.hasManagement()) {
             return null;
         }
-        final Management management = CeresDBManagementProvider.createManagement();
+        final io.ceresdb.Management management = io.ceresdb.CeresDBManagementProvider.createManagement();
         mOpts.setRouterClient(routerClient);
         if (!management.init(mOpts)) {
             return null;
@@ -344,7 +345,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
 
     private static String loadVersion() {
         try {
-            return Utils //
+            return io.ceresdb.Utils //
                     .loadProperties(CeresDBClient.class.getClassLoader(), "client_version.properties") //
                     .getProperty(VERSION_KEY, "Unknown version");
         } catch (final Exception ignored) {

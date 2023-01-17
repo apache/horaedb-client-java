@@ -80,7 +80,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
     private ScheduledExecutorService cleaner;
     private ScheduledExecutorService refresher;
 
-    private RouterOptions   opts;
+    protected RouterOptions   opts;
     private RpcClient       rpcClient;
     private RouterByMetrics router;
     private InnerMetrics    metrics;

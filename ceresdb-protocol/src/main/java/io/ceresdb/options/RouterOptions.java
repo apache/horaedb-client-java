@@ -16,6 +16,7 @@
  */
 package io.ceresdb.options;
 
+import io.ceresdb.RouteMode;
 import io.ceresdb.common.Copiable;
 import io.ceresdb.common.Endpoint;
 import io.ceresdb.rpc.RpcClient;
@@ -37,6 +38,8 @@ public class RouterOptions implements Copiable<RouterOptions> {
     // Refresh frequency of route tables. The background refreshes all route tables periodically. By default,
     // all route tables are refreshed every 30 seconds.
     private long refreshPeriodSeconds = 30;
+
+    private RouteMode routeMode = RouteMode.CLUSTER;
 
     public RpcClient getRpcClient() {
         return rpcClient;
@@ -78,6 +81,14 @@ public class RouterOptions implements Copiable<RouterOptions> {
         this.refreshPeriodSeconds = refreshPeriodSeconds;
     }
 
+    public RouteMode getRouteMode() {
+        return routeMode;
+    }
+
+    public void setRouteMode(RouteMode routeMode) {
+        this.routeMode = routeMode;
+    }
+
     @Override
     public RouterOptions copy() {
         final RouterOptions opts = new RouterOptions();
@@ -86,6 +97,7 @@ public class RouterOptions implements Copiable<RouterOptions> {
         opts.maxCachedSize = this.maxCachedSize;
         opts.gcPeriodSeconds = this.gcPeriodSeconds;
         opts.refreshPeriodSeconds = this.refreshPeriodSeconds;
+        opts.routeMode = this.routeMode;
         return opts;
     }
 
@@ -97,6 +109,8 @@ public class RouterOptions implements Copiable<RouterOptions> {
                ", maxCachedSize=" + maxCachedSize + //
                ", gcPeriodSeconds=" + gcPeriodSeconds + //
                ", refreshPeriodSeconds=" + refreshPeriodSeconds + //
+               ", routeMode=" + routeMode + //
                '}';
     }
+
 }
