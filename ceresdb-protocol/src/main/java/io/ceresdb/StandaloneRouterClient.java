@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public class StandaloneRouterClient extends RouterClient {
 
-
     public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> metrics) {
         if (metrics == null || metrics.isEmpty()) {
             return Utils.completedCf(Collections.emptyMap());
@@ -46,7 +45,5 @@ public class StandaloneRouterClient extends RouterClient {
         return Utils.completedCf(routeMap);
 
     }
-
-
 
 }
