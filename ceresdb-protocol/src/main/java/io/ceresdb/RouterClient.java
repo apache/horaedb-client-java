@@ -81,9 +81,9 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
     private ScheduledExecutorService refresher;
 
     protected RouterOptions   opts;
-    private RpcClient       rpcClient;
-    private RouterByMetrics router;
-    private InnerMetrics    metrics;
+    private   RpcClient       rpcClient;
+    private   RouterByMetrics router;
+    private   InnerMetrics    metrics;
 
     private final ConcurrentMap<String, Route> routeCache = new ConcurrentHashMap<>();
 
@@ -130,8 +130,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
     }
 
-    @Override
-    public boolean init(final RouterOptions opts) {
+    @Override public boolean init(final RouterOptions opts) {
         this.opts = Requires.requireNonNull(opts, "RouterClient.opts").copy();
         this.rpcClient = this.opts.getRpcClient();
 
@@ -160,8 +159,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         return true;
     }
 
-    @Override
-    public void shutdownGracefully() {
+    @Override public void shutdownGracefully() {
         if (this.rpcClient != null) {
             this.rpcClient.shutdownGracefully();
         }
@@ -176,8 +174,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         clearRouteCache();
     }
 
-    @Override
-    public Iterator<Route> iterator() {
+    @Override public Iterator<Route> iterator() {
         return this.routeCache.values().iterator();
     }
 
@@ -305,10 +302,10 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
 
         final List<String> topK = TopKSelector.selectTopK( //
-                this.routeCache.entrySet(), //
-                itemsToGC, //
-                (o1, o2) -> -Long.compare(o1.getValue().getLastHit(), o2.getValue().getLastHit()) //
-        ) //
+                        this.routeCache.entrySet(), //
+                        itemsToGC, //
+                        (o1, o2) -> -Long.compare(o1.getValue().getLastHit(), o2.getValue().getLastHit()) //
+                ) //
                 .map(Map.Entry::getKey) //
                 .collect(Collectors.toList());
 
@@ -342,13 +339,11 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         try {
             this.rpcClient.invokeAsync(endpoint, request, ctx, new Observer<Resp>() {
 
-                @Override
-                public void onNext(final Resp value) {
+                @Override public void onNext(final Resp value) {
                     future.complete(value);
                 }
 
-                @Override
-                public void onError(final Throwable err) {
+                @Override public void onError(final Throwable err) {
                     future.completeExceptionally(err);
                 }
             }, timeoutMs);
@@ -391,8 +386,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         return this.rpcClient.checkConnection(endpoint, create);
     }
 
-    @Override
-    public void display(final Printer out) {
+    @Override public void display(final Printer out) {
         out.println("--- RouterClient ---") //
                 .print("opts=") //
                 .println(this.opts) //
@@ -405,8 +399,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "RouterClient{" + //
                "opts=" + opts + //
                ", rpcClient=" + rpcClient + //
@@ -422,8 +415,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             this.endpoint = endpoint;
         }
 
-        @Override
-        public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> request) {
+        @Override public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> request) {
             if (request == null || request.isEmpty()) {
                 return Utils.completedCf(Collections.emptyMap());
             }
