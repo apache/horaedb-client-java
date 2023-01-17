@@ -49,13 +49,13 @@ import io.ceresdb.util.TestUtil;
 @RunWith(value = MockitoJUnitRunner.class)
 public class CeresDBClientTest {
 
-    private static final ReferenceFieldUpdater<CeresDBClient, io.ceresdb.WriteClient> WC_UPDATER = Updaters //
+    private static final ReferenceFieldUpdater<CeresDBClient, WriteClient> WC_UPDATER = Updaters //
             .newReferenceFieldUpdater(CeresDBClient.class, "writeClient");
 
     private CeresDBClient  client;
     private CeresDBOptions opts;
     @Mock
-    private io.ceresdb.WriteClient writeClient;
+    private WriteClient    writeClient;
 
     @Before
     public void before() {
@@ -105,7 +105,7 @@ public class CeresDBClientTest {
         final Rows rows = TestUtil.newRow("test_metric1");
 
         Mockito.when(this.writeClient.write(Mockito.anyList(), Mockito.any())) //
-                .thenReturn(io.ceresdb.Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
+                .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
         final CompletableFuture<Result<WriteOk, Err>> f = this.client.write(rows);
         final Result<WriteOk, Err> ret = f.get();
         Assert.assertTrue(ret.isOk());
