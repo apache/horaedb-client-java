@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 
 import io.ceresdb.CeresDBClient;
 
+import io.ceresdb.options.RouterOptions;
+import io.ceresdb.rpc.RpcOptions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,13 +49,13 @@ import io.ceresdb.util.TestUtil;
 @RunWith(value = MockitoJUnitRunner.class)
 public class CeresDBClientTest {
 
-    private static final ReferenceFieldUpdater<CeresDBClient, WriteClient> WC_UPDATER = Updaters //
+    private static final ReferenceFieldUpdater<CeresDBClient, io.ceresdb.WriteClient> WC_UPDATER = Updaters //
             .newReferenceFieldUpdater(CeresDBClient.class, "writeClient");
 
     private CeresDBClient  client;
     private CeresDBOptions opts;
     @Mock
-    private WriteClient    writeClient;
+    private io.ceresdb.WriteClient writeClient;
 
     @Before
     public void before() {
@@ -62,6 +64,10 @@ public class CeresDBClientTest {
                 .writeMaxRetries(1) //
                 .readMaxRetries(1) //
                 .build();
+        RouterOptions routerOptions = new RouterOptions();
+        // set RouteMode to CLUSTER
+        routerOptions.setRouteMode(io.ceresdb.RouteMode.CLUSTER);
+        this.opts.setRouterOptions(routerOptions);
         this.client = new CeresDBClient();
     }
 
@@ -99,7 +105,7 @@ public class CeresDBClientTest {
         final Rows rows = TestUtil.newRow("test_metric1");
 
         Mockito.when(this.writeClient.write(Mockito.anyList(), Mockito.any())) //
-                .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
+                .thenReturn(io.ceresdb.Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
         final CompletableFuture<Result<WriteOk, Err>> f = this.client.write(rows);
         final Result<WriteOk, Err> ret = f.get();
         Assert.assertTrue(ret.isOk());
