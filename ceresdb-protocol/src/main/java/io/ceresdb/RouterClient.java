@@ -459,5 +459,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             final Storage.Endpoint ep = Requires.requireNonNull(r.getEndpoint(), "CeresDB.Endpoint");
             return Route.of(r.getMetric(), Endpoint.of(ep.getIp(), ep.getPort()), r.getExt());
         }
+
     }
 }
