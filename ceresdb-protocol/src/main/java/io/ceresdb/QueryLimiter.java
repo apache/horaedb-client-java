@@ -18,7 +18,7 @@ package io.ceresdb;
 
 import io.ceresdb.models.Err;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 
 /**
@@ -26,7 +26,7 @@ import io.ceresdb.models.Result;
  *
  * @author jiachun.fjc
  */
-public abstract class QueryLimiter extends CeresDBLimiter<QueryRequest, Result<QueryOk, Err>> {
+public abstract class QueryLimiter extends CeresDBLimiter<SqlQueryRequest, Result<QueryOk, Err>> {
 
     public QueryLimiter(int maxInFlight, LimitedPolicy policy, String metricPrefix) {
         super(maxInFlight, policy, metricPrefix);

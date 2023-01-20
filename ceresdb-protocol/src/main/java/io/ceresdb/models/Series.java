@@ -16,14 +16,9 @@
  */
 package io.ceresdb.models;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
-import io.ceresdb.Utils;
-import io.ceresdb.common.util.Requires;
-import io.ceresdb.common.util.Strings;
 
 /**
  * Series in a metric.
@@ -32,11 +27,11 @@ import io.ceresdb.common.util.Strings;
  */
 public class Series {
 
-    private String                      metric;
+    private String                      table;
     private SortedMap<String, TagValue> tags;
 
-    public String getMetric() {
-        return metric;
+    public String getTable() {
+        return table;
     }
 
     public SortedMap<String, TagValue> getTags() {
@@ -52,96 +47,19 @@ public class Series {
             return false;
         }
         Series series = (Series) o;
-        return Objects.equals(metric, series.metric) && Objects.equals(tags, series.tags);
+        return Objects.equals(table, series.table) && Objects.equals(tags, series.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(metric, tags);
+        return Objects.hash(table, tags);
     }
 
     @Override
     public String toString() {
         return "Series{" + //
-               "metric='" + metric + '\'' + //
+               "table='" + table + '\'' + //
                ", tags=" + tags + //
                '}';
-    }
-
-    public static Series check(final Series ser) {
-        Requires.requireNonNull(ser, "Null.series");
-        Requires.requireTrue(Strings.isNotBlank(ser.metric), "Empty.metric");
-        Utils.checkKeywords(ser.tags.keySet().iterator());
-        return ser;
-    }
-
-    public static Builder newBuilder(final String metric) {
-        return new Builder(metric);
-    }
-
-    public static class Builder {
-        private final String                      metric;
-        private final SortedMap<String, TagValue> tags;
-
-        public Builder(final String metric) {
-            this.metric = metric;
-            this.tags = new TreeMap<>();
-        }
-
-        /**
-         * Puts a tag(key, value), replacing any existing tag of the same key.
-         *
-         * @param name  tag's name
-         * @param value tag's value
-         * @return this builder
-         */
-        public Builder tag(final String name, final String value) {
-            this.tags.put(name, TagValue.withString(value));
-            return this;
-        }
-
-        /**
-         * Puts a tag(key, value), replacing any existing tag of the same key.
-         *
-         * @param name  tag's name
-         * @param value tag's value
-         * @return this builder
-         */
-        public Builder tag(final String name, final TagValue value) {
-            this.tags.put(name, value);
-            return this;
-        }
-
-        /**
-         * Constructs the series.
-         *
-         * @return a constructed series
-         */
-        public Series build() {
-            final Series ser = new Series();
-            ser.metric = this.metric;
-            ser.tags = Collections.unmodifiableSortedMap(this.tags);
-            return Series.check(ser);
-        }
-
-        /**
-         * Build the series and generate a Rows.Builder to continue adding data fields.
-         *
-         * @return rows.builder
-         */
-        public Rows.Builder toRowsBuilder() {
-            return toRowsBuilder(false);
-        }
-
-        /**
-         * Build the series and generate a Rows.Builder to continue adding data fields.
-         *
-         * @param keepFieldOrder whether keep the fields write order
-         * @return rows.builder
-         */
-        public Rows.Builder toRowsBuilder(final boolean keepFieldOrder) {
-            final Series ser = build();
-            return Rows.newBuilder(ser, keepFieldOrder);
-        }
     }
 }

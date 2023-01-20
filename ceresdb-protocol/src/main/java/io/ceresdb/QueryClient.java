@@ -36,7 +36,7 @@ import io.ceresdb.common.util.SerializingExecutor;
 import io.ceresdb.errors.StreamException;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 import io.ceresdb.options.QueryOptions;
 import io.ceresdb.rpc.Context;
@@ -98,7 +98,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     }
 
     @Override
-    public CompletableFuture<Result<QueryOk, Err>> query(final QueryRequest req, final Context ctx) {
+    public CompletableFuture<Result<QueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
         Requires.requireNonNull(req, "Null.request");
         final long startCall = Clock.defaultClock().getTick();
         setMetricsIfAbsent(req);
@@ -120,23 +120,23 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     }
 
     @Override
-    public void streamQuery(final QueryRequest req, final Context ctx, final Observer<QueryOk> observer) {
+    public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<QueryOk> observer) {
         Requires.requireNonNull(req, "Null.request");
         Requires.requireNonNull(observer, "Null.observer");
 
         setMetricsIfAbsent(req);
 
-        this.routerClient.routeFor(req.getMetrics())
+        this.routerClient.routeFor(req.getTables())
                 .thenApply(routes -> routes.values().stream().findAny().orElse(this.routerClient.clusterRoute()))
                 .thenAccept(route -> streamQueryFrom(route.getEndpoint(), req, ctx, observer));
     }
 
-    private CompletableFuture<Result<QueryOk, Err>> query0(final QueryRequest req, //
+    private CompletableFuture<Result<QueryOk, Err>> query0(final SqlQueryRequest req, //
                                                            final Context ctx, //
                                                            final int retries) {
         InnerMetrics.readByRetries(retries).mark();
 
-        return this.routerClient.routeFor(req.getMetrics()) //
+        return this.routerClient.routeFor(req.getTables()) //
                 .thenApplyAsync(routes -> routes.values() //
                         .stream() //
                         .findAny() // everyone is OK
@@ -158,7 +158,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                     // Should refresh route table
                     final Set<String> toRefresh = err.stream() //
                             .filter(Utils::shouldRefreshRouteTable) //
-                            .flatMap(e -> e.getFailedMetrics().stream()) //
+                            .flatMap(e -> e.getFailedTables().stream()) //
                             .collect(Collectors.toSet());
 
                     if (toRefresh.isEmpty()) {
@@ -171,19 +171,19 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                 }, this.asyncPool);
     }
 
-    private void setMetricsIfAbsent(final QueryRequest req) {
-        if (req.getMetrics() != null && !req.getMetrics().isEmpty()) {
+    private void setMetricsIfAbsent(final SqlQueryRequest req) {
+        if (req.getTables() != null && !req.getTables().isEmpty()) {
             return;
         }
-        final MetricParser parser = MetricParserFactoryProvider.getMetricParserFactory().getParser(req.getQl());
-        req.setMetrics(parser.metricNames());
+        final MetricParser parser = MetricParserFactoryProvider.getMetricParserFactory().getParser(req.getSql());
+        req.setTables(parser.metricNames());
     }
 
     private static final class ErrHandler implements Runnable {
 
-        private final QueryRequest req;
+        private final SqlQueryRequest req;
 
-        private ErrHandler(QueryRequest req) {
+        private ErrHandler(SqlQueryRequest req) {
             this.req = req;
         }
 
@@ -194,12 +194,12 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     }
 
     private CompletableFuture<Result<QueryOk, Err>> queryFrom(final Endpoint endpoint, //
-                                                              final QueryRequest req, //
+                                                              final SqlQueryRequest req, //
                                                               final Context ctx, //
                                                               final int retries) {
         final Storage.QueryRequest request = Storage.QueryRequest.newBuilder() //
-                .addAllMetrics(req.getMetrics()) //
-                .setQl(req.getQl()) //
+                .addAllMetrics(req.getTables()) //
+                .setQl(req.getSql()) //
                 .build();
 
         final CompletableFuture<Storage.QueryResponse> qrf = this.routerClient.invoke(endpoint, //
@@ -208,24 +208,24 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
         );
 
         return qrf.thenApplyAsync(
-                resp -> Utils.toResult(resp, req.getQl(), endpoint, req.getMetrics(), new ErrHandler(req)),
+                resp -> Utils.toResult(resp, req.getSql(), endpoint, req.getTables(), new ErrHandler(req)),
                 this.asyncPool);
     }
 
     private void streamQueryFrom(final Endpoint endpoint, //
-                                 final QueryRequest req, //
+                                 final SqlQueryRequest req, //
                                  final Context ctx, //
                                  final Observer<QueryOk> observer) {
         final Storage.QueryRequest request = Storage.QueryRequest.newBuilder() //
-                .addAllMetrics(req.getMetrics()) //
-                .setQl(req.getQl()) //
+                .addAllMetrics(req.getTables()) //
+                .setQl(req.getSql()) //
                 .build();
 
         this.routerClient.invokeServerStreaming(endpoint, request, ctx, new Observer<Storage.QueryResponse>() {
 
             @Override
             public void onNext(final Storage.QueryResponse value) {
-                final Result<QueryOk, Err> ret = Utils.toResult(value, req.getQl(), endpoint, req.getMetrics(),
+                final Result<QueryOk, Err> ret = Utils.toResult(value, req.getSql(), endpoint, req.getTables(),
                         new ErrHandler(req));
                 if (ret.isOk()) {
                     observer.onNext(ret.getOk());
@@ -277,18 +277,18 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
         }
 
         @Override
-        public int calculatePermits(final QueryRequest request) {
+        public int calculatePermits(final SqlQueryRequest request) {
             return 1;
         }
 
         @Override
-        public Result<QueryOk, Err> rejected(final QueryRequest request, final RejectedState state) {
+        public Result<QueryOk, Err> rejected(final SqlQueryRequest request, final RejectedState state) {
             final String errMsg = String.format(
                     "Query limited by client, acquirePermits=%d, maxPermits=%d, availablePermits=%d.", //
                     state.acquirePermits(), //
                     state.maxPermits(), //
                     state.availablePermits());
-            return Result.err(Err.queryErr(Result.FLOW_CONTROL, errMsg, null, request.getQl(), request.getMetrics()));
+            return Result.err(Err.queryErr(Result.FLOW_CONTROL, errMsg, null, request.getSql(), request.getTables()));
         }
     }
 }

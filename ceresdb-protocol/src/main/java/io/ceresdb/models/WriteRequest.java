@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.common.util;
+package io.ceresdb.models;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  *
  * @author xvyang.xy
  */
-public class Spines {
+public class WriteRequest {
+    private List<Point> points;
 
-    public static <E> List<E> newBuf() {
-        return new ArrayList<>();
+    public WriteRequest(List<Point> points) {
+        this.points = points;
     }
 
-    public static <E> List<E> newBuf(final int initialCapacity) {
-        return new ArrayList<>(initialCapacity);
+    public List<Point> getPoints() {
+        return points;
     }
 }

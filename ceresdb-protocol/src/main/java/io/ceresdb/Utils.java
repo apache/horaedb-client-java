@@ -19,6 +19,7 @@ package io.ceresdb;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -44,13 +45,10 @@ import io.ceresdb.common.util.Spines;
 import io.ceresdb.common.util.SystemPropertyUtil;
 import io.ceresdb.common.util.ThreadPoolUtil;
 import io.ceresdb.models.Err;
-import io.ceresdb.models.FieldValue;
 import io.ceresdb.models.Keyword;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.QueryOk;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
-import io.ceresdb.models.Schema;
-import io.ceresdb.models.TagValue;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.proto.internal.Common;
@@ -61,7 +59,7 @@ import com.google.protobuf.ByteStringHelper;
 /**
  * Utils for CeresDBClient.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public final class Utils {
 
@@ -183,12 +181,12 @@ public final class Utils {
      *
      * @param resp response of the write RPC
      * @param to   the server address wrote to
-     * @param rows wrote date in this write
+     * @param points wrote date in this write
      * @return a {@link Result}
      */
     public static Result<WriteOk, Err> toResult(final Storage.WriteResponse resp, //
                                                 final Endpoint to, //
-                                                final Collection<Rows> rows) {
+                                                final List<Point> points) {
         final Common.ResponseHeader header = resp.getHeader();
         final int code = header.getCode();
         final String msg = header.getError();
@@ -196,12 +194,12 @@ public final class Utils {
         final int failed = resp.getFailed();
 
         if (code == Result.SUCCESS) {
-            final Set<String> metrics = rows != null && WriteOk.isCollectWroteDetail() ?
-                    rows.stream().map(Rows::getMetric).collect(Collectors.toSet()) :
+            final Set<String> tables = points != null && WriteOk.isCollectWroteDetail() ?
+                    points.stream().map(Point::getTable).collect(Collectors.toSet()) :
                     null;
-            return WriteOk.ok(success, failed, metrics).mapToResult();
+            return WriteOk.ok(success, failed, tables).mapToResult();
         } else {
-            return Err.writeErr(code, msg, to, rows).mapToResult();
+            return Err.writeErr(code, msg, to, points).mapToResult();
         }
     }
 
@@ -216,7 +214,7 @@ public final class Utils {
      * @return a {@link Result}
      */
     public static Result<QueryOk, Err> toResult(final Storage.QueryResponse resp, //
-                                                final String ql, //
+                                                final String sql, //
                                                 final Endpoint to, //
                                                 final Collection<String> metrics, final Runnable errHandler) {
         final Common.ResponseHeader header = resp.getHeader();
@@ -226,26 +224,12 @@ public final class Utils {
         if (code == Result.SUCCESS) {
             final int rowCount = resp.getRowsCount();
             final Stream<byte[]> rows = resp.getRowsList().stream().map(ByteStringHelper::sealByteArray);
-            return QueryOk.ok(ql, toSchema(resp), rowCount, rows).mapToResult();
+            return QueryOk.ok(sql, rowCount, rows).mapToResult();
         } else {
             if (errHandler != null) {
                 errHandler.run();
             }
-            return Err.queryErr(code, msg, to, ql, metrics).mapToResult();
-        }
-    }
-
-    private static Schema toSchema(final Storage.QueryResponse resp) {
-        final Storage.QueryResponse.SchemaType type = resp.getSchemaType();
-        final String content = resp.getSchemaContent();
-        switch (type) {
-            case AVRO:
-                return Schema.schema(Schema.Type.Avro, content);
-            case JSON:
-                return Schema.schema(Schema.Type.Json, null);
-            case UNRECOGNIZED:
-            default:
-                throw new IllegalArgumentException("Unrecognized schema type");
+            return Err.queryErr(code, msg, to, sql, metrics).mapToResult();
         }
     }
 
@@ -295,9 +279,9 @@ public final class Utils {
      * @param routes the route table info
      * @return multi data stream
      */
-    public static Map<Endpoint, Collection<Rows>> splitDataByRoute(final Collection<Rows> data, //
-                                                                   final Map<String /* metric */, Route> routes) {
-        final Map<Endpoint, Collection<Rows>> splits = routes.values() //
+    public static Map<Endpoint, List<Point>> splitDataByRoute(final List<Point> data, //
+                                                                   final Map<String /* table */, Route> routes) {
+        final Map<Endpoint, List<Point>> splits = routes.values() //
                 .stream() //
                 .map(Route::getEndpoint) //
                 .distinct() //
@@ -307,9 +291,9 @@ public final class Utils {
             splits.replaceAll((ep, empty) -> data);
         } else {
             data.forEach(rs -> {
-                final Route route = routes.get(rs.getMetric());
+                final Route route = routes.get(rs.getTable());
                 Requires.requireNonNull(route, "Null.route for " + rs);
-                final Collection<Rows> partOf = splits.get(route.getEndpoint());
+                final Collection<Point> partOf = splits.get(route.getEndpoint());
                 Requires.requireNonNull(route, "Invalid.route " + route);
                 partOf.add(rs);
             });
@@ -351,73 +335,39 @@ public final class Utils {
         };
     }
 
-    public static Storage.Value toProtoValue(final FieldValue field) {
+    public static Storage.Value toProtoValue(final Value value) {
         final Storage.Value.Builder vb = Storage.Value.newBuilder();
-        switch (field.getType()) {
+        switch (value.getDataType()) {
             case Float64:
-                return vb.setFloat64Value(field.getFloat64()).build();
+                return vb.setFloat64Value(value.getFloat64()).build();
             case String:
-                return vb.setStringValue(field.getString()).build();
+                return vb.setStringValue(value.getString()).build();
             case Int64:
-                return vb.setInt64Value(field.getInt64()).build();
+                return vb.setInt64Value(value.getInt64()).build();
             case Float32:
-                return vb.setFloat32Value(field.getFloat32()).build();
+                return vb.setFloat32Value(value.getFloat32()).build();
             case Int32:
-                return vb.setInt32Value(field.getInt32()).build();
+                return vb.setInt32Value(value.getInt32()).build();
             case Int16:
-                return vb.setInt16Value(field.getInt16()).build();
+                return vb.setInt16Value(value.getInt16()).build();
             case Int8:
-                return vb.setInt8Value(field.getInt8()).build();
+                return vb.setInt8Value(value.getInt8()).build();
             case Boolean:
-                return vb.setBoolValue(field.getBoolean()).build();
+                return vb.setBoolValue(value.getBoolean()).build();
             case UInt64:
-                return vb.setUint64Value(field.getUInt64()).build();
+                return vb.setUint64Value(value.getUInt64()).build();
             case UInt32:
-                return vb.setUint32Value(field.getUInt32()).build();
+                return vb.setUint32Value(value.getUInt32()).build();
             case UInt16:
-                return vb.setUint16Value(field.getUInt16()).build();
+                return vb.setUint16Value(value.getUInt16()).build();
             case UInt8:
-                return vb.setUint8Value(field.getUInt8()).build();
+                return vb.setUint8Value(value.getUInt8()).build();
             case Timestamp:
-                return vb.setTimestampValue(field.getTimestamp()).build();
+                return vb.setTimestampValue(value.getTimestamp()).build();
             case Varbinary:
-                return vb.setVarbinaryValue(ByteStringHelper.wrap(field.getVarbinary())).build();
+                return vb.setVarbinaryValue(ByteStringHelper.wrap(value.getVarbinary())).build();
             default:
-                return invalidType(field);
-        }
-    }
-
-    public static Storage.Value toProtoValue(final TagValue tag) {
-        final Storage.Value.Builder vb = Storage.Value.newBuilder();
-        switch (tag.getType()) {
-            case String:
-                return vb.setStringValue(tag.getString()).build();
-            case Int64:
-                return vb.setInt64Value(tag.getInt64()).build();
-            case Int32:
-                return vb.setInt32Value(tag.getInt32()).build();
-            case Int16:
-                return vb.setInt16Value(tag.getInt16()).build();
-            case Int8:
-                return vb.setInt8Value(tag.getInt8()).build();
-            case Boolean:
-                return vb.setBoolValue(tag.getBoolean()).build();
-            case UInt64:
-                return vb.setUint64Value(tag.getUInt64()).build();
-            case UInt32:
-                return vb.setUint32Value(tag.getUInt32()).build();
-            case UInt16:
-                return vb.setUint16Value(tag.getUInt16()).build();
-            case UInt8:
-                return vb.setUint8Value(tag.getUInt8()).build();
-            case Timestamp:
-                return vb.setTimestampValue(tag.getTimestamp()).build();
-            case Varbinary:
-                return vb.setVarbinaryValue(ByteStringHelper.wrap(tag.getVarbinary())).build();
-            case Float32:
-            case Float64:
-            default:
-                return invalidType(tag);
+                return invalidType(value);
         }
     }
 
@@ -435,13 +385,13 @@ public final class Utils {
         throw new UnsupportedOperationException(String.format(fmt, args));
     }
 
-    public static void checkKeywords(final Iterator<String> keys) {
+    public static void checkKeywords(final Iterator<Value> keys) {
         if (keys == null) {
             return;
         }
 
         while (keys.hasNext()) {
-            ensureNotKeyword(keys.next());
+            ensureNotKeyword(keys.next().getString());
         }
     }
 

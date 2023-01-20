@@ -27,30 +27,38 @@ import io.ceresdb.common.util.Strings;
 /**
  * The query request condition.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
-public class QueryRequest {
+public class SqlQueryRequest {
 
-    private List<String> metrics = Collections.emptyList();
-    private String       ql;
+    private List<String> tables = Collections.emptyList();
+    private String       sql;
 
-    public List<String> getMetrics() {
-        return metrics;
+    public SqlQueryRequest() {
     }
 
-    public void setMetrics(List<String> metrics) {
-        this.metrics = metrics;
+    public SqlQueryRequest(List<String> tables, String sql) {
+        this.tables = tables;
+        this.sql = sql;
     }
 
-    public String getQl() {
-        return ql;
+    public List<String> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<String> tables) {
+        this.tables = tables;
+    }
+
+    public String getSql() {
+        return sql;
     }
 
     @Override
     public String toString() {
         return "QueryRequest{" + //
-               "metrics=" + metrics + //
-               ", ql='" + ql + '\'' + //
+               "tables=" + tables + //
+               ", sql='" + sql + '\'' + //
                '}';
     }
 
@@ -58,34 +66,35 @@ public class QueryRequest {
         return new Builder();
     }
 
-    public static QueryRequest check(final QueryRequest qr) {
-        Requires.requireTrue(Strings.isNotBlank(qr.ql), "Empty.ql");
+    public static SqlQueryRequest check(final SqlQueryRequest qr) {
+        Requires.requireTrue(qr.tables != null && qr.tables.size() > 0, "Empty.tables");
+        Requires.requireTrue(Strings.isNotBlank(qr.sql), "Empty.sql");
         return qr;
     }
 
     public static class Builder {
         private final List<String> metrics = new ArrayList<>();
-        private String             ql;
+        private String             sql;
 
         /**
          * Client does not parse the QL, so please fill in which metrics you queried.
          *
-         * @param metrics the metrics queried.
+         * @param tables the tables queried.
          * @return this builder
          */
-        public Builder forMetrics(final String... metrics) {
-            this.metrics.addAll(Arrays.asList(metrics));
+        public Builder forMetrics(final String... tables) {
+            this.metrics.addAll(Arrays.asList(tables));
             return this;
         }
 
         /**
          * Query language to.
          *
-         * @param ql the query language
+         * @param sql the query language
          * @return this builder
          */
-        public Builder ql(final String ql) {
-            this.ql = ql;
+        public Builder ql(final String sql) {
+            this.sql = sql;
             return this;
         }
 
@@ -99,15 +108,15 @@ public class QueryRequest {
          *               variable and may be zero.
          * @return this builder
          */
-        public Builder ql(final String fmtQl, final Object... args) {
-            this.ql = String.format(fmtQl, args);
+        public Builder sql(final String fmtQl, final Object... args) {
+            this.sql = String.format(fmtQl, args);
             return this;
         }
 
-        public QueryRequest build() {
-            final QueryRequest qr = new QueryRequest();
-            qr.metrics = this.metrics;
-            qr.ql = this.ql;
+        public SqlQueryRequest build() {
+            final SqlQueryRequest qr = new SqlQueryRequest();
+            qr.tables = this.metrics;
+            qr.sql = this.sql;
             return qr;
         }
     }

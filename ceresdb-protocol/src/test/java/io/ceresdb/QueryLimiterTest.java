@@ -27,7 +27,7 @@ import org.junit.Test;
 import io.ceresdb.errors.LimitedException;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 
 /**
@@ -38,7 +38,7 @@ public class QueryLimiterTest {
     @Test(expected = LimitedException.class)
     public void abortQueryLimitTest() throws ExecutionException, InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.AbortPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -49,7 +49,7 @@ public class QueryLimiterTest {
     @Test
     public void discardWriteLimitTest() throws ExecutionException, InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.DiscardPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -65,7 +65,7 @@ public class QueryLimiterTest {
     @Test
     public void blockingWriteLimitTest() throws InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.BlockingPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -95,7 +95,7 @@ public class QueryLimiterTest {
         final int timeoutSecs = 2;
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1,
                 new LimitedPolicy.BlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -115,7 +115,7 @@ public class QueryLimiterTest {
         final int timeoutSecs = 2;
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1,
                 new LimitedPolicy.AbortOnBlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);

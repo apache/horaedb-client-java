@@ -43,7 +43,7 @@ import io.ceresdb.common.util.internal.ThrowUtil;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.FieldValue;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Record;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.Rows;
@@ -150,7 +150,7 @@ public class CeresDBTest {
 
         Assert.assertTrue(writeR.isOk());
 
-        final QueryRequest req = QueryRequest.newBuilder() //
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder() //
                 .ql("select * from %s where ts < to_timestamp_millis('%s')", TEST_TABLE_NAME, timeString) //
                 .build();
 
@@ -305,7 +305,7 @@ public class CeresDBTest {
         final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
         Assert.assertEquals(1000, writeOk.join().getSuccess());
 
-        final QueryRequest req = QueryRequest.newBuilder().ql("select * from %s", TEST_TABLE_NAME).build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().ql("select * from %s", TEST_TABLE_NAME).build();
         final Iterator<Record> it = this.client.blockingStreamQuery(req, 3, TimeUnit.SECONDS);
 
         int i = 0;

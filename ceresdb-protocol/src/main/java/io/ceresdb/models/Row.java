@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.common.util;
+package io.ceresdb.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author xvyang.xy
  */
-public class Spines {
+public class Row {
+    private Map<String, Value> values;
 
-    public static <E> List<E> newBuf() {
-        return new ArrayList<>();
-    }
-
-    public static <E> List<E> newBuf(final int initialCapacity) {
-        return new ArrayList<>(initialCapacity);
+    public Value columnValue(String column) {
+        return null;
     }
 }

@@ -16,17 +16,20 @@
  */
 package io.ceresdb.models;
 
+import java.math.BigInteger;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.ceresdb.common.util.Requires;
+import io.ceresdb.common.util.UnsignedUtil;
 
 /**
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class Value {
 
-    public enum Type {
+    public enum DataType {
         Float64(Double.class), //
         String(String.class), //
         Int64(Long.class), //
@@ -44,7 +47,7 @@ public class Value {
 
         private final Class<?> javaType;
 
-        Type(Class<?> javaType) {
+        DataType(Class<?> javaType) {
             this.javaType = javaType;
         }
 
@@ -53,15 +56,38 @@ public class Value {
         }
     }
 
-    private final Type   type;
+    enum NullValue {
+        Float64(DataType.Float64), //
+        String(DataType.String), //
+        Int64(DataType.Int64), //
+        Float32(DataType.Float32), //
+        Int32(DataType.Int32), //
+        Int16(DataType.Int16), //
+        Int8(DataType.Int8), //
+        Boolean(DataType.Boolean), //
+        UInt64(DataType.UInt64), //
+        UInt32(DataType.UInt32), //
+        UInt16(DataType.UInt16), //
+        UInt8(DataType.UInt8), //
+        Timestamp(DataType.Timestamp), //
+        Varbinary(DataType.Varbinary); //
+
+        private final Value value;
+
+        NullValue(DataType type) {
+            this.value = new Value(type, null);
+        }
+    }
+
+    private final DataType   type;
     private final Object value;
 
-    protected Value(Type type, Object value) {
+    public Value(DataType type, Object value) {
         this.type = type;
         this.value = value;
     }
 
-    public Type getType() {
+    public DataType getDataType() {
         return type;
     }
 
@@ -98,13 +124,296 @@ public class Value {
         return this.value == null;
     }
 
-    public static <T extends Value> boolean isNull(final T value) {
-        return value == null || value.isNull();
+    public double getDouble() {
+        return getFloat64();
+    }
+
+    public Optional<Double> getDoubleOrNull() {
+        return getFloat64OrNull();
+    }
+
+    public double getFloat64() {
+        return getCheckedValue(DataType.Float64);
+    }
+
+    public Optional<Double> getFloat64OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getFloat64());
+    }
+
+    public String getString() {
+        return getCheckedValue(DataType.String);
+    }
+
+    public Optional<String> getStringOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getString());
+    }
+
+    public long getInt64() {
+        return getCheckedValue(DataType.Int64);
+    }
+
+    public Optional<Long> getInt64OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getInt64());
+    }
+
+    public float getFloat() {
+        return getFloat32();
+    }
+
+    public Optional<Float> getFloatOrNull() {
+        return getFloat32OrNull();
+    }
+
+    public float getFloat32() {
+        return getCheckedValue(DataType.Float32);
+    }
+
+    public Optional<Float> getFloat32OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getFloat32());
+    }
+
+    public int getInt() {
+        return getInt32();
+    }
+
+    public Optional<Integer> getIntOrNull() {
+        return getInt32OrNull();
+    }
+
+    public int getInt32() {
+        return getCheckedValue(DataType.Int32);
+    }
+
+    public Optional<Integer> getInt32OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getInt32());
+    }
+
+    public int getInt16() {
+        return getCheckedValue(DataType.Int16);
+    }
+
+    public Optional<Integer> getInt16OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getInt16());
+    }
+
+    public int getInt8() {
+        return getCheckedValue(DataType.Int8);
+    }
+
+    public Optional<Integer> getInt8OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getInt8());
+    }
+
+    public boolean getBoolean() {
+        return getCheckedValue(DataType.Boolean);
+    }
+
+    public Optional<Boolean> getBooleanOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getBoolean());
+    }
+
+    public long getUInt64() {
+        return getCheckedValue(DataType.UInt64);
+    }
+
+    public Optional<Long> getUInt64OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getUInt64());
+    }
+
+    public int getUInt32() {
+        return getCheckedValue(DataType.UInt32);
+    }
+
+    public Optional<Integer> getUInt32OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getUInt32());
+    }
+
+    public int getUInt16() {
+        return getCheckedValue(DataType.UInt16);
+    }
+
+    public Optional<Integer> getUInt16OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getUInt16());
+    }
+
+    public int getUInt8() {
+        return getCheckedValue(DataType.UInt8);
+    }
+
+    public Optional<Integer> getUInt8OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getUInt8());
+    }
+
+    public long getTimestamp() {
+        return getCheckedValue(DataType.Timestamp);
+    }
+
+    public Optional<Long> getTimestampOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getTimestamp());
+    }
+
+    public byte[] getVarbinary() {
+        return getCheckedValue(DataType.Varbinary);
+    }
+
+    public Optional<byte[]> getVarbinaryOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getVarbinary());
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T getCheckedValue(final Type type) {
+    private  <T> T getCheckedValue(final DataType type) {
         Requires.requireTrue(this.type == type, "Invalid type %s, expected is %s", this.type, type);
         return (T) type.getJavaType().cast(this.value);
+    }
+
+    public static Value withDouble(final double val) {
+        return withFloat64(val);
+    }
+
+    public static Value withDoubleOrNull(final Double val) {
+        return withFloat64OrNull(val);
+    }
+
+    public static Value withFloat64(final double val) {
+        return new Value(DataType.Float64, val);
+    }
+
+    public static Value withFloat64OrNull(final Double val) {
+        return val == null ? Value.NullValue.Float64.value : withFloat64(val);
+    }
+
+    public static Value withString(final String val) {
+        Requires.requireNonNull(val, "Null.val");
+        return new Value(DataType.String, val);
+    }
+
+    public static Value withStringOrNull(final String val) {
+        return val == null ? Value.NullValue.String.value : withString(val);
+    }
+
+    public static Value withInt64(final long val) {
+        return new Value(DataType.Int64, val);
+    }
+
+    public static Value withInt64OrNull(final Long val) {
+        return val == null ? Value.NullValue.Int64.value : withInt64(val);
+    }
+
+    public static Value withFloat(final float val) {
+        return withFloat32(val);
+    }
+
+    public static Value withFloatOrNull(final Float val) {
+        return withFloat32OrNull(val);
+    }
+
+    public static Value withFloat32(final float val) {
+        return new Value(DataType.Float32, val);
+    }
+
+    public static Value withFloat32OrNull(final Float val) {
+        return val == null ? Value.NullValue.Float32.value : withFloat32(val);
+    }
+
+    public static Value withInt(final int val) {
+        return withInt32(val);
+    }
+
+    public static Value withIntOrNull(final Integer val) {
+        return withInt32OrNull(val);
+    }
+
+    public static Value withInt32(final int val) {
+        return new Value(DataType.Int32, val);
+    }
+
+    public static Value withInt32OrNull(final Integer val) {
+        return val == null ? Value.NullValue.Int32.value : withInt32(val);
+    }
+
+    public static Value withInt16(final int val) {
+        return new Value(DataType.Int16, val);
+    }
+
+    public static Value withInt16OrNull(final Integer val) {
+        return val == null ? Value.NullValue.Int16.value : withInt16(val);
+    }
+
+    public static Value withInt8(final int val) {
+        return new Value(DataType.Int8, val);
+    }
+
+    public static Value withInt8OrNull(final Integer val) {
+        return val == null ? Value.NullValue.Int8.value : withInt8(val);
+    }
+
+    public static Value withBoolean(final boolean val) {
+        return new Value(DataType.Boolean, val);
+    }
+
+    public static Value withBooleanOrNull(final Boolean val) {
+        return val == null ? Value.NullValue.Boolean.value : withBoolean(val);
+    }
+
+    public static Value withUInt64(final long val) {
+        return new Value(DataType.UInt64, val);
+    }
+
+    public static Value withUInt64OrNull(final Long val) {
+        return val == null ? Value.NullValue.UInt64.value : withUInt64(val);
+    }
+
+    public static Value withUInt64(final BigInteger val) {
+        Requires.requireNonNull(val, "Null.val");
+        return new Value(DataType.UInt64, UnsignedUtil.getInt64(val));
+    }
+
+    public static Value withUInt64OrNull(final BigInteger val) {
+        return val == null ? Value.NullValue.UInt64.value : withUInt64(val);
+    }
+
+    public static Value withUInt32(final int val) {
+        return new Value(DataType.UInt32, val);
+    }
+
+    public static Value withUInt32OrNull(final Integer val) {
+        return val == null ? Value.NullValue.UInt32.value : withUInt32(val);
+    }
+
+    public static Value withUInt16(final int val) {
+        return new Value(DataType.UInt16, val);
+    }
+
+    public static Value withUInt16OrNull(final Integer val) {
+        return val == null ? Value.NullValue.UInt16.value : withUInt16(val);
+    }
+
+    public static Value withUInt8(final int val) {
+        return new Value(DataType.UInt8, val);
+    }
+
+    public static Value withUInt8OrNull(final Integer val) {
+        return val == null ? Value.NullValue.UInt8.value : withUInt8(val);
+    }
+
+    public static Value withTimestamp(final long val) {
+        return new Value(DataType.Timestamp, val);
+    }
+
+    public static Value withTimestampOrNull(final Long val) {
+        return val == null ? Value.NullValue.Timestamp.value : withTimestamp(val);
+    }
+
+    public static Value withVarbinary(final byte[] val) {
+        Requires.requireNonNull(val, "Null.val");
+        return new Value(DataType.Varbinary, val);
+    }
+
+    public static Value withVarbinaryOrNull(final byte[] val) {
+        return val == null ? Value.NullValue.Varbinary.value : withVarbinary(val);
+    }
+
+    public static <T extends Value> boolean isNull(final T value) {
+        return value == null || value.isNull();
     }
 }

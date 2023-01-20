@@ -17,7 +17,6 @@
 package io.ceresdb;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -37,13 +36,13 @@ import io.ceresdb.common.signal.SignalHandlersLoader;
 import io.ceresdb.common.util.MetricExecutor;
 import io.ceresdb.common.util.MetricsUtil;
 import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
 import io.ceresdb.models.WriteOk;
+import io.ceresdb.models.WriteRequest;
 import io.ceresdb.options.CeresDBOptions;
-import io.ceresdb.options.ManagementOptions;
 import io.ceresdb.options.QueryOptions;
 import io.ceresdb.options.RouterOptions;
 import io.ceresdb.options.WriteOptions;
@@ -58,7 +57,7 @@ import com.codahale.metrics.Meter;
 /**
  * CeresDB client.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, Display {
 
@@ -77,9 +76,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private RouterClient   routerClient;
     private WriteClient    writeClient;
     private QueryClient    queryClient;
-    // CeresDBClient is only intended to manage the instance and does not
-    // intend to broker any of its behavior
-    private Management management;
+
     // Note: We do not close it to free resources, as we view it as shared
     private Executor asyncWritePool;
     private Executor asyncReadPool;
@@ -112,7 +109,6 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         this.asyncReadPool = withMetricPool(this.opts.getAsyncReadPool(), "async_read_pool.time");
         this.writeClient = initWriteClient(this.opts, this.routerClient, this.asyncWritePool);
         this.queryClient = initQueryClient(this.opts, this.routerClient, this.asyncReadPool);
-        this.management = initManagementClient(this.opts, this.routerClient);
 
         INSTANCES.put(this.id, this);
 
@@ -139,10 +135,6 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
             this.routerClient.shutdownGracefully();
         }
 
-        if (this.management != null) {
-            this.management.shutdownGracefully();
-        }
-
         INSTANCES.remove(this.id);
     }
 
@@ -155,44 +147,31 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     }
 
     @Override
-    public CompletableFuture<Result<WriteOk, Err>> write(final Collection<Rows> data, final Context ctx) {
+    public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
         ensureInitialized();
-        return this.writeClient.write(data, attachCtx(ctx));
+        return this.writeClient.write(req, attachCtx(ctx));
     }
 
     @Override
-    public StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric, final Context ctx) {
+    public StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx) {
         ensureInitialized();
-        return this.writeClient.streamWrite(metric, attachCtx(ctx));
+        return this.writeClient.streamWrite(table, attachCtx(ctx));
     }
 
     @Override
-    public CompletableFuture<Result<QueryOk, Err>> query(final QueryRequest req, final Context ctx) {
+    public CompletableFuture<Result<QueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
         ensureInitialized();
-        return this.queryClient.query(req, attachCtx(ctx));
+        return this.queryClient.sqlQuery(req, attachCtx(ctx));
     }
 
     @Override
-    public void streamQuery(final QueryRequest req, final Context ctx, final Observer<QueryOk> observer) {
+    public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<QueryOk> observer) {
         ensureInitialized();
-        this.queryClient.streamQuery(req, attachCtx(ctx), observer);
+        this.queryClient.streamSqlQuery(req, attachCtx(ctx), observer);
     }
 
-    public boolean hasManagement() {
-        return this.management != null;
-    }
-
-    public Management management() {
-        return this.management;
-    }
-
-    private Executor withMetricPool(final Executor pool, final String name) {
-        return pool == null ? null : new MetricExecutor(pool, name);
-    }
-
-    private Context attachCtx(final Context ctx) {
-        final Context c = ctx == null ? Context.newDefault() : ctx;
-        return c.with(ID_KEY, id()).with(VERSION_KEY, version());
+    public static List<CeresDBClient> instances() {
+        return new ArrayList<>(INSTANCES.values());
     }
 
     public int id() {
@@ -203,24 +182,8 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return VERSION;
     }
 
-    public Executor asyncWritePool() {
-        return this.asyncWritePool;
-    }
-
-    public Executor asyncReadPool() {
-        return this.asyncReadPool;
-    }
-
     public RouterClient routerClient() {
         return this.routerClient;
-    }
-
-    public WriteClient writeClient() {
-        return this.writeClient;
-    }
-
-    public QueryClient queryClient() {
-        return this.queryClient;
     }
 
     @Override
@@ -254,11 +217,6 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
             this.queryClient.display(out);
         }
 
-        if (this.management != null) {
-            out.println("");
-            this.management.display(out);
-        }
-
         out.println("");
     }
 
@@ -275,8 +233,13 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
                '}';
     }
 
-    public static List<CeresDBClient> instances() {
-        return new ArrayList<>(INSTANCES.values());
+    private Executor withMetricPool(final Executor pool, final String name) {
+        return pool == null ? null : new MetricExecutor(pool, name);
+    }
+
+    private Context attachCtx(final Context ctx) {
+        final Context c = ctx == null ? Context.newDefault() : ctx;
+        return c.with(ID_KEY, id()).with(VERSION_KEY, version());
     }
 
     private static RpcClient initRpcClient(final CeresDBOptions opts) {
@@ -324,22 +287,6 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
             throw new IllegalStateException("Fail to start query client");
         }
         return queryClient;
-    }
-
-    private static Management initManagementClient(final CeresDBOptions opts, final RouterClient routerClient) {
-        final ManagementOptions mOpts = opts.getManagementOptions();
-        if (mOpts == null) {
-            return null;
-        }
-        if (!CeresDBManagementProvider.hasManagement()) {
-            return null;
-        }
-        final Management management = CeresDBManagementProvider.createManagement();
-        mOpts.setRouterClient(routerClient);
-        if (!management.init(mOpts)) {
-            return null;
-        }
-        return management;
     }
 
     private static String loadVersion() {

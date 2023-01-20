@@ -29,7 +29,7 @@ import io.ceresdb.common.Streamable;
 /**
  * Contains the write or query error value.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class Err implements Streamable<Err> {
     // error code from server
@@ -39,15 +39,15 @@ public class Err implements Streamable<Err> {
     // the server address where the error occurred
     private Endpoint errTo;
     // the data of wrote failed, can be used to retry
-    private Collection<Rows> failedWrites;
+    private List<Point> failedWrites;
     // other successful server results are merged here
     private WriteOk subOk;
     // the QL failed to query
-    private String failedQl;
+    private String             failedQl;
     // the metrics of failed to query
-    private Collection<String> failedMetrics;
+    private Collection<String> failedTables;
     // child err merged here
-    private Collection<Err> children;
+    private Collection<Err>    children;
 
     public int getCode() {
         return code;
@@ -61,7 +61,7 @@ public class Err implements Streamable<Err> {
         return errTo;
     }
 
-    public Collection<Rows> getFailedWrites() {
+    public Collection<Point> getFailedWrites() {
         return failedWrites;
     }
 
@@ -73,8 +73,8 @@ public class Err implements Streamable<Err> {
         return failedQl;
     }
 
-    public Collection<String> getFailedMetrics() {
-        return failedMetrics;
+    public Collection<String> getFailedTables() {
+        return failedTables;
     }
 
     public Err combine(final Err err) {
@@ -112,9 +112,9 @@ public class Err implements Streamable<Err> {
         return this.failedWrites == null ? 0 : this.failedWrites.size();
     }
 
-    private List<String> failedWriteMetrics() {
+    private List<String> failedWriteTables() {
         return this.failedWrites == null ? Collections.emptyList() //
-                : this.failedWrites.stream().map(Rows::getMetric).collect(Collectors.toList());
+                : this.failedWrites.stream().map(Point::getTable).collect(Collectors.toList());
     }
 
     @Override
@@ -124,10 +124,10 @@ public class Err implements Streamable<Err> {
                ", error='" + error + '\'' + //
                ", errTo=" + errTo + //
                ", failedWriteRowsNum=" + failedWriteRowsNum() + //
-               ", failedWriteMetrics=" + failedWriteMetrics() + //
+               ", failedWriteTables=" + failedWriteTables() + //
                ", subOk=" + subOk + //
                ", failedQl=" + failedQl + //
-               ", failedMetrics=" + failedMetrics + //
+               ", failedMetrics=" + failedTables + //
                ", children=" + children + //
                '}';
     }
@@ -135,7 +135,7 @@ public class Err implements Streamable<Err> {
     public static Err writeErr(final int code, //
                                final String error, //
                                final Endpoint errTo, //
-                               final Collection<Rows> failedWrites) {
+                               final List<Point> failedWrites) {
         final Err err = new Err();
         err.code = code;
         err.error = error;
@@ -154,7 +154,7 @@ public class Err implements Streamable<Err> {
         err.error = error;
         err.errTo = errTo;
         err.failedQl = failedQl;
-        err.failedMetrics = failedMetrics;
+        err.failedTables = failedMetrics;
         return err;
     }
 }

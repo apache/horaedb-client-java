@@ -27,6 +27,7 @@ import io.ceresdb.rpc.Context;
  *
  * @author jiachun.fjc
  */
+@Deprecated
 public interface Management extends Lifecycle<ManagementOptions>, Display {
 
     /**

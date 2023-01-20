@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.ceresdb.models.Err;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Record;
 import io.ceresdb.models.Result;
 import io.ceresdb.rpc.Context;
@@ -31,15 +31,15 @@ import io.ceresdb.rpc.Observer;
 /**
  * The query API for CeresDB client.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public interface Query {
 
     /**
-     * @see #query(QueryRequest, Context)
+     * @see #sqlQuery(SqlQueryRequest, Context)
      */
-    default CompletableFuture<Result<QueryOk, Err>> query(final QueryRequest req) {
-        return query(req, Context.newDefault());
+    default CompletableFuture<Result<QueryOk, Err>> sqlQuery(final SqlQueryRequest req) {
+        return sqlQuery(req, Context.newDefault());
     }
 
     /**
@@ -49,13 +49,13 @@ public interface Query {
      * @param ctx the invoke context
      * @return query result
      */
-    CompletableFuture<Result<QueryOk, Err>> query(final QueryRequest req, final Context ctx);
+    CompletableFuture<Result<QueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx);
 
     /**
-     * @see #streamQuery(QueryRequest, Context, Observer)
+     * @see #streamSqlQuery(SqlQueryRequest, Context, Observer)
      */
-    default void streamQuery(final QueryRequest req, final Observer<QueryOk> observer) {
-        streamQuery(req, Context.newDefault(), observer);
+    default void streamSqlQuery(final SqlQueryRequest req, final Observer<QueryOk> observer) {
+        streamSqlQuery(req, Context.newDefault(), observer);
     }
 
     /**
@@ -65,15 +65,15 @@ public interface Query {
      * @param observer receives data from an observable stream
      * @param ctx      the invoke context
      */
-    void streamQuery(final QueryRequest req, final Context ctx, final Observer<QueryOk> observer);
+    void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<QueryOk> observer);
 
     /**
-     * @see #blockingStreamQuery(QueryRequest, long, TimeUnit, Context)
+     * @see #blockingStreamSqlQuery(SqlQueryRequest, long, TimeUnit, Context)
      */
-    default Iterator<Record> blockingStreamQuery(final QueryRequest req, //
+    default Iterator<Record> blockingStreamSqlQuery(final SqlQueryRequest req, //
                                                  final long timeout, //
                                                  final TimeUnit unit) {
-        return blockingStreamQuery(req, timeout, unit, Context.newDefault());
+        return blockingStreamSqlQuery(req, timeout, unit, Context.newDefault());
     }
 
     /**
@@ -85,12 +85,12 @@ public interface Query {
      * @param ctx     the invoke context
      * @return the iterator of record
      */
-    default Iterator<Record> blockingStreamQuery(final QueryRequest req, //
+    default Iterator<Record> blockingStreamSqlQuery(final SqlQueryRequest req, //
                                                  final long timeout, //
                                                  final TimeUnit unit, //
                                                  final Context ctx) {
         final BlockingStreamIterator streams = new BlockingStreamIterator(timeout, unit);
-        streamQuery(req, ctx, streams.getObserver());
+        streamSqlQuery(req, ctx, streams.getObserver());
         return new RecordIterator(streams);
     }
 }

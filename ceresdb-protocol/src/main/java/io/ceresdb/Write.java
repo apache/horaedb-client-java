@@ -16,71 +16,52 @@
  */
 package io.ceresdb;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
 import io.ceresdb.models.WriteOk;
+import io.ceresdb.models.WriteRequest;
 import io.ceresdb.rpc.Context;
 
 /**
  * CeresDB write API. Writes the streaming data to the database, support
  * failed retries.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public interface Write {
 
     /**
-     * @see #write(Rows, Context)
+     * @see #write(WriteRequest, Context)
      */
-    default CompletableFuture<Result<WriteOk, Err>> write(final Rows data) {
-        return write(Collections.singletonList(data), Context.newDefault());
-    }
-
-    /**
-     * Write a single series data to database.
-     *
-     * @param data rows
-     * @param ctx  the invoke context
-     * @return write result
-     */
-    default CompletableFuture<Result<WriteOk, Err>> write(final Rows data, final Context ctx) {
-        return write(Collections.singletonList(data), ctx);
-    }
-
-    /**
-     * @see #write(Collection, Context)
-     */
-    default CompletableFuture<Result<WriteOk, Err>> write(final Collection<Rows> data) {
-        return write(data, Context.newDefault());
+    default CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req) {
+        return write(req, Context.newDefault());
     }
 
     /**
      * Write the data stream to the database.
      *
-     * @param data rows
-     * @param ctx  the invoke context
+     * @param req write request
+     * @param ctx the invoked context
      * @return write result
      */
-    CompletableFuture<Result<WriteOk, Err>> write(final Collection<Rows> data, final Context ctx);
+    CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx);
 
     /**
      * @see #streamWrite(String, Context)
      */
-    default StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric) {
-        return streamWrite(metric, Context.newDefault());
+    default StreamWriteBuf<Point, WriteOk> streamWrite(final String table) {
+        return streamWrite(table, Context.newDefault());
     }
 
     /**
      * Executes a stream-write-call, returns a write request observer for streaming-write.
      *
-     * @param metric the metric to write
-     * @param ctx    the invoke context
+     * @param table  the table to write
+     * @param ctx    the invoked context
      * @return a write request observer for streaming-write
      */
-    StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric, final Context ctx);
+    StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx);
 }

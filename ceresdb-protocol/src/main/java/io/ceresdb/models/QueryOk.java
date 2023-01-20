@@ -19,56 +19,38 @@ package io.ceresdb.models;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import io.ceresdb.ArrayMapper;
-import io.ceresdb.RecordMapper;
 import io.ceresdb.common.Streamable;
-import io.ceresdb.common.util.Requires;
 
 /**
  * Contains the success value of query.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
-public class QueryOk implements Streamable<byte[]> {
+public class QueryOk implements Streamable<Row> {
 
-    private String         ql;
-    private Schema         schema;
-    private int            rowCount;
-    private Stream<byte[]> rows;
+    private String sql;
+    private int affectedRows;
+    private Stream<Row> rows;
 
-    public String getQl() {
-        return ql;
+    public String getSql() {
+        return sql;
     }
 
-    public Schema getSchema() {
-        return schema;
+    public int getAffectedRows() {
+        return affectedRows;
     }
 
     public int getRowCount() {
-        return rowCount;
+        // TODO
+        return 0;
     }
 
-    public <R> Stream<R> map(final Function<byte[], ? extends R> mapper) {
-        if (this.rowCount == 0) {
+    public <R> Stream<R> map(final Function<Row, ? extends R> mapper) {
+        if (this.rows == null || this.rows.count() == 0) {
             return Stream.empty();
         }
+
         return this.rows.map(mapper);
-    }
-
-    public Stream<Record> mapToRecord() {
-        if (this.rowCount == 0) {
-            return Stream.empty();
-        }
-        ensureAvroType(this.schema);
-        return map(RecordMapper.getMapper(this.schema.getContent()));
-    }
-
-    public Stream<Object[]> mapToArray() {
-        if (this.rowCount == 0) {
-            return Stream.empty();
-        }
-        ensureAvroType(this.schema);
-        return map(ArrayMapper.getMapper(this.schema.getContent()));
     }
 
     public Result<QueryOk, Err> mapToResult() {
@@ -76,35 +58,27 @@ public class QueryOk implements Streamable<byte[]> {
     }
 
     @Override
-    public Stream<byte[]> stream() {
+    public Stream<Row> stream() {
         return this.rows;
     }
 
     @Override
     public String toString() {
         return "QueryOk{" + //
-               "ql='" + ql + '\'' + //
-               ", schema='" + schema + '\'' + //
-               ", rowCount=" + rowCount + //
+               "sql='" + sql + '\'' + //
+               ", affectedRows=" + affectedRows + //
                '}';
     }
 
     public static QueryOk emptyOk() {
-        return ok("", null, 0, Stream.empty());
+        return ok("", 0, Stream.empty());
     }
 
-    public static QueryOk ok(final String ql, final Schema schema, final int rowCount, final Stream<byte[]> rows) {
+    public static QueryOk ok(final String sql, final int affectedRows, final Stream<Row> rows) {
         final QueryOk ok = new QueryOk();
-        ok.ql = ql;
-        ok.schema = schema;
-        ok.rowCount = rowCount;
+        ok.sql = sql;
+        ok.affectedRows = affectedRows;
         ok.rows = rows;
         return ok;
-    }
-
-    private static void ensureAvroType(final Schema schema) {
-        Requires.requireNonNull(schema, "NUll.schema");
-        Requires.requireTrue(schema.getType() == Schema.Type.Avro, "Invalid schema type %s, [Avro] type is required",
-                schema);
     }
 }

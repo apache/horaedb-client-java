@@ -16,21 +16,21 @@
  */
 package io.ceresdb;
 
-import java.util.Collection;
+import java.util.List;
 
 import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
 import io.ceresdb.models.WriteOk;
 
 /**
  * Like rust: pub type WriteLimiter = CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>>
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
-public abstract class WriteLimiter extends CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>> {
+public abstract class WriteLimiter extends CeresDBLimiter<List<Point>, Result<WriteOk, Err>> {
 
-    public WriteLimiter(int maxInFlight, LimitedPolicy policy, String metric) {
-        super(maxInFlight, policy, metric);
+    public WriteLimiter(int maxInFlight, LimitedPolicy policy, String table) {
+        super(maxInFlight, policy, table);
     }
 }

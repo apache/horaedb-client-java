@@ -24,11 +24,11 @@ import io.ceresdb.common.util.Clock;
 /**
  * Route info for metric.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class Route {
-    private String           metric;
-    private Endpoint         endpoint;
+    private String   table;
+    private Endpoint endpoint;
     private Object           ext;
     private final AtomicLong lastHit = new AtomicLong(Clock.defaultClock().getTick());
 
@@ -46,18 +46,18 @@ public class Route {
 
     public static Route of(final String metric, final Endpoint endpoint, final Object ext) {
         final Route r = new Route();
-        r.metric = metric;
+        r.table = metric;
         r.endpoint = endpoint;
         r.ext = ext;
         return r;
     }
 
-    public String getMetric() {
-        return metric;
+    public String getTable() {
+        return table;
     }
 
-    public void setMetric(String metric) {
-        this.metric = metric;
+    public void setTable(String table) {
+        this.table = table;
     }
 
     public Endpoint getEndpoint() {
@@ -90,7 +90,7 @@ public class Route {
     @Override
     public String toString() {
         return "Route{" + //
-               "metric='" + metric + '\'' + //
+               "table='" + table + '\'' + //
                ", endpoint=" + endpoint + //
                ", ext=" + ext + //
                ", lastHit=" + lastHit.get() + //

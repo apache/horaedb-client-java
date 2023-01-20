@@ -53,7 +53,7 @@ import io.ceresdb.errors.IteratorException;
 import io.ceresdb.errors.StreamException;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Record;
 import io.ceresdb.models.Result;
 import io.ceresdb.options.QueryOptions;
@@ -105,7 +105,7 @@ public class QueryClientTest {
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));
 
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
@@ -142,7 +142,7 @@ public class QueryClientTest {
                     }
                 }));
 
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
@@ -186,7 +186,7 @@ public class QueryClientTest {
                     }
                 }));
 
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
@@ -198,7 +198,7 @@ public class QueryClientTest {
         final Err err = r.getErr();
 
         Assert.assertEquals(ep, err.getErrTo());
-        Assert.assertEquals(Collections.singletonList("query_test_table"), err.getFailedMetrics());
+        Assert.assertEquals(Collections.singletonList("query_test_table"), err.getFailedTables());
     }
 
     @Test
@@ -272,7 +272,7 @@ public class QueryClientTest {
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));
 
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("query_test_table") //
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forMetrics("query_test_table") //
                 .ql("select number from query_test_table") //
                 .build();
         final CompletableFuture<Result<QueryOk, Err>> f = this.queryClient.query(req, Context.newDefault());
