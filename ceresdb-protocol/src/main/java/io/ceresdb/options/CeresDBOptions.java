@@ -18,7 +18,7 @@ package io.ceresdb.options;
 
 import java.util.concurrent.Executor;
 
-import io.ceresdb.LimitedPolicy;
+import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.common.Copiable;
 import io.ceresdb.common.Endpoint;
 import io.ceresdb.common.Tenant;
@@ -28,18 +28,17 @@ import io.ceresdb.rpc.RpcOptions;
 /**
  * CeresDB client options.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class CeresDBOptions implements Copiable<CeresDBOptions> {
-    private Endpoint          clusterAddress;
-    private Executor          asyncWritePool;
-    private Executor          asyncReadPool;
-    private Tenant            tenant;
-    private RpcOptions        rpcOptions;
-    private RouterOptions     routerOptions;
-    private WriteOptions      writeOptions;
-    private QueryOptions      queryOptions;
-    private ManagementOptions managementOptions;
+    private Endpoint      clusterAddress;
+    private Executor      asyncWritePool;
+    private Executor      asyncReadPool;
+    private Tenant        tenant;
+    private RpcOptions    rpcOptions;
+    private RouterOptions routerOptions;
+    private WriteOptions  writeOptions;
+    private QueryOptions  queryOptions;
 
     public Endpoint getClusterAddress() {
         return clusterAddress;
@@ -105,14 +104,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         this.queryOptions = queryOptions;
     }
 
-    public ManagementOptions getManagementOptions() {
-        return managementOptions;
-    }
-
-    public void setManagementOptions(ManagementOptions managementOptions) {
-        this.managementOptions = managementOptions;
-    }
-
     @Override
     public CeresDBOptions copy() {
         final CeresDBOptions copy = new CeresDBOptions();
@@ -134,9 +125,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         if (this.queryOptions != null) {
             copy.queryOptions = this.queryOptions.copy();
         }
-        if (this.managementOptions != null) {
-            copy.managementOptions = this.managementOptions.copy();
-        }
         return copy;
     }
 
@@ -151,7 +139,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
                ", routerOptions=" + routerOptions + //
                ", writeOptions=" + writeOptions + //
                ", queryOptions=" + queryOptions + //
-               ", managementOptions=" + managementOptions + //
                '}';
     }
 
@@ -187,24 +174,9 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         return newBuilder(Endpoint.of(clusterHost, clusterPort));
     }
 
-    /**
-     * Create a new builder for CeresDBOptions.
-     *
-     * @param clusterHost    cluster ip/host, for read/write data
-     * @param clusterPort    cluster port
-     * @param managementPort database management port, such as creating tables
-     * @return builder
-     */
-    public static Builder newBuilder(final String clusterHost, final int clusterPort, final int managementPort) {
-        return new Builder(Endpoint.of(clusterHost, clusterPort)) //
-                .managementAddress(Endpoint.of(clusterHost, managementPort));
-    }
-
     public static final class Builder {
         // The only constant address of this cluster.
         private final Endpoint clusterAddress;
-        // Database management address, such as creating tables.
-        private Endpoint managementAddress;
         // Asynchronous thread pool, which is used to handle various asynchronous tasks in the SDK.
         private Executor asyncWritePool;
         private Executor asyncReadPool;
@@ -239,26 +211,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
 
         public Builder(Endpoint clusterAddress) {
             this.clusterAddress = clusterAddress;
-        }
-
-        /**
-         * Database management address, such as creating tables.
-         *
-         * @param managementAddress management address, it may have the same IP as
-         *                          the cluster address, but it must have a different
-         *                          port
-         * @return this builder
-         */
-        public Builder managementAddress(final Endpoint managementAddress) {
-            this.managementAddress = managementAddress;
-            return this;
-        }
-
-        /**
-         * @see #managementAddress(Endpoint)
-         */
-        public Builder managementAddress(final String host, final int port) {
-            return managementAddress(Endpoint.of(host, port));
         }
 
         /**
@@ -452,18 +404,12 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
             opts.writeOptions = new WriteOptions();
             opts.writeOptions.setMaxWriteSize(this.maxWriteSize);
             opts.writeOptions.setMaxRetries(this.writeMaxRetries);
-            opts.writeOptions.setMaxInFlightWriteRows(this.maxInFlightWriteRows);
+            opts.writeOptions.setMaxInFlightWritePoints(this.maxInFlightWriteRows);
             opts.writeOptions.setLimitedPolicy(this.writeLimitedPolicy);
             opts.queryOptions = new QueryOptions();
             opts.queryOptions.setMaxRetries(this.readMaxRetries);
             opts.queryOptions.setMaxInFlightQueryRequests(this.maxInFlightQueryRequests);
             opts.queryOptions.setLimitedPolicy(this.queryLimitedPolicy);
-            if (this.managementAddress != null) {
-                final ManagementOptions mOpts = new ManagementOptions();
-                mOpts.setManagementAddress(this.managementAddress);
-                mOpts.setTenant(this.tenant);
-                opts.managementOptions = mOpts;
-            }
             return CeresDBOptions.check(opts);
         }
     }

@@ -16,12 +16,10 @@
  */
 package io.ceresdb.models;
 
-import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
 
 import io.ceresdb.common.util.Requires;
-import io.ceresdb.common.util.UnsignedUtil;
 
 /**
  *
@@ -30,14 +28,14 @@ import io.ceresdb.common.util.UnsignedUtil;
 public class Value {
 
     public enum DataType {
-        Float64(Double.class), //
         String(String.class), //
-        Int64(Long.class), //
+        Boolean(Boolean.class), //
+        Float64(Double.class), //
         Float32(Float.class), //
+        Int64(Long.class), //
         Int32(Integer.class), //
         Int16(Integer.class), //
         Int8(Integer.class), //
-        Boolean(Boolean.class), //
         UInt64(Long.class), //
         UInt32(Integer.class), //
         UInt16(Integer.class), //
@@ -57,14 +55,14 @@ public class Value {
     }
 
     enum NullValue {
-        Float64(DataType.Float64), //
         String(DataType.String), //
+        Boolean(DataType.Boolean), //
         Int64(DataType.Int64), //
+        Float64(DataType.Float64), //
         Float32(DataType.Float32), //
         Int32(DataType.Int32), //
         Int16(DataType.Int16), //
         Int8(DataType.Int8), //
-        Boolean(DataType.Boolean), //
         UInt64(DataType.UInt64), //
         UInt32(DataType.UInt32), //
         UInt16(DataType.UInt16), //
@@ -79,8 +77,8 @@ public class Value {
         }
     }
 
-    private final DataType   type;
-    private final Object value;
+    private final DataType type;
+    private final Object   value;
 
     public Value(DataType type, Object value) {
         this.type = type;
@@ -116,28 +114,12 @@ public class Value {
     public String toString() {
         return "Value{" + //
                "type=" + type + //
-               ", value=" + value + //
+               ",value=" + value + //
                '}';
     }
 
     public boolean isNull() {
         return this.value == null;
-    }
-
-    public double getDouble() {
-        return getFloat64();
-    }
-
-    public Optional<Double> getDoubleOrNull() {
-        return getFloat64OrNull();
-    }
-
-    public double getFloat64() {
-        return getCheckedValue(DataType.Float64);
-    }
-
-    public Optional<Double> getFloat64OrNull() {
-        return isNull() ? Optional.empty() : Optional.of(getFloat64());
     }
 
     public String getString() {
@@ -148,20 +130,20 @@ public class Value {
         return isNull() ? Optional.empty() : Optional.of(getString());
     }
 
-    public long getInt64() {
-        return getCheckedValue(DataType.Int64);
+    public boolean getBoolean() {
+        return getCheckedValue(DataType.Boolean);
     }
 
-    public Optional<Long> getInt64OrNull() {
-        return isNull() ? Optional.empty() : Optional.of(getInt64());
+    public Optional<Boolean> getBooleanOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getBoolean());
     }
 
-    public float getFloat() {
-        return getFloat32();
+    public double getFloat64() {
+        return getCheckedValue(DataType.Float64);
     }
 
-    public Optional<Float> getFloatOrNull() {
-        return getFloat32OrNull();
+    public Optional<Double> getFloat64OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getFloat64());
     }
 
     public float getFloat32() {
@@ -172,12 +154,12 @@ public class Value {
         return isNull() ? Optional.empty() : Optional.of(getFloat32());
     }
 
-    public int getInt() {
-        return getInt32();
+    public long getInt64() {
+        return getCheckedValue(DataType.Int64);
     }
 
-    public Optional<Integer> getIntOrNull() {
-        return getInt32OrNull();
+    public Optional<Long> getInt64OrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getInt64());
     }
 
     public int getInt32() {
@@ -202,14 +184,6 @@ public class Value {
 
     public Optional<Integer> getInt8OrNull() {
         return isNull() ? Optional.empty() : Optional.of(getInt8());
-    }
-
-    public boolean getBoolean() {
-        return getCheckedValue(DataType.Boolean);
-    }
-
-    public Optional<Boolean> getBooleanOrNull() {
-        return isNull() ? Optional.empty() : Optional.of(getBoolean());
     }
 
     public long getUInt64() {
@@ -261,25 +235,9 @@ public class Value {
     }
 
     @SuppressWarnings("unchecked")
-    private  <T> T getCheckedValue(final DataType type) {
+    private <T> T getCheckedValue(final DataType type) {
         Requires.requireTrue(this.type == type, "Invalid type %s, expected is %s", this.type, type);
         return (T) type.getJavaType().cast(this.value);
-    }
-
-    public static Value withDouble(final double val) {
-        return withFloat64(val);
-    }
-
-    public static Value withDoubleOrNull(final Double val) {
-        return withFloat64OrNull(val);
-    }
-
-    public static Value withFloat64(final double val) {
-        return new Value(DataType.Float64, val);
-    }
-
-    public static Value withFloat64OrNull(final Double val) {
-        return val == null ? Value.NullValue.Float64.value : withFloat64(val);
     }
 
     public static Value withString(final String val) {
@@ -291,20 +249,20 @@ public class Value {
         return val == null ? Value.NullValue.String.value : withString(val);
     }
 
-    public static Value withInt64(final long val) {
-        return new Value(DataType.Int64, val);
+    public static Value withBoolean(final boolean val) {
+        return new Value(DataType.Boolean, val);
     }
 
-    public static Value withInt64OrNull(final Long val) {
-        return val == null ? Value.NullValue.Int64.value : withInt64(val);
+    public static Value withBooleanOrNull(final Boolean val) {
+        return val == null ? Value.NullValue.Boolean.value : withBoolean(val);
     }
 
-    public static Value withFloat(final float val) {
-        return withFloat32(val);
+    public static Value withFloat64(final double val) {
+        return new Value(DataType.Float64, val);
     }
 
-    public static Value withFloatOrNull(final Float val) {
-        return withFloat32OrNull(val);
+    public static Value withFloat64OrNull(final Double val) {
+        return val == null ? Value.NullValue.Float64.value : withFloat64(val);
     }
 
     public static Value withFloat32(final float val) {
@@ -315,12 +273,12 @@ public class Value {
         return val == null ? Value.NullValue.Float32.value : withFloat32(val);
     }
 
-    public static Value withInt(final int val) {
-        return withInt32(val);
+    public static Value withInt64(final long val) {
+        return new Value(DataType.Int64, val);
     }
 
-    public static Value withIntOrNull(final Integer val) {
-        return withInt32OrNull(val);
+    public static Value withInt64OrNull(final Long val) {
+        return val == null ? Value.NullValue.Int64.value : withInt64(val);
     }
 
     public static Value withInt32(final int val) {
@@ -347,28 +305,11 @@ public class Value {
         return val == null ? Value.NullValue.Int8.value : withInt8(val);
     }
 
-    public static Value withBoolean(final boolean val) {
-        return new Value(DataType.Boolean, val);
-    }
-
-    public static Value withBooleanOrNull(final Boolean val) {
-        return val == null ? Value.NullValue.Boolean.value : withBoolean(val);
-    }
-
     public static Value withUInt64(final long val) {
         return new Value(DataType.UInt64, val);
     }
 
     public static Value withUInt64OrNull(final Long val) {
-        return val == null ? Value.NullValue.UInt64.value : withUInt64(val);
-    }
-
-    public static Value withUInt64(final BigInteger val) {
-        Requires.requireNonNull(val, "Null.val");
-        return new Value(DataType.UInt64, UnsignedUtil.getInt64(val));
-    }
-
-    public static Value withUInt64OrNull(final BigInteger val) {
         return val == null ? Value.NullValue.UInt64.value : withUInt64(val);
     }
 

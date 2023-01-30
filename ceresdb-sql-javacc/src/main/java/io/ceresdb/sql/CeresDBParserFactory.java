@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
+package io.ceresdb.sql;
 
-import java.util.List;
+import io.ceresdb.common.parser.SqlParser;
+import io.ceresdb.common.parser.SqlParserFactory;
+import io.ceresdb.common.SPI;
 
 /**
  *
- * @author xvyang.xy
+ * @author jiachun.fjc
  */
-public class WriteRequest {
-    private List<Point> points;
+@SPI(priority = 1)
+public class CeresDBParserFactory implements SqlParserFactory {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
-    }
-
-    public List<Point> getPoints() {
-        return points;
+    @Override
+    public SqlParser getParser(final String sql) {
+        return new CeresDBParser(sql);
     }
 }

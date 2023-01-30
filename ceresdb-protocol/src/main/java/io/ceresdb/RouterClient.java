@@ -52,6 +52,8 @@ import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
 import io.ceresdb.rpc.RpcClient;
 import io.ceresdb.rpc.errors.RemotingException;
+import io.ceresdb.util.Utils;
+
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
 
@@ -59,7 +61,7 @@ import com.codahale.metrics.Timer;
  * A route rpc client which cached the routing table information locally
  * and will refresh when the server returns an error code of INVALID_ROUTE
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable<Route> {
 
@@ -423,19 +425,19 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
 
         @Override
-        public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> request) {
-            if (request == null || request.isEmpty()) {
+        public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> tables) {
+            if (tables == null || tables.isEmpty()) {
                 return Utils.completedCf(Collections.emptyMap());
             }
 
-            final Storage.RouteRequest req = Storage.RouteRequest.newBuilder().addAllMetrics(request).build();
+            final Storage.RouteRequest req = Storage.RouteRequest.newBuilder().addAllTables(tables).build();
             final Context ctx = Context.of("call_priority", "100"); // Mysterious trick!!! ＼（＾▽＾）／
             final CompletableFuture<Storage.RouteResponse> f = invokeRpc(req, ctx);
 
             return f.thenCompose(resp -> {
                 if (Utils.isSuccess(resp.getHeader())) {
                     final Map<String, Route> ret = resp.getRoutesList().stream()
-                            .collect(Collectors.toMap(Storage.Route::getMetric, this::toRouteObj));
+                            .collect(Collectors.toMap(Storage.Route::getTable, this::toRouteObj));
                     return Utils.completedCf(ret);
                 }
 
@@ -465,7 +467,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
         private Route toRouteObj(final Storage.Route r) {
             final Storage.Endpoint ep = Requires.requireNonNull(r.getEndpoint(), "CeresDB.Endpoint");
-            return Route.of(r.getMetric(), Endpoint.of(ep.getIp(), ep.getPort()), r.getExt());
+            return Route.of(r.getTable(), Endpoint.of(ep.getIp(), ep.getPort()), r.getExt());
         }
     }
 }

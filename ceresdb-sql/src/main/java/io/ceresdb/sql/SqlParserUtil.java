@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.ceresdb.MetricParser;
+import io.ceresdb.common.parser.SqlParser;
 import io.ceresdb.common.util.Requires;
 
 import net.sf.jsqlparser.statement.Statement;
@@ -61,7 +61,7 @@ public class SqlParserUtil {
         return sql;
     }
 
-    public static List<MetricParser.Column> extractCreateColumns(final CreateTable createTable) {
+    public static List<SqlParser.Column> extractCreateColumns(final CreateTable createTable) {
         final String metricName = createTable.getTable().getName();
 
         // timestamp
@@ -72,7 +72,7 @@ public class SqlParserUtil {
         final Set<String> tags = createTable.getColumnDefinitions().stream().filter(SqlParserUtil::isTagColumn)
                 .map(ColumnDefinition::getColumnName).collect(Collectors.toSet());
 
-        return createTable.getColumnDefinitions().stream().map(col -> new MetricParser.Column() {
+        return createTable.getColumnDefinitions().stream().map(col -> new SqlParser.Column() {
 
             @Override
             public String metricName() {

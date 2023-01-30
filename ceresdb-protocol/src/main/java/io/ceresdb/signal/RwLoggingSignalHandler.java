@@ -19,7 +19,7 @@ package io.ceresdb.signal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.ceresdb.Utils;
+import io.ceresdb.util.Utils;
 import io.ceresdb.common.SPI;
 import io.ceresdb.common.signal.FileSignal;
 import io.ceresdb.common.signal.Signal;

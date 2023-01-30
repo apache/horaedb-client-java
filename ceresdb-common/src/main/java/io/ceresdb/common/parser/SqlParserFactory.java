@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
-
-import java.util.List;
+package io.ceresdb.common.parser;
 
 /**
  *
  * @author xvyang.xy
  */
-public class WriteRequest {
-    private List<Point> points;
+public interface SqlParserFactory {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
-    }
+    SqlParserFactory DEFAULT = new NoopFactory();
 
-    public List<Point> getPoints() {
-        return points;
+    SqlParser getParser(final String sql);
+
+    class NoopFactory implements SqlParserFactory {
+
+        @Override
+        public SqlParser getParser(final String sql) {
+            return SqlParser.DEFAULT;
+        }
     }
 }

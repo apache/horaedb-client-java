@@ -16,10 +16,9 @@
  */
 package io.ceresdb;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import io.ceresdb.CeresDBClient;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -34,15 +33,17 @@ import io.ceresdb.common.util.MetricsUtil;
 import io.ceresdb.common.util.internal.ReferenceFieldUpdater;
 import io.ceresdb.common.util.internal.Updaters;
 import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
 import io.ceresdb.models.WriteOk;
+import io.ceresdb.models.WriteRequest;
 import io.ceresdb.options.CeresDBOptions;
 import io.ceresdb.util.TestUtil;
+import io.ceresdb.util.Utils;
 
 /**
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 @RunWith(value = MockitoJUnitRunner.class)
 public class CeresDBClientTest {
@@ -73,8 +74,8 @@ public class CeresDBClientTest {
 
     @Test(expected = IllegalStateException.class)
     public void withoutInitTest() {
-        final Rows rows = TestUtil.newRow("test_metric1_not_init");
-        this.client.write(rows);
+        final List<Point> points = TestUtil.newTablePoints("test_table1_not_init");
+        this.client.write(new WriteRequest(points));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -96,11 +97,11 @@ public class CeresDBClientTest {
     public void helloWorldTest() throws ExecutionException, InterruptedException {
         initAndMockWriteClient();
 
-        final Rows rows = TestUtil.newRow("test_metric1");
+        final List<Point> points = TestUtil.newTablePoints("test_table1");
 
-        Mockito.when(this.writeClient.write(Mockito.anyList(), Mockito.any())) //
+        Mockito.when(this.writeClient.write(new WriteRequest(Mockito.anyList()), Mockito.any())) //
                 .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
-        final CompletableFuture<Result<WriteOk, Err>> f = this.client.write(rows);
+        final CompletableFuture<Result<WriteOk, Err>> f = this.client.write(new WriteRequest(points));
         final Result<WriteOk, Err> ret = f.get();
         Assert.assertTrue(ret.isOk());
         final int success = ret.mapOr(-1, WriteOk::getSuccess);

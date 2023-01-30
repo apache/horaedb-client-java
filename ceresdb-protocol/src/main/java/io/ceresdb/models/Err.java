@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,12 +43,12 @@ public class Err implements Streamable<Err> {
     private List<Point> failedWrites;
     // other successful server results are merged here
     private WriteOk subOk;
-    // the QL failed to query
-    private String             failedQl;
+    // the SQL failed to query
+    private String failedSql;
     // the metrics of failed to query
     private Collection<String> failedTables;
     // child err merged here
-    private Collection<Err>    children;
+    private Collection<Err> children;
 
     public int getCode() {
         return code;
@@ -69,8 +70,8 @@ public class Err implements Streamable<Err> {
         return subOk;
     }
 
-    public String getFailedQl() {
-        return failedQl;
+    public String getFailedSql() {
+        return failedSql;
     }
 
     public Collection<String> getFailedTables() {
@@ -108,13 +109,13 @@ public class Err implements Streamable<Err> {
         }
     }
 
-    private int failedWriteRowsNum() {
+    private int failedWritePointsNum() {
         return this.failedWrites == null ? 0 : this.failedWrites.size();
     }
 
-    private List<String> failedWriteTables() {
-        return this.failedWrites == null ? Collections.emptyList() //
-                : this.failedWrites.stream().map(Point::getTable).collect(Collectors.toList());
+    private Set<String> failedWriteTables() {
+        return this.failedWrites == null ? Collections.emptySet() //
+                : this.failedWrites.stream().map(Point::getTable).collect(Collectors.toSet());
     }
 
     @Override
@@ -123,11 +124,11 @@ public class Err implements Streamable<Err> {
                "code=" + code + //
                ", error='" + error + '\'' + //
                ", errTo=" + errTo + //
-               ", failedWriteRowsNum=" + failedWriteRowsNum() + //
+               ", failedWritePointsNum=" + failedWritePointsNum() + //
                ", failedWriteTables=" + failedWriteTables() + //
                ", subOk=" + subOk + //
-               ", failedQl=" + failedQl + //
-               ", failedMetrics=" + failedTables + //
+               ", failedSql=" + failedSql + //
+               ", failedTables=" + failedTables + //
                ", children=" + children + //
                '}';
     }
@@ -153,7 +154,7 @@ public class Err implements Streamable<Err> {
         err.code = code;
         err.error = error;
         err.errTo = errTo;
-        err.failedQl = failedQl;
+        err.failedSql = failedQl;
         err.failedTables = failedMetrics;
         return err;
     }

@@ -37,7 +37,7 @@ import io.ceresdb.common.util.MetricExecutor;
 import io.ceresdb.common.util.MetricsUtil;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
-import io.ceresdb.models.QueryOk;
+import io.ceresdb.models.SqlQueryOk;
 import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.WriteOk;
@@ -51,6 +51,10 @@ import io.ceresdb.rpc.Observer;
 import io.ceresdb.rpc.RpcClient;
 import io.ceresdb.rpc.RpcFactoryProvider;
 import io.ceresdb.rpc.RpcOptions;
+import io.ceresdb.util.RpcServiceRegister;
+import io.ceresdb.util.StreamWriteBuf;
+import io.ceresdb.util.Utils;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 
@@ -159,13 +163,13 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     }
 
     @Override
-    public CompletableFuture<Result<QueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
+    public CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
         ensureInitialized();
         return this.queryClient.sqlQuery(req, attachCtx(ctx));
     }
 
     @Override
-    public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<QueryOk> observer) {
+    public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<SqlQueryOk> observer) {
         ensureInitialized();
         this.queryClient.streamSqlQuery(req, attachCtx(ctx), observer);
     }

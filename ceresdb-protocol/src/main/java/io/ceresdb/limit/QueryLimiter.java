@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
+package io.ceresdb.limit;
 
-import java.util.List;
+import io.ceresdb.models.Err;
+import io.ceresdb.models.SqlQueryOk;
+import io.ceresdb.models.SqlQueryRequest;
+import io.ceresdb.models.Result;
 
 /**
+ * Like rust: pub type QueryLimiter = CeresDBLimiter<QueryRequest, Result<QueryOk, Err>>
  *
- * @author xvyang.xy
+ * @author jiachun.fjc
  */
-public class WriteRequest {
-    private List<Point> points;
+public abstract class QueryLimiter extends CeresDBLimiter<SqlQueryRequest, Result<SqlQueryOk, Err>> {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
-    }
-
-    public List<Point> getPoints() {
-        return points;
+    public QueryLimiter(int maxInFlight, LimitedPolicy policy, String metricPrefix) {
+        super(maxInFlight, policy, metricPrefix);
     }
 }

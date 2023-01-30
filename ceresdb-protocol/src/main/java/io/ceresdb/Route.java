@@ -27,8 +27,8 @@ import io.ceresdb.common.util.Clock;
  * @author xvyang.xy
  */
 public class Route {
-    private String   table;
-    private Endpoint endpoint;
+    private String           table;
+    private Endpoint         endpoint;
     private Object           ext;
     private final AtomicLong lastHit = new AtomicLong(Clock.defaultClock().getTick());
 

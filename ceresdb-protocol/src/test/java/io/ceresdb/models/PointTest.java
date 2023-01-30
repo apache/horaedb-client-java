@@ -16,20 +16,29 @@
  */
 package io.ceresdb.models;
 
-import java.util.List;
+import org.junit.Test;
+
+import io.ceresdb.common.util.Clock;
 
 /**
  *
  * @author xvyang.xy
  */
-public class WriteRequest {
-    private List<Point> points;
+public class PointTest {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
+    @Test(expected = IllegalArgumentException.class)
+    public void keywordInTagsTest() {
+        Point.newPointsBuilder("test_table").addPoint().setTimestamp(Clock.defaultClock().getTick())
+                .addTag("timestamp", Value.withString("ts")) //
+                .addTag("tag2", Value.withString("v")) //
+                .addField("test", Value.withFloat32(0.1f)).build().build();
     }
 
-    public List<Point> getPoints() {
-        return points;
+    @Test(expected = IllegalArgumentException.class)
+    public void keywordInFieldsTest() {
+        Point.newPointsBuilder("test_table").addPoint().setTimestamp(Clock.defaultClock().getTick())
+                .addTag("tag1", Value.withString("t1")) //
+                .addTag("tag2", Value.withString("t2")) //
+                .addField("tsid", Value.withFloat32(0.1f)).build().build();
     }
 }

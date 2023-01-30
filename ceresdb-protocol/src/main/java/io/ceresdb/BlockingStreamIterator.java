@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import io.ceresdb.errors.IteratorException;
-import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.Record;
+import io.ceresdb.models.SqlQueryOk;
+import io.ceresdb.models.Row;
 import io.ceresdb.rpc.Observer;
 
 /**
@@ -33,24 +33,24 @@ import io.ceresdb.rpc.Observer;
  *
  * @author jiachun.fjc
  */
-public class BlockingStreamIterator implements Iterator<Stream<Record>> {
+public class BlockingStreamIterator implements Iterator<Stream<Row>> {
 
-    private static final QueryOk EOF = QueryOk.emptyOk();
+    private static final SqlQueryOk EOF = SqlQueryOk.emptyOk();
 
     private final long     timeout;
     private final TimeUnit unit;
 
     private final BlockingQueue<Object> staging = new LinkedBlockingQueue<>();
-    private final Observer<QueryOk>     observer;
-    private QueryOk                     next;
+    private final Observer<SqlQueryOk>  observer;
+    private SqlQueryOk                  next;
 
     public BlockingStreamIterator(long timeout, TimeUnit unit) {
         this.timeout = timeout;
         this.unit = unit;
-        this.observer = new Observer<QueryOk>() {
+        this.observer = new Observer<SqlQueryOk>() {
 
             @Override
-            public void onNext(final QueryOk value) {
+            public void onNext(final SqlQueryOk value) {
                 staging.offer(value);
             }
 
@@ -83,7 +83,7 @@ public class BlockingStreamIterator implements Iterator<Stream<Record>> {
                 return reject("Stream iterator got an error", (Throwable) v);
             }
 
-            this.next = (QueryOk) v;
+            this.next = (SqlQueryOk) v;
 
             return this.next != EOF;
         } catch (final InterruptedException e) {
@@ -93,7 +93,7 @@ public class BlockingStreamIterator implements Iterator<Stream<Record>> {
     }
 
     @Override
-    public Stream<Record> next() {
+    public Stream<Row> next() {
         if (this.next == null) {
             return reject("Null `next` element");
         }
@@ -102,10 +102,10 @@ public class BlockingStreamIterator implements Iterator<Stream<Record>> {
             return reject("Reaches the end of the iterator");
         }
 
-        return this.next.mapToRecord();
+        return this.next.stream();
     }
 
-    public Observer<QueryOk> getObserver() {
+    public Observer<SqlQueryOk> getObserver() {
         return this.observer;
     }
 

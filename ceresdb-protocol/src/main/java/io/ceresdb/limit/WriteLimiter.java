@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
+package io.ceresdb.limit;
 
 import java.util.List;
 
+import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
+import io.ceresdb.models.Result;
+import io.ceresdb.models.WriteOk;
+
 /**
+ * Like rust: pub type WriteLimiter = CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>>
  *
  * @author xvyang.xy
  */
-public class WriteRequest {
-    private List<Point> points;
+public abstract class WriteLimiter extends CeresDBLimiter<List<Point>, Result<WriteOk, Err>> {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
-    }
-
-    public List<Point> getPoints() {
-        return points;
+    public WriteLimiter(int maxInFlight, LimitedPolicy policy, String table) {
+        super(maxInFlight, policy, table);
     }
 }

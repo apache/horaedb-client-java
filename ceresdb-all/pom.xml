@@ -22,11 +22,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ceresdb-http</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>ceresdb-protocol</artifactId>
             <version>${project.version}</version>
         </dependency>

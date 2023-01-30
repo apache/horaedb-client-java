@@ -16,27 +16,36 @@
  */
 package io.ceresdb.models;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class ResultTest {
 
     @Test
-    public void mapTest() {
+    public void mapTest() throws Exception {
         final Result<WriteOk, Err> r1 = Result.ok(WriteOk.ok(2, 0, null));
         final Result<Integer, Err> r2 = r1.map(WriteOk::getSuccess);
         Assert.assertEquals(2, r2.getOk().intValue());
 
-        final Result<QueryOk, Err> r3 = Result.ok(QueryOk.ok(null, null, 5, null));
-        final Result<Integer, Err> r4 = r3.map(QueryOk::getRowCount);
+        final Result<SqlQueryOk, Err> r3 = Result.ok(SqlQueryOk.ok(null, 0, mockRows(5)));
+        final Result<Integer, Err> r4 = r3.map(SqlQueryOk::getRowCount);
         Assert.assertEquals(5, r4.getOk().intValue());
 
-        final Result<WriteOk, Err> r5 = Result.err(Err.writeErr(400, null, null, null));
-        final Result<Integer, Err> r6 = r5.map(WriteOk::getSuccess);
-        Assert.assertFalse(r6.isOk());
+        final Result<SqlQueryOk, Err> r5 = Result.ok(SqlQueryOk.ok(null, 1, null));
+        final Result<Integer, Err> r6 = r5.map(SqlQueryOk::getAffectedRows);
+        Assert.assertEquals(1, r6.getOk().intValue());
+
+        final Result<WriteOk, Err> r7 = Result.err(Err.writeErr(400, null, null, null));
+        final Result<Integer, Err> r8 = r7.map(WriteOk::getSuccess);
+        Assert.assertFalse(r8.isOk());
     }
 
     @Test
@@ -120,5 +129,13 @@ public class ResultTest {
         final Result<WriteOk, Err> r3 = Result.err(Err.writeErr(400, null, null, null));
         final WriteOk r4 = r3.unwrapOrElse(err -> WriteOk.emptyOk());
         Assert.assertEquals(0, r4.getSuccess());
+    }
+
+    private List<Row> mockRows(final int rowCount) {
+        List rows = new ArrayList(rowCount);
+        for (int i = 0; i < rowCount; i++) {
+            rows.add(new Row());
+        }
+        return rows;
     }
 }

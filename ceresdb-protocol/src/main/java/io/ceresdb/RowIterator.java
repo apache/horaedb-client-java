@@ -14,45 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
+package io.ceresdb;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Iterator;
+
+import io.ceresdb.models.Row;
 
 /**
  *
  * @author xvyang.xy
  */
-public class Row {
-    private Map<String, Value> values;
+public class RowIterator implements Iterator<Row> {
 
-    public Row() {
-        this.values = new HashMap<>();
-    }
+    private final BlockingStreamIterator streams;
+    private Iterator<Row>                current;
 
-    public Value getColumnValue(String column) {
-        return this.values.get(column);
-    }
-
-    public void setColumnValue(String column, Value value) {
-        this.values.put(column, value);
-    }
-
-    public int getColumnCount() {
-        if (this.values == null) {
-            return 0;
-        }
-        return this.values.size();
+    public RowIterator(BlockingStreamIterator streams) {
+        this.streams = streams;
     }
 
     @Override
-    public String toString() {
-        if (this.values == null || this.values.isEmpty()) {
-            return "[Empty Row]";
+    public boolean hasNext() {
+        if (this.current != null && this.current.hasNext()) {
+            return true;
         }
+        while (this.streams.hasNext()) {
+            this.current = this.streams.next().iterator();
+            if (this.current.hasNext()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        return this.values.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue().toString())
-                .collect(Collectors.joining("|"));
+    @Override
+    public Row next() {
+        return this.current.next();
     }
 }

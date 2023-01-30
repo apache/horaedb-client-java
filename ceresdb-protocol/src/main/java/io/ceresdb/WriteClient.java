@@ -16,6 +16,7 @@
  */
 package io.ceresdb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ import io.ceresdb.common.util.SerializingExecutor;
 import io.ceresdb.common.util.Spines;
 import io.ceresdb.common.util.Strings;
 import io.ceresdb.errors.StreamException;
+import io.ceresdb.limit.LimitedPolicy;
+import io.ceresdb.limit.WriteLimiter;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
@@ -53,6 +56,9 @@ import io.ceresdb.options.WriteOptions;
 import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.Context;
 import io.ceresdb.rpc.Observer;
+import io.ceresdb.util.StreamWriteBuf;
+import io.ceresdb.util.Utils;
+
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.google.common.collect.Lists;
@@ -110,7 +116,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
         this.routerClient = this.opts.getRoutedClient();
         final Executor pool = this.opts.getAsyncPool();
         this.asyncPool = pool != null ? pool : new SerializingExecutor("write_client");
-        this.writeLimiter = new DefaultWriteLimiter(this.opts.getMaxInFlightWriteRows(), this.opts.getLimitedPolicy());
+        this.writeLimiter = new DefaultWriteLimiter(this.opts.getMaxInFlightWritePoints(),
+                this.opts.getLimitedPolicy());
         return true;
     }
 
@@ -123,22 +130,23 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
         Requires.requireNonNull(req.getPoints(), "Null.data");
         final long startCall = Clock.defaultClock().getTick();
-        return this.writeLimiter.acquireAndDo(req.getPoints(), () -> write0(req.getPoints(), ctx, 0).whenCompleteAsync((r, e) -> {
-            InnerMetrics.writeQps().mark();
-            if (r != null) {
-                if (Utils.isRwLogging()) {
-                    LOG.info("Write to {}, duration={} ms, result={}.", Utils.DB_NAME,
-                            Clock.defaultClock().duration(startCall), r);
-                }
-                if (r.isOk()) {
-                    final WriteOk ok = r.getOk();
-                    InnerMetrics.writeRowsSuccess().update(ok.getSuccess());
-                    InnerMetrics.writeRowsFailed().update(ok.getFailed());
-                    return;
-                }
-            }
-            InnerMetrics.writeFailed().mark();
-        }, this.asyncPool));
+        return this.writeLimiter.acquireAndDo(req.getPoints(),
+                () -> write0(req.getPoints(), ctx, 0).whenCompleteAsync((r, e) -> {
+                    InnerMetrics.writeQps().mark();
+                    if (r != null) {
+                        if (Utils.isRwLogging()) {
+                            LOG.info("Write to {}, duration={} ms, result={}.", Utils.DB_NAME,
+                                    Clock.defaultClock().duration(startCall), r);
+                        }
+                        if (r.isOk()) {
+                            final WriteOk ok = r.getOk();
+                            InnerMetrics.writeRowsSuccess().update(ok.getSuccess());
+                            InnerMetrics.writeRowsFailed().update(ok.getFailed());
+                            return;
+                        }
+                    }
+                    InnerMetrics.writeFailed().mark();
+                }, this.asyncPool));
     }
 
     @Override
@@ -296,8 +304,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     private Observer<Stream<Point>> streamWriteTo(final Route route, //
-                                                 final Context ctx, //
-                                                 final Observer<WriteOk> respObserver) {
+                                                  final Context ctx, //
+                                                  final Observer<WriteOk> respObserver) {
         final Observer<Storage.WriteRequest> rpcObs = this.routerClient.invokeClientStreaming(route.getEndpoint(), //
                 Storage.WriteRequest.getDefaultInstance(), //
                 ctx, //
@@ -383,18 +391,20 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     private static class WriteTuple3 {
-        Storage.WriteMetric.Builder wmcBui;
-        NameDict                    tagDict;
-        NameDict                    fieldDict;
+        String                                        table;
+        Map<String, Storage.WriteSeriesEntry.Builder> seriesBuilders;
+        NameDict                                      tagDict;
+        NameDict                                      fieldDict;
 
         public WriteTuple3(String table) {
-            this.wmcBui = Storage.WriteMetric.newBuilder().setMetric(table);
+            this.table = table;
+            this.seriesBuilders = new HashMap<>();
             this.tagDict = new NameDict();
             this.fieldDict = new NameDict();
         }
 
-        public Storage.WriteMetric.Builder getWmcBui() {
-            return wmcBui;
+        public Map<String, Storage.WriteSeriesEntry.Builder> getSeriesBuilders() {
+            return seriesBuilders;
         }
 
         public NameDict getTagDict() {
@@ -405,8 +415,15 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
             return fieldDict;
         }
 
-        public Storage.WriteMetric build() {
-            return this.wmcBui //
+        public Storage.WriteTableRequest build() {
+            Storage.WriteTableRequest.Builder writeTableRequest = Storage.WriteTableRequest.newBuilder()
+                    .setTable(table);
+
+            seriesBuilders.forEach((key, builder) -> {
+                writeTableRequest.addEntries(builder.build());
+            });
+
+            return writeTableRequest //
                     .addAllTagNames(this.tagDict.toOrdered()) //
                     .addAllFieldNames(this.fieldDict.toOrdered()) //
                     .build();
@@ -415,45 +432,54 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
     @VisibleForTest
     public Storage.WriteRequest toWriteRequestObj(final Stream<Point> data) {
-        final Storage.WriteRequest.Builder wrBui = Storage.WriteRequest.newBuilder();
+        final Storage.WriteRequest.Builder writeRequestBuilder = Storage.WriteRequest.newBuilder();
         final Map<String, WriteTuple3> tuple3s = new HashMap<>();
 
         data.forEach(point -> {
             final String table = point.getTable();
             final WriteTuple3 tp3 = tuple3s.computeIfAbsent(table, WriteTuple3::new);
-            final Storage.WriteEntry.Builder weyBui = Storage.WriteEntry.newBuilder();
 
             final NameDict tagDict = tp3.getTagDict();
             point.getTags().forEach((tagK, tagV) -> {
-                if (Value.isNull(tagV)) {
-                    return;
-                }
-                final Storage.Tag.Builder tBui = Storage.Tag.newBuilder().setNameIndex(tagDict.insert(tagK))
-                        .setValue(Utils.toProtoValue(tagV));
-                weyBui.addTags(tBui.build());
+                tagDict.insert(tagK);
             });
+            StringBuffer seriesKeyBuffer = new StringBuffer();
+            tagDict.toOrdered().forEach((tagK) -> {
+                Value tagV = point.getTags().get(tagK);
+                if (!Value.isNull(tagV)) {
+                    seriesKeyBuffer.append(tagV.getValue().toString());
+                }
+            });
+            Storage.WriteSeriesEntry.Builder seriesEntryBuilder = tp3.getSeriesBuilders()
+                    .computeIfAbsent(seriesKeyBuffer.toString(), seriesKey -> {
+                        final Storage.WriteSeriesEntry.Builder seBuilder = Storage.WriteSeriesEntry.newBuilder();
+                        point.getTags().forEach((tagK, tagV) -> {
+                            if (Value.isNull(tagV)) {
+                                return;
+                            }
+                            final Storage.Tag.Builder tBui = Storage.Tag.newBuilder().setNameIndex(tagDict.insert(tagK))
+                                    .setValue(Utils.toProtoValue(tagV));
+                            seBuilder.addTags(tBui.build());
+                        });
+                        return seBuilder;
+                    });
 
             final NameDict fieldDict = tp3.getFieldDict();
+            final Storage.FieldGroup.Builder fgBui = Storage.FieldGroup.newBuilder().setTimestamp(point.getTimestamp());
             point.getFields().forEach((fieldK, fieldV) -> {
                 if (Value.isNull(fieldV)) {
                     return;
                 }
-
-                final Storage.FieldGroup.Builder fgBui = Storage.FieldGroup.newBuilder().setTimestamp(point.getTimestamp());
-
                 final Storage.Field.Builder fBui = Storage.Field.newBuilder().setNameIndex(fieldDict.insert(fieldK))
                         .setValue(Utils.toProtoValue(fieldV));
                 fgBui.addFields(fBui.build());
-
-                weyBui.addFieldGroups(fgBui.build());
             });
-
-            tp3.getWmcBui().addEntries(weyBui.build());
+            seriesEntryBuilder.addFieldGroups(fgBui.build());
         });
 
-        tuple3s.values().forEach(tp3 -> wrBui.addMetrics(tp3.build()));
+        tuple3s.values().forEach(tp3 -> writeRequestBuilder.addTableRequests(tp3.build()));
 
-        return wrBui.build();
+        return writeRequestBuilder.build();
     }
 
     @Override

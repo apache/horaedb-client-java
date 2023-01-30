@@ -24,6 +24,7 @@ import io.ceresdb.models.Result;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.models.WriteRequest;
 import io.ceresdb.rpc.Context;
+import io.ceresdb.util.StreamWriteBuf;
 
 /**
  * CeresDB write API. Writes the streaming data to the database, support

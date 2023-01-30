@@ -18,14 +18,14 @@ package io.ceresdb.options;
 
 import java.util.concurrent.Executor;
 
-import io.ceresdb.LimitedPolicy;
+import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouterClient;
 import io.ceresdb.common.Copiable;
 
 /**
  * Query options.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class QueryOptions implements Copiable<QueryOptions> {
 

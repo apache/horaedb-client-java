@@ -16,13 +16,14 @@
  */
 package io.ceresdb.models;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import io.ceresdb.Utils;
+import io.ceresdb.util.Utils;
 import io.ceresdb.common.util.Requires;
 
 /**
@@ -31,7 +32,7 @@ import io.ceresdb.common.util.Requires;
  * @author xvyang.xy
  */
 public class Point {
-    protected String table;
+    protected String                   table;
     protected long                     timestamp;
     protected SortedMap<String, Value> tags;
     protected Map<String, Value>       fields;
@@ -58,34 +59,39 @@ public class Point {
         return fields;
     }
 
+    public static PointsBuilder newPointsBuilder(String table) {
+        return new PointsBuilder(table);
+    }
+
     public static class PointsBuilder {
-        private final String            table;
-        protected     Collection<Point> points;
+        private final String  table;
+        protected List<Point> points;
 
         public PointsBuilder(String table) {
             this.table = table;
+            this.points = new LinkedList<>();
         }
 
         public PointBuilder addPoint() {
             return new PointBuilder(this, this.table);
         }
 
-        public Collection<Point> build() {
-            this.points.forEach((point) -> check(point));
+        public List<Point> build() {
+            this.points.forEach(PointsBuilder::check);
             return this.points;
         }
 
-        public static void check(final Point point) {
+        public static void check(final Point point) throws IllegalArgumentException {
             Requires.requireNonNull(point.fields, "Null.fields");
             Requires.requireTrue(!point.fields.isEmpty(), "Empty.fields");
-            Utils.checkKeywords(point.tags.values().stream().iterator());
-            Utils.checkKeywords(point.fields.values().stream().iterator());
+            Utils.checkKeywords(point.tags.keySet().stream().iterator());
+            Utils.checkKeywords(point.fields.keySet().stream().iterator());
         }
     }
 
-    private static class PointBuilder {
+    public static class PointBuilder {
         private PointsBuilder root;
-        private Point point;
+        private Point         point;
 
         protected PointBuilder(PointsBuilder root, String table) {
             this.root = root;
@@ -99,6 +105,11 @@ public class Point {
 
         public PointBuilder addTag(final String tagKey, final Value tagValue) {
             this.point.tags.put(tagKey, tagValue);
+            return this;
+        }
+
+        public PointBuilder addTag(final String tagKey, final String tagValue) {
+            this.point.tags.put(tagKey, Value.withStringOrNull(tagValue));
             return this;
         }
 

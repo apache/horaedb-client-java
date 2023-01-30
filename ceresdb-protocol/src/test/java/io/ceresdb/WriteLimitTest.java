@@ -16,7 +16,7 @@
  */
 package io.ceresdb;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -26,37 +26,40 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.ceresdb.errors.LimitedException;
+import io.ceresdb.limit.LimitedPolicy;
+import io.ceresdb.limit.WriteLimiter;
 import io.ceresdb.models.Err;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.util.TestUtil;
+import io.ceresdb.util.Utils;
 
 /**
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class WriteLimitTest {
 
     @Test(expected = LimitedException.class)
     public void abortWriteLimitTest() throws ExecutionException, InterruptedException {
         final WriteLimiter limiter = new WriteClient.DefaultWriteLimiter(1, new LimitedPolicy.AbortPolicy());
-        final Collection<Rows> rows = TestUtil.newListOfRows("test1", "test2");
+        final List<Point> points = TestUtil.newMultiTablePoints("test1", "test2");
 
         // consume the permits
-        limiter.acquireAndDo(rows, CompletableFuture::new);
+        limiter.acquireAndDo(points, CompletableFuture::new);
 
-        limiter.acquireAndDo(rows, this::emptyOk).get();
+        limiter.acquireAndDo(points, this::emptyOk).get();
     }
 
     @Test
     public void discardWriteLimitTest() throws ExecutionException, InterruptedException {
         final WriteLimiter limiter = new WriteClient.DefaultWriteLimiter(1, new LimitedPolicy.DiscardPolicy());
-        final Collection<Rows> rows = TestUtil.newListOfRows("test1", "test2");
+        final List<Point> points = TestUtil.newMultiTablePoints("test1", "test2");
 
         // consume the permits
-        limiter.acquireAndDo(rows, CompletableFuture::new);
+        limiter.acquireAndDo(points, CompletableFuture::new);
 
-        final Result<WriteOk, Err> ret = limiter.acquireAndDo(rows, this::emptyOk).get();
+        final Result<WriteOk, Err> ret = limiter.acquireAndDo(points, this::emptyOk).get();
 
         Assert.assertFalse(ret.isOk());
         Assert.assertEquals(Result.FLOW_CONTROL, ret.getErr().getCode());
@@ -67,15 +70,15 @@ public class WriteLimitTest {
     @Test
     public void blockingWriteLimitTest() throws InterruptedException {
         final WriteLimiter limiter = new WriteClient.DefaultWriteLimiter(1, new LimitedPolicy.BlockingPolicy());
-        final Collection<Rows> rows = TestUtil.newListOfRows("test1", "test2");
+        final List<Point> points = TestUtil.newMultiTablePoints("test1", "test2");
 
         // consume the permits
-        limiter.acquireAndDo(rows, CompletableFuture::new);
+        limiter.acquireAndDo(points, CompletableFuture::new);
 
         final AtomicBoolean alwaysFalse = new AtomicBoolean();
         final Thread t = new Thread(() -> {
             try {
-                limiter.acquireAndDo(rows, this::emptyOk);
+                limiter.acquireAndDo(points, this::emptyOk);
                 alwaysFalse.set(true);
             } catch (final Throwable err) {
                 // noinspection ConstantConditions
@@ -97,13 +100,13 @@ public class WriteLimitTest {
         final int timeoutSecs = 2;
         final WriteLimiter limiter = new WriteClient.DefaultWriteLimiter(1,
                 new LimitedPolicy.BlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final Collection<Rows> rows = TestUtil.newListOfRows("test1", "test2");
+        final List<Point> points = TestUtil.newMultiTablePoints("test1", "test2");
 
         // consume the permits
-        limiter.acquireAndDo(rows, CompletableFuture::new);
+        limiter.acquireAndDo(points, CompletableFuture::new);
 
         final long start = System.nanoTime();
-        final Result<WriteOk, Err> ret = limiter.acquireAndDo(rows, this::emptyOk).get();
+        final Result<WriteOk, Err> ret = limiter.acquireAndDo(points, this::emptyOk).get();
         Assert.assertEquals(timeoutSecs, TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start), 0.3);
 
         Assert.assertFalse(ret.isOk());
@@ -117,14 +120,14 @@ public class WriteLimitTest {
         final int timeoutSecs = 2;
         final WriteLimiter limiter = new WriteClient.DefaultWriteLimiter(1,
                 new LimitedPolicy.AbortOnBlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final Collection<Rows> rows = TestUtil.newListOfRows("test1", "test2");
+        final List<Point> points = TestUtil.newMultiTablePoints("test1", "test2");
 
         // consume the permits
-        limiter.acquireAndDo(rows, CompletableFuture::new);
+        limiter.acquireAndDo(points, CompletableFuture::new);
 
         final long start = System.nanoTime();
         try {
-            limiter.acquireAndDo(rows, this::emptyOk).get();
+            limiter.acquireAndDo(points, this::emptyOk).get();
         } finally {
             Assert.assertEquals(timeoutSecs, TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start), 0.3);
         }

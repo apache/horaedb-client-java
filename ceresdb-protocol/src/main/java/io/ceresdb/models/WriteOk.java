@@ -17,6 +17,8 @@
 package io.ceresdb.models;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import io.ceresdb.common.OptKeys;
 import io.ceresdb.common.util.SystemPropertyUtil;
@@ -24,7 +26,7 @@ import io.ceresdb.common.util.SystemPropertyUtil;
 /**
  * Contains the success value of write.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class WriteOk {
 
@@ -40,7 +42,7 @@ public class WriteOk {
     /**
      * Empty if {@link #COLLECT_WROTE_DETAIL == false}.
      */
-    private Collection<String> metrics;
+    private Set<String> tables;
 
     public int getSuccess() {
         return success;
@@ -58,21 +60,21 @@ public class WriteOk {
         this.failed = failed;
     }
 
-    public Collection<String> getMetrics() {
-        return metrics;
+    public Collection<String> getTables() {
+        return tables;
     }
 
-    public void setMetrics(Collection<String> metrics) {
-        this.metrics = metrics;
+    public void setTables(Set<String> tables) {
+        this.tables = tables;
     }
 
     public WriteOk combine(final WriteOk other) {
         this.success += other.success;
         this.failed += other.failed;
-        if (this.metrics == null) {
-            this.metrics = other.metrics;
-        } else if (other.metrics != null) {
-            this.metrics.addAll(other.metrics);
+        if (this.tables == null) {
+            this.tables = other.tables;
+        } else if (other.tables != null) {
+            this.tables.addAll(other.tables);
         }
         return this;
     }
@@ -86,7 +88,7 @@ public class WriteOk {
         return "WriteOk{" + //
                "success=" + success + //
                ", failed=" + failed + //
-               ", metrics=" + metrics + //
+               ", tables=" + tables + //
                '}';
     }
 
@@ -94,11 +96,11 @@ public class WriteOk {
         return ok(0, 0, null);
     }
 
-    public static WriteOk ok(final int success, final int failed, final Collection<String> metrics) {
+    public static WriteOk ok(final int success, final int failed, final Set<String> tables) {
         final WriteOk ok = new WriteOk();
         ok.success = success;
         ok.failed = failed;
-        ok.metrics = metrics;
+        ok.tables = tables;
         return ok;
     }
 }

@@ -18,14 +18,14 @@ package io.ceresdb.options;
 
 import java.util.concurrent.Executor;
 
-import io.ceresdb.LimitedPolicy;
+import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouterClient;
 import io.ceresdb.common.Copiable;
 
 /**
  * Write options.
  *
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class WriteOptions implements Copiable<WriteOptions> {
 
@@ -36,9 +36,9 @@ public class WriteOptions implements Copiable<WriteOptions> {
     private int maxRetries = 1;
     // In the case of routing table failure or some other retry able error, a retry of the write is attempted.
     private int maxWriteSize = 512;
-    // Write flow limit: maximum number of data rows in-flight.
-    private int           maxInFlightWriteRows = 8192;
-    private LimitedPolicy limitedPolicy        = LimitedPolicy.defaultWriteLimitedPolicy();
+    // Write flow limit: maximum number of data points in-flight.
+    private int           maxInFlightWritePoints = 8192;
+    private LimitedPolicy limitedPolicy          = LimitedPolicy.defaultWriteLimitedPolicy();
 
     public RouterClient getRoutedClient() {
         return routerClient;
@@ -72,12 +72,12 @@ public class WriteOptions implements Copiable<WriteOptions> {
         this.maxWriteSize = maxWriteSize;
     }
 
-    public int getMaxInFlightWriteRows() {
-        return maxInFlightWriteRows;
+    public int getMaxInFlightWritePoints() {
+        return maxInFlightWritePoints;
     }
 
-    public void setMaxInFlightWriteRows(int maxInFlightWriteRows) {
-        this.maxInFlightWriteRows = maxInFlightWriteRows;
+    public void setMaxInFlightWritePoints(int maxInFlightWritePoints) {
+        this.maxInFlightWritePoints = maxInFlightWritePoints;
     }
 
     public LimitedPolicy getLimitedPolicy() {
@@ -95,7 +95,7 @@ public class WriteOptions implements Copiable<WriteOptions> {
         opts.asyncPool = this.asyncPool;
         opts.maxRetries = this.maxRetries;
         opts.maxWriteSize = this.maxWriteSize;
-        opts.maxInFlightWriteRows = this.maxInFlightWriteRows;
+        opts.maxInFlightWritePoints = this.maxInFlightWritePoints;
         opts.limitedPolicy = this.limitedPolicy;
         return opts;
     }
@@ -107,7 +107,7 @@ public class WriteOptions implements Copiable<WriteOptions> {
                ", globalAsyncPool=" + asyncPool + //
                ", maxRetries=" + maxRetries + //
                ", maxWriteSize=" + maxWriteSize + //
-               ", maxInFlightWriteRows=" + maxInFlightWriteRows + //
+               ", maxInFlightWritePoints=" + maxInFlightWritePoints + //
                ", limitedPolicy=" + limitedPolicy + //
                '}';
     }

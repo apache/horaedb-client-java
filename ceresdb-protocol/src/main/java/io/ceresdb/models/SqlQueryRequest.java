@@ -37,9 +37,13 @@ public class SqlQueryRequest {
     public SqlQueryRequest() {
     }
 
-    public SqlQueryRequest(List<String> tables, String sql) {
+    public SqlQueryRequest(String fmtSql, Object... args) {
+        this.sql = this.getSql(fmtSql, args);
+    }
+
+    public SqlQueryRequest(List<String> tables, String fmtSql, Object... args) {
         this.tables = tables;
-        this.sql = sql;
+        this.sql = this.getSql(fmtSql, args);
     }
 
     public List<String> getTables() {
@@ -72,8 +76,12 @@ public class SqlQueryRequest {
         return qr;
     }
 
+    private String getSql(final String fmtSql, final Object... args) {
+        return String.format(fmtSql, args);
+    }
+
     public static class Builder {
-        private final List<String> metrics = new ArrayList<>();
+        private final List<String> tables = new ArrayList<>();
         private String             sql;
 
         /**
@@ -82,8 +90,8 @@ public class SqlQueryRequest {
          * @param tables the tables queried.
          * @return this builder
          */
-        public Builder forMetrics(final String... tables) {
-            this.metrics.addAll(Arrays.asList(tables));
+        public Builder forTables(final String... tables) {
+            this.tables.addAll(Arrays.asList(tables));
             return this;
         }
 
@@ -93,7 +101,7 @@ public class SqlQueryRequest {
          * @param sql the query language
          * @return this builder
          */
-        public Builder ql(final String sql) {
+        public Builder sql(final String sql) {
             this.sql = sql;
             return this;
         }
@@ -115,7 +123,7 @@ public class SqlQueryRequest {
 
         public SqlQueryRequest build() {
             final SqlQueryRequest qr = new SqlQueryRequest();
-            qr.tables = this.metrics;
+            qr.tables = this.tables;
             qr.sql = this.sql;
             return qr;
         }

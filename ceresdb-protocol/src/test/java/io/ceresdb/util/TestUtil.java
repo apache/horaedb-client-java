@@ -23,37 +23,37 @@ import java.util.List;
 import java.util.Set;
 
 import io.ceresdb.common.util.Clock;
-import io.ceresdb.models.FieldValue;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
-import io.ceresdb.models.Series;
+import io.ceresdb.models.Value;
 import io.ceresdb.proto.internal.Common;
 import io.ceresdb.proto.internal.Storage;
 
 /**
- * @author jiachun.fjc
+ * @author xvyang.xy
  */
 public class TestUtil {
 
-    public static Rows newRow(final String metric) {
+    public static List<Point> newTablePoints(final String table) {
         final long time = Clock.defaultClock().getTick() - 1;
-        return Series.newBuilder(metric) //
-                .tag("tag1", "tag_v1") //
-                .tag("tag2", "tag_v2") //
-                .toRowsBuilder() //
-                .field(time, "field1", FieldValue.withDouble(0.1)) //
-                .field(time, "field2", FieldValue.withString("string_value")) //
-                .field(time + 1, "field1", FieldValue.withDouble(0.2)) //
-                .field(time + 1, "field2", FieldValue.withString("string_value_2")) //
-                .build();
+        return Point.newPointsBuilder(table) //
+                .addPoint().setTimestamp(time).addTag("tag1", Value.withString("tag_v1")) //
+                .addTag("tag2", Value.withString("tag_v2")) //
+                .addField("field1", Value.withFloat64(0.1)) //
+                .addField("field2", Value.withString("string_value")) //
+                .build().addPoint().setTimestamp(time + 1).addTag("tag1", Value.withString("tag_v1")) //
+                .addTag("tag2", Value.withString("tag_v2")) //
+                .addField("field1", Value.withFloat64(0.2)) //
+                .addField("field2", Value.withString("string_value_2")) //
+                .build().build();
     }
 
-    public static List<Rows> newListOfRows(final String... metrics) {
-        final List<Rows> rowsList = new ArrayList<>();
-        for (final String metric : metrics) {
-            rowsList.add(newRow(metric));
+    public static List<Point> newMultiTablePoints(final String... tables) {
+        final List<Point> pointsList = new ArrayList<>();
+        for (final String table : tables) {
+            pointsList.addAll(newTablePoints(table));
         }
-        return rowsList;
+        return pointsList;
     }
 
     public static Storage.WriteResponse newSuccessWriteResp(final int success) {

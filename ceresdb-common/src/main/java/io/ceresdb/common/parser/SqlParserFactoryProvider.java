@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.ceresdb.models;
+package io.ceresdb.common.parser;
 
-import java.util.List;
+import io.ceresdb.common.util.ServiceLoader;
 
 /**
  *
  * @author xvyang.xy
  */
-public class WriteRequest {
-    private List<Point> points;
+public class SqlParserFactoryProvider {
 
-    public WriteRequest(List<Point> points) {
-        this.points = points;
-    }
+    private static final SqlParserFactory METRIC_PARSER_FACTORY = ServiceLoader //
+            .load(SqlParserFactory.class) //
+            .firstOrDefault(() -> SqlParserFactory.DEFAULT);
 
-    public List<Point> getPoints() {
-        return points;
+    public static SqlParserFactory getSqlParserFactory() {
+        return METRIC_PARSER_FACTORY;
     }
 }
