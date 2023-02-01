@@ -19,6 +19,7 @@ package io.ceresdb.options;
 import java.util.concurrent.Executor;
 
 import io.ceresdb.LimitedPolicy;
+import io.ceresdb.RouteMode;
 import io.ceresdb.common.Copiable;
 import io.ceresdb.common.Endpoint;
 import io.ceresdb.common.Tenant;
@@ -237,6 +238,12 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         // all route tables are refreshed every 30 seconds.
         private long routeTableRefreshPeriodSeconds = 30;
 
+
+        /** Route mode for request
+          @see RouteMode
+         **/
+        private RouteMode routeMode = RouteMode.CLUSTER;
+
         public Builder(Endpoint clusterAddress) {
             this.clusterAddress = clusterAddress;
         }
@@ -433,6 +440,18 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         }
 
         /**
+         * Route mode for request
+         * @see RouteMode
+         *
+         * @param routeMode route mode for request
+         * @return this builder
+         */
+        public Builder routeMode(final RouteMode routeMode) {
+            this.routeMode = routeMode;
+            return this;
+        }
+
+        /**
          * A good start, happy coding.
          *
          * @return nice things
@@ -449,6 +468,8 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
             opts.routerOptions.setMaxCachedSize(this.routeTableMaxCachedSize);
             opts.routerOptions.setGcPeriodSeconds(this.routeTableGcPeriodSeconds);
             opts.routerOptions.setRefreshPeriodSeconds(this.routeTableRefreshPeriodSeconds);
+            opts.routerOptions.setRouteMode(this.routeMode);
+
             opts.writeOptions = new WriteOptions();
             opts.writeOptions.setMaxWriteSize(this.maxWriteSize);
             opts.writeOptions.setMaxRetries(this.writeMaxRetries);

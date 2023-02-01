@@ -17,18 +17,19 @@
 package io.ceresdb;
 
 /**
- *  define route mode
+ *  route mode
  * @author lee
- * @version : RouteMode.java, v 0.1 2023��01��17�� 14:23 lee Exp $
+ * @version : RouteMode.java, v 0.1 2023.01.17 14:23 lee Exp $
  */
 public enum RouteMode {
+
     /**
-     * In this mode, client request to a server  directly, and the server proxy the request to the correct server.
+     * In this mode, the client does not cache routing information and each request is proxied through the server to the correct server
      */
     STANDALONE,
 
     /**
-     * In this mode, the client will find the correct server first, and then request to the server.
+     * In this mode, the client cache routing information. Client find the correct server firstly, and then request to the correct server directly.
      */
     CLUSTER
 }

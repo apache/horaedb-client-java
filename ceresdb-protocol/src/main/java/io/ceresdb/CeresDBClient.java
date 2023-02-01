@@ -293,7 +293,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private static RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
         final RouterOptions routerOpts = opts.getRouterOptions();
         routerOpts.setRpcClient(rpcClient);
-        final RouterClient routerClient = new RouterClient();
+        final RouterClient routerClient = routerOpts.getRouteMode().equals(RouteMode.CLUSTER)?new RouterClient():new StandaloneRouterClient();
         if (!routerClient.init(routerOpts)) {
             throw new IllegalStateException("Fail to start router client");
         }
