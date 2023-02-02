@@ -19,10 +19,7 @@ package io.ceresdb;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import io.ceresdb.CeresDBClient;
 
-import io.ceresdb.options.RouterOptions;
-import io.ceresdb.rpc.RpcOptions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,10 +61,6 @@ public class CeresDBClientTest {
                 .writeMaxRetries(1) //
                 .readMaxRetries(1) //
                 .build();
-        RouterOptions routerOptions = new RouterOptions();
-        // set RouteMode to CLUSTER
-        routerOptions.setRouteMode(io.ceresdb.RouteMode.CLUSTER);
-        this.opts.setRouterOptions(routerOptions);
         this.client = new CeresDBClient();
     }
 
