@@ -238,7 +238,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         // all route tables are refreshed every 30 seconds.
         private long routeTableRefreshPeriodSeconds = 30;
 
-
         /** Route mode for request
           @see RouteMode
          **/
