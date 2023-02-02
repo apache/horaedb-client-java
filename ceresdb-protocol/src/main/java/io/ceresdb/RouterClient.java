@@ -80,10 +80,10 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
     private ScheduledExecutorService cleaner;
     private ScheduledExecutorService refresher;
 
-    private RouterOptions   opts;
-    private RpcClient       rpcClient;
-    private RouterByMetrics router;
-    private InnerMetrics    metrics;
+    protected RouterOptions   opts;
+    protected RpcClient       rpcClient;
+    protected RouterByMetrics router;
+    protected InnerMetrics    metrics;
 
     private final ConcurrentMap<String, Route> routeCache = new ConcurrentHashMap<>();
 
