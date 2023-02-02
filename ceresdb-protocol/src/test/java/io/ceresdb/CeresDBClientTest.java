@@ -19,7 +19,6 @@ package io.ceresdb;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
