@@ -83,9 +83,9 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
     private ScheduledExecutorService refresher;
 
     private RouterOptions   opts;
-    private RpcClient       rpcClient;
-    private RouterByMetrics router;
-    private InnerMetrics    metrics;
+    private RpcClient      rpcClient;
+    private RouterByTables router;
+    private InnerMetrics   metrics;
 
     private final ConcurrentMap<String, Route> routeCache = new ConcurrentHashMap<>();
 
@@ -139,7 +139,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
         final Endpoint address = Requires.requireNonNull(this.opts.getClusterAddress(), "Null.clusterAddress");
 
-        this.router = new RouterByMetrics(address);
+        this.router = new RouterByTables(address);
         this.metrics = new InnerMetrics(address);
 
         final long gcPeriod = this.opts.getGcPeriodSeconds();
@@ -187,20 +187,20 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         return Route.of(this.opts.getClusterAddress());
     }
 
-    public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> metrics) {
-        if (metrics == null || metrics.isEmpty()) {
+    public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> tables) {
+        if (tables == null || tables.isEmpty()) {
             return Utils.completedCf(Collections.emptyMap());
         }
 
         final Map<String, Route> local = new HashMap<>();
         final List<String> misses = new ArrayList<>();
 
-        metrics.forEach(metric -> {
-            final Route r = this.routeCache.get(metric);
+        tables.forEach(table -> {
+            final Route r = this.routeCache.get(table);
             if (r == null) {
-                misses.add(metric);
+                misses.add(table);
             } else {
-                local.put(metric, r);
+                local.put(table, r);
             }
         });
 
@@ -227,35 +227,35 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
                 });
     }
 
-    public CompletableFuture<Map<String, Route>> routeRefreshFor(final Collection<String> metrics) {
+    public CompletableFuture<Map<String, Route>> routeRefreshFor(final Collection<String> tables) {
         final long startCall = Clock.defaultClock().getTick();
-        return this.router.routeFor(metrics).whenComplete((remote, err) -> {
+        return this.router.routeFor(tables).whenComplete((remote, err) -> {
             if (err == null) {
                 this.routeCache.putAll(remote);
                 this.metrics.refreshedSize().update(remote.size());
                 this.metrics.cachedSize().update(this.routeCache.size());
                 this.metrics.refreshTimer().update(Clock.defaultClock().duration(startCall), TimeUnit.MILLISECONDS);
 
-                LOG.info("Route refreshed: {}, cached_size={}.", metrics, this.routeCache.size());
+                LOG.info("Route refreshed: {}, cached_size={}.", tables, this.routeCache.size());
             } else {
-                LOG.warn("Route refresh failed: {}.", metrics, err);
+                LOG.warn("Route refresh failed: {}.", tables, err);
             }
         });
     }
 
-    private void blockingRouteRefreshFor(final Collection<String> metrics) {
+    private void blockingRouteRefreshFor(final Collection<String> tables) {
         try {
-            routeRefreshFor(metrics).get(BLOCKING_ROUTE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            routeRefreshFor(tables).get(BLOCKING_ROUTE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException e) {
             LOG.error("Fail to blocking refresh route.", e);
         }
     }
 
-    public void clearRouteCacheBy(final Collection<String> metrics) {
-        if (metrics == null || metrics.isEmpty()) {
+    public void clearRouteCacheBy(final Collection<String> tables) {
+        if (tables == null || tables.isEmpty()) {
             return;
         }
-        metrics.forEach(this.routeCache::remove);
+        tables.forEach(this.routeCache::remove);
     }
 
     public int clearRouteCache() {
@@ -273,8 +273,8 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
 
         final Collection<String> keysToRefresh = Spines.newBuf(ITEM_COUNT_EACH_REFRESH);
-        for (final String metric : cachedKeys) {
-            keysToRefresh.add(metric);
+        for (final String table : cachedKeys) {
+            keysToRefresh.add(table);
             if (keysToRefresh.size() >= ITEM_COUNT_EACH_REFRESH) {
                 blockingRouteRefreshFor(keysToRefresh);
                 keysToRefresh.clear();
@@ -416,11 +416,11 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
                '}';
     }
 
-    private class RouterByMetrics implements Router<Collection<String>, Map<String, Route>> {
+    private class RouterByTables implements Router<Collection<String>, Map<String, Route>> {
 
         private final Endpoint endpoint;
 
-        private RouterByMetrics(Endpoint endpoint) {
+        private RouterByTables(Endpoint endpoint) {
             this.endpoint = endpoint;
         }
 
