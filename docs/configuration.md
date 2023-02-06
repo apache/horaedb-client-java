@@ -7,7 +7,6 @@
 | "CeresDB.client.write.collect_wrote_detail" | 写入成功后是否保留写入的 metric 列表，默认为 false |
 | "CeresDB.client.use_os_signal" | 是否使用 OS Signal，默认会使用 SIGUSR2 |
 | "CeresDB.signal.out_dir" | Signal 接收器输出内容到指定磁盘目录，默认为进程启动目录 |
-| "CeresDB.avro.name_validate" | 是否开启 Avro name 校验，默认 false |
 | "CeresDB.rpc.write.limit_percent" | RPC 层自适应限流器 `写` 操作占比（默认 0.7），剩下的留给 `读` 操作 |
 | "CeresDB.reporter.period_minutes" | Metrics reporter 定时输出周期，默认 30 分钟 |
 | "CeresDB.http.read_timeout_ms" | 基于 http 协议的管理类 API 的 http 读超时时间，默认 10000ms |

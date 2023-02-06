@@ -33,7 +33,6 @@ public final class OptKeys {
     public static final String HTTP_WRITE_TIMEOUT_MS     = "CeresDB.http.write_timeout_ms";
     public static final String GRPC_CONN_RESET_THRESHOLD = "CeresDB.grpc.conn.failures.reset_threshold";
     public static final String AVAILABLE_CPUS            = "CeresDB.available_cpus";
-    public static final String NAME_VALIDATE             = "CeresDB.avro.name_validate";
     public static final String WRITE_LIMIT_PERCENT       = "CeresDB.rpc.write.limit_percent";
 
     private OptKeys() {

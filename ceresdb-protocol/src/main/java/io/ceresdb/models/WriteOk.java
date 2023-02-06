@@ -17,7 +17,6 @@
 package io.ceresdb.models;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import io.ceresdb.common.OptKeys;
