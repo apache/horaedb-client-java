@@ -64,10 +64,10 @@ CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(SqlQueryRequest req, Context
 ```
 
 ### 参数说明:
-| name | desc                                                                                                       |
-| --- |------------------------------------------------------------------------------------------------------------|
-| `QueryRequest req` | 查询条件，包含 tables 和 sql 字段，tables 为建议字段，填写话会有更高效的路由, 不填写的话会自动解析 sql 语句以便进行路由(需要引入 ceresdb-sql 模块); sql 为查询语言。 |
-| `Context ctx` | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata                                                         |
+| name                  | desc                                                                                                       |
+|-----------------------|------------------------------------------------------------------------------------------------------------|
+| `SqlQueryRequest req` | 查询条件，包含 tables 和 sql 字段，tables 为建议字段，填写话会有更高效的路由, 不填写的话会自动解析 sql 语句以便进行路由(需要引入 ceresdb-sql 模块); sql 为查询语言。 |
+| `Context ctx`         | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata                                                         |
 
 ### 返回值说明
 

@@ -260,7 +260,18 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private static RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
         final RouterOptions routerOpts = opts.getRouterOptions();
         routerOpts.setRpcClient(rpcClient);
-        final RouterClient routerClient = new RouterClient();
+
+        RouterClient routerClient;
+        switch (routerOpts.getRouteMode()) {
+            case DIRECT:
+                routerClient = new RouterClient();
+                break;
+            case PROXY:
+                routerClient = new ProxyRouterClient();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Route mode " + routerOpts.getRouteMode());
+        }
         if (!routerClient.init(routerOpts)) {
             throw new IllegalStateException("Fail to start router client");
         }

@@ -70,7 +70,7 @@ public class CeresDBTest {
         rpcOpts.setInitialLimit(32);
         rpcOpts.setLimitKind(RpcOptions.LimitKind.Gradient);
         rpcOpts.setLogOnLimitChange(true);
-        this.opts = CeresDBOptions.newBuilder("30.54.154.64", 8831) //
+        this.opts = CeresDBOptions.newBuilder("30.54.154.64", 8831, RouteMode.DIRECT) //
                 .tenant("public", "sub_test", "test_token") //
                 .rpcOptions(rpcOpts) //
                 .writeMaxRetries(0) //

@@ -11,15 +11,16 @@
 | "CeresDB.reporter.period_minutes" | Metrics reporter 定时输出周期，默认 30 分钟 |
 
 ## CeresDBOptions
-| name | description |
-| --- | --- |
-| clusterAddress | 集群地址（稳定可用的地址） |
+| name           | description                                                                                                                  |
+|----------------|------------------------------------------------------------------------------------------------------------------------------|
+| clusterAddress | 集群地址（稳定可用的地址）                                                                                                                |
+| routeMode      | 路由模式，支持 DIRECT 和 PROXY 两种模式，DIRECT模式直连服务器，并在SDK侧缓存路由信息，性能更优；PROXY 模式通过 PROXY 模块转发，有一定的性能损耗，但是可以解决无法直连的情况，如 VIP               |
 | asyncWritePool | 作为一个纯异步的 client，需要一个写入调度线程池，用户可自行配置，默认将使用 SerializingExecutor，如果自行配置了 pool 请重点关注性能指标：async_read_pool.time 的数据，即使调整这个调度线程池的配置 |
-| asyncReadPool | 作为一个纯异步的 client，需要一个查询调度线程池，用户可自行配置，默认将使用 SerializingExecutor，如果自行配置了 pool 请重点关注性能指标：async_read_pool.time 的数据，即使调整这个调度线程池的配置 |
-| tenant | 租户信息 |
-| rpcOptions | RPC 的配置选项，详情请参考 RpcOptions |
-| routerOptions | 路由表更新组件的配置选项，详情请参考 RouterOptions |
-| writeOptions | 写入相关的的配置选项，详情请参考 WriteOptions |
+| asyncReadPool  | 作为一个纯异步的 client，需要一个查询调度线程池，用户可自行配置，默认将使用 SerializingExecutor，如果自行配置了 pool 请重点关注性能指标：async_read_pool.time 的数据，即使调整这个调度线程池的配置 |
+| tenant         | 租户信息                                                                                                                         |
+| rpcOptions     | RPC 的配置选项，详情请参考 RpcOptions                                                                                                   |
+| routerOptions  | 路由表更新组件的配置选项，详情请参考 RouterOptions                                                                                             |
+| writeOptions   | 写入相关的的配置选项，详情请参考 WriteOptions                                                                                                |
 
 ## WriteOptions
 写入相关的的配置选项

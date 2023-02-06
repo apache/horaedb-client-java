@@ -19,6 +19,7 @@ package io.ceresdb.options;
 import java.util.concurrent.Executor;
 
 import io.ceresdb.limit.LimitedPolicy;
+import io.ceresdb.RouteMode;
 import io.ceresdb.common.Copiable;
 import io.ceresdb.common.Endpoint;
 import io.ceresdb.common.Tenant;
@@ -148,6 +149,7 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         Requires.requireNonNull(opts.getTenant(), "CeresDBOptions.tenant");
         Requires.requireNonNull(opts.getRpcOptions(), "CeresDBOptions.rpcOptions");
         Requires.requireNonNull(opts.getRouterOptions(), "CeresDBOptions.RouterOptions");
+        Requires.requireNonNull(opts.getRouterOptions().getRouteMode(), "CeresDBOptions.RouterOptions.RouteMode");
         Requires.requireNonNull(opts.getWriteOptions(), "CeresDBOptions.writeOptions");
         Requires.requireNonNull(opts.getQueryOptions(), "CeresDBOptions.queryOptions");
         return opts;
@@ -157,10 +159,11 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
      * Create a new builder for CeresDBOptions.
      *
      * @param clusterAddress cluster address, for read/write data
+     * @Param routeMode direct or proxy in RouteMode
      * @return builder
      */
-    public static Builder newBuilder(final Endpoint clusterAddress) {
-        return new Builder(clusterAddress);
+    public static Builder newBuilder(final Endpoint clusterAddress, RouteMode routeMode) {
+        return new Builder(clusterAddress, routeMode);
     }
 
     /**
@@ -168,15 +171,18 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
      *
      * @param clusterHost cluster ip/host, for read/write data
      * @param clusterPort cluster port
+     * @param routeMode direct or proxy in RouteMode
      * @return builder
      */
-    public static Builder newBuilder(final String clusterHost, final int clusterPort) {
-        return newBuilder(Endpoint.of(clusterHost, clusterPort));
+    public static Builder newBuilder(final String clusterHost, final int clusterPort, RouteMode routeMode) {
+        return newBuilder(Endpoint.of(clusterHost, clusterPort), routeMode);
     }
 
     public static final class Builder {
         // The only constant address of this cluster.
         private final Endpoint clusterAddress;
+        // The routeMode for sdk, only Proxy and Direct support now.
+        private RouteMode routeMode;
         // Asynchronous thread pool, which is used to handle various asynchronous tasks in the SDK.
         private Executor asyncWritePool;
         private Executor asyncReadPool;
@@ -209,8 +215,9 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         // all route tables are refreshed every 30 seconds.
         private long routeTableRefreshPeriodSeconds = 30;
 
-        public Builder(Endpoint clusterAddress) {
+        public Builder(Endpoint clusterAddress, RouteMode routeMode) {
             this.clusterAddress = clusterAddress;
+            this.routeMode = routeMode;
         }
 
         /**
@@ -401,6 +408,8 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
             opts.routerOptions.setMaxCachedSize(this.routeTableMaxCachedSize);
             opts.routerOptions.setGcPeriodSeconds(this.routeTableGcPeriodSeconds);
             opts.routerOptions.setRefreshPeriodSeconds(this.routeTableRefreshPeriodSeconds);
+            opts.routerOptions.setRouteMode(this.routeMode);
+
             opts.writeOptions = new WriteOptions();
             opts.writeOptions.setMaxWriteSize(this.maxWriteSize);
             opts.writeOptions.setMaxRetries(this.writeMaxRetries);

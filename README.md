@@ -108,7 +108,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 
 ## Init CeresDB client
 ```java
-final CeresDBOptions opts = CeresDBOptions.newBuilder("30.54.154.64", 8831) // CeresDB default grpc port 8831
+final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // CeresDB default grpc port 8831，use DIRECT RouteMode
         .tenant("public", "sub_test", "test_token") // tenant info
         // maximum retry times when write fails
         // (only some error codes will be retried, such as the routing table failure)

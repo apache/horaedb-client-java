@@ -58,7 +58,9 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
 
 /**
- * A route rpc client which cached the routing table information locally
+ * A route rpc client which implement RouteMode.Direct
+ *
+ * cached the routing table information locally
  * and will refresh when the server returns an error code of INVALID_ROUTE
  *
  * @author xvyang.xy
@@ -81,11 +83,10 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
     private ScheduledExecutorService cleaner;
     private ScheduledExecutorService refresher;
-
-    private RouterOptions   opts;
-    private RpcClient      rpcClient;
-    private RouterByTables router;
-    private InnerMetrics   metrics;
+    protected RouterOptions          opts;
+    protected RpcClient              rpcClient;
+    protected RouterByTables         router;
+    protected InnerMetrics           metrics;
 
     private final ConcurrentMap<String, Route> routeCache = new ConcurrentHashMap<>();
 

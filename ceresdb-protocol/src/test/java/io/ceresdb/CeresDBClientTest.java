@@ -58,7 +58,7 @@ public class CeresDBClientTest {
 
     @Before
     public void before() {
-        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8081) //
+        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8081, RouteMode.DIRECT) //
                 .tenant("test", "sub_test", "test_token") //
                 .writeMaxRetries(1) //
                 .readMaxRetries(1) //
