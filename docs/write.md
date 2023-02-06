@@ -59,14 +59,14 @@ CREATE TABLE my_first_table(
     ts TIMESTAMP NOT NULL,
     c1 STRING TAG NOT NULL,
     c2 STRING TAG NOT NULL,
-    c3 DOUBLE NULL,
-    c4 STRING NULL,
-    c5 INT64 NULL,
-    c6 FLOAT NULL,
-    c7 INT32 NULL,
-    c8 INT16 NULL,
-    c9 INT8 NULL,
-    c10 BOOLEAN NULL,
+    c3 STRING NULL,
+    c4 BOOLEAN NULL,    
+    c5 DOUBLE NULL,
+    c6 FLOAT NULL,    
+    c7 INT64 NULL,
+    c8 INT32 NULL,
+    c9 INT16 NULL,
+    c10 INT8 NULL,
     c11 UINT64 NULL,
     c12 UINT32 NULL,
     c13 UINT16 NULL,
@@ -83,18 +83,18 @@ CREATE TABLE my_first_table(
 /**
  * Write the data stream to the database.
  *
- * @param data rows
+ * @param req  the write request
  * @param ctx  the invoke context
  * @return write result
  */
-CompletableFuture<Result<WriteOk, Err>> write(Collection<Rows> data, Context ctx);
+CompletableFuture<Result<WriteOk, Err>> write(WriteRequest req, Context ctx);
 ```
 
 ### 参数说明
-| name | desc |
-| --- | --- |
-| `Collection<Rows> data` | 要写入的数据，每一个 Rows 为一条时间线上多个时间点的点的集合，对于按照时间线来写入的场景这个结构将很大程度减少数据传输的大小，不过通常监控场景更多的是写一个横截面，整体上这个结构是一个综合考虑的结果。|
-| `Context ctx` | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
+| name             | desc                                                             |
+|------------------|------------------------------------------------------------------|
+| `WriteRuest req` | 要写入的请求，主要是一个写入的平铺的 Point 集合，其中 Point 是一个支持多值的数据点，允许不同表的数据点放在一起写入 |
+| `Context ctx`    | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata               |
 
 ### 返回值说明
 CompletableFuture<Result<WriteOk, Err>>: 返回结果一个 future，因为 write 是纯异步 API，整个链路上没有一处是阻塞的。
@@ -103,44 +103,25 @@ Result<WriteOk, Err>: Result 的灵感来自 Rust 中的 Result，其中 WriteOk
 WriteOk: 写入成功的结果展示，包含 success(成功条数) 和 failed(失败条数) 以及写入的 metrics 列表，多个 WriteOk 支持合并
 Err: 写入失败结果展示，包含错误状态码、错误文本信息、抛错的服务器地址，同样支持多个 Err 合并
 
-### Rows 结构
-| rows | tag1 | tag2 | tag3 | timestamp | field1 | field2 |
-| --- | --- | --- | --- | --- | --- | --- |
-|0| a1 | a2 | a3 | 2021-07-15 18:00:00 | fa1 | fa2 |
-|0| a1 | a2 | a3 | 2021-07-15 18:00:01 | fb1 | fb2 |
-|0| a1 | a2 | a3 | 2021-07-15 18:00:02 | fc1 | fc2 |
-|1| d1 | d2 | d3 | 2021-07-15 18:00:02 | fe1 | fe2 |
-
-如上表格，4 行数据都是相同 metric，其中前 3 条数据是相同时间线 `metric-a1-a2-a3` 所以前 3 条是一个 Rows，第 4 条数据是另一个 Rows
-
-### 如果构建一个 Rows?
+### 如果构建一个 Point?
 ```java
 //
 final long time = System.currentTimeMillis() - 1;
-final Rows rows = Series.newBuilder(metric) // 指定 metric
-    .tag("tag1", "tag_v1") // tagK1 = tagV1
-    .tag("tag2", "tag_v2") // tagK2 = tagV2
-    .toRowsBuilder() // 时间线已经确定，下面转为 Rows 的 Builder
-    .field(time, "field1", FieldValue.withDouble(0.1)) // 添加一个时间点为 `time` 的 field1
-    .field(time, "field2", FieldValue.withString("string_value")) // 添加一个时间点为 `time` 的 field2，与上面的 filed1 是同一行数据
-    .field(time + 1, "field1", FieldValue.withDouble(0.2)) // 添加一个时间点为 `time + 1` 的 field1，这是第二行数据了
-    .field(time + 1, "field2", FieldValue.withString("string_value_2")) // 添加一个时间点为 `time + 1` 的 field2，与上面的 filed1 是同一行数据
-    .build();
+final List<Point> points = Point.newPointsBuilder(table) // 指定 table
+        .addPoint() // 添加一个数据点
+            .setTimestamp(time) // 设置第一个点的时间戳
+            .addTag("tag1", "tag_v1")
+            .addTag("tag2", "tag_v2") 
+            .addField("field1", Value.withFloat64(0.64)) 
+            .addField("field2", Value.withString("string_value"))
+            .build() // 完成第一个点的构建
+        .addPoint() // 添加第二个点
+            .setTimestamp(time+10) // 设置第二个点的时间戳
+            .addTag("tag1", "tag_v1")
+            .addTag("tag2", "tag_v2")
+            .addField("field1", Value.withFloat64(1.28))
+            .addField("field2", Value.withString("string_value 2"))
+            .build() // 完成第二个点的构建
+        .build() // 完成所有point的构建
 ```
-以下代码也具备相同效果
-```java
-final long time = System.currentTimeMillis() - 1;
-final Rows rows = Series.newBuilder(metric) // 指定 metric
-    .tag("tag1", "tag_v1") // tagK1 = tagV1
-    .tag("tag2", "tag_v2") // tagK2 = tagV2
-    .toRowsBuilder() // 时间线已经确定，下面转为 Rows 的 Builder
-    .fields(time, input -> { // 一次写一个时间点的一整行数据
-        input.put("field1", FieldValue.withDouble(0.1));
-        input.put("field2", FieldValue.withString("string_value"));
-    })
-    .fields(time + 1, input -> { // 一次写一个时间点的一整行数据
-        input.put("field1", FieldValue.withDouble(0.2));
-        input.put("field2", FieldValue.withString("string_value_2"));
-    })
-    .build();
-```
+

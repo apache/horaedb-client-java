@@ -9,20 +9,17 @@
 | "CeresDB.signal.out_dir" | Signal 接收器输出内容到指定磁盘目录，默认为进程启动目录 |
 | "CeresDB.rpc.write.limit_percent" | RPC 层自适应限流器 `写` 操作占比（默认 0.7），剩下的留给 `读` 操作 |
 | "CeresDB.reporter.period_minutes" | Metrics reporter 定时输出周期，默认 30 分钟 |
-| "CeresDB.http.read_timeout_ms" | 基于 http 协议的管理类 API 的 http 读超时时间，默认 10000ms |
-| "CeresDB.http.write_timeout_ms" | 基于 http 协议的管理类 API 的 http 写超时时间，默认 10000ms |
 
 ## CeresDBOptions
 | name | description |
 | --- | --- |
-| clusterAddress | 集群地址（稳定可用的地址），路由表将从这个地址获取 |
+| clusterAddress | 集群地址（稳定可用的地址） |
 | asyncWritePool | 作为一个纯异步的 client，需要一个写入调度线程池，用户可自行配置，默认将使用 SerializingExecutor，如果自行配置了 pool 请重点关注性能指标：async_read_pool.time 的数据，即使调整这个调度线程池的配置 |
 | asyncReadPool | 作为一个纯异步的 client，需要一个查询调度线程池，用户可自行配置，默认将使用 SerializingExecutor，如果自行配置了 pool 请重点关注性能指标：async_read_pool.time 的数据，即使调整这个调度线程池的配置 |
 | tenant | 租户信息 |
 | rpcOptions | RPC 的配置选项，详情请参考 RpcOptions |
 | routerOptions | 路由表更新组件的配置选项，详情请参考 RouterOptions |
 | writeOptions | 写入相关的的配置选项，详情请参考 WriteOptions |
-| managementOptions | 数据管理相关配置选项，详情参考 ManagementOptions |
 
 ## WriteOptions
 写入相关的的配置选项
@@ -42,14 +39,6 @@
 | maxRetries | 最大重试次数，sdk 会在路由表失效时重试，重试过程对用户透明，完全异步上层无感知 |
 | maxInFlightQueryRequests | 查询限流参数：最大的在途请求数，超过会被 block |
 | limitedPolicy | 查询限流策略，提供几个实现分别为 blocking、discard 和 blocking-timeout，默认为 abort-blocking-timeout(10s)（阻塞到超时 10s 后失败并抛出异常），用户也可自行扩展 |
-
-# ManagementOptions
-
-| name | description |
-| --- | --- |
-| managementAddress | 管理服务地址，通常和集群地址 IP/Host 相同，但端口不同 |
-| tenant | 租户信息 |
-| checkSql | 是否在客户端提前检查 sql 有效性，默认 true |
 
 ## RpcOptions
 RPC 相关的配置选项

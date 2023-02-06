@@ -29,8 +29,6 @@ public final class OptKeys {
     public static final String USE_OS_SIGNAL             = "CeresDB.client.use_os_signal";
     public static final String REPORT_PERIOD             = "CeresDB.reporter.period_minutes";
     public static final String SIG_OUT_DIR               = "CeresDB.signal.out_dir";
-    public static final String HTTP_READ_TIMEOUT_MS      = "CeresDB.http.read_timeout_ms";
-    public static final String HTTP_WRITE_TIMEOUT_MS     = "CeresDB.http.write_timeout_ms";
     public static final String GRPC_CONN_RESET_THRESHOLD = "CeresDB.grpc.conn.failures.reset_threshold";
     public static final String AVAILABLE_CPUS            = "CeresDB.available_cpus";
     public static final String WRITE_LIMIT_PERCENT       = "CeresDB.rpc.write.limit_percent";

@@ -7,23 +7,23 @@ CeresDB 支持流式查询和写入，其中流式查询为 response streaming�
 /**
  * Executes a streaming-write-call, returns a write request observer for streaming-write.
  *
- * @param metric the metric to write
+ * @param metric the table to write
  * @param ctx    the invoke context
  * @return a write request observer for streaming-write
  */
-StreamWriteBuf<Rows, WriteOk> streamWrite(final String metric, final Context ctx);
+StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx);
 ```
 
 #### 参数说明
 
-| name | desc |
-| --- | --- |
-| `String metric` | 必须要指定一个 metric，并且限制只能流式写入这个 metric 的数据，这样做是为了高效，支持多个 metric 数据同时流式写入并不能做到高效，意义不大，所以不支持 |
-| `Context ctx` | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
+| name           | desc                                                                                |
+|----------------|-------------------------------------------------------------------------------------|
+| `String table` | 必须要指定一个 table，并且限制只能流式写入这个 table 的数据，这样做是为了高效，支持多个 table 数据同时流式写入并不能做到高效，意义不大，所以不支持 |
+| `Context ctx`  | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata                                  |
 
 #### 返回值说明
 返回值:
-`StreamWriteBuf<Rows, WriteOk>`: 一个支持流式写入的 buffer 如下：
+`StreamWriteBuf<Point, WriteOk>`: 一个支持流式写入的 buffer 如下：
 ```java
 public interface StreamWriteBuf<V, R> {
 
@@ -66,13 +66,13 @@ completed 告知 server 完成，接下来 server 端会返回一个汇总过的
 
 Example:
 ```java
-final StreamWriteBuf<Rows, WriteOk> writer = this.writeClient.streamWrite("test_metric");
+final StreamWriteBuf<Point, WriteOk> writer = this.writeClient.streamWrite("test_table");
 final CompletableFuture<WriteOk> ret = writer
-    .write(Util.generateRow("test_metric")) // 写入随机生成的数据，这里只作为示例
-    .write(Util.generateRow("test_metric")) // 可以链式调用
-    .write(Util.generateRow("test_metric")) //
+    .write(Util.generatePoints("test_table")) // 写入随机生成的数据，这里只作为示例
+    .write(Util.generatePoints("test_table")) // 可以链式调用
+    .write(Util.generatePoints("test_table")) //
     .flush() // flush 一次，后台会将数据发送到 server
-    .write(Util.generateRow("test_metric")) //
+    .write(Util.generatePoints("test_table")) //
     .flush() // 再一次 flush，整个流式调用可以多次 flush，每次 flush 数据的大小可根据业务场景定夺
     .completed(); // 调用 completed 会结束这个`流`，server 会返回总体的写入结果
 ```
@@ -87,7 +87,7 @@ final CompletableFuture<WriteOk> ret = writer
  * @param observer receives data from an observable stream
  * @param ctx      the invoke context
  */
-void streamQuery(QueryRequest req, Context ctx, Observer<QueryOk> observer);
+void streamSqlQuery(SqlQueryRequest req, Context ctx, Observer<SqlQueryOk> observer);
 
 /**
  * Executes a stream-query-call with a streaming response.
@@ -98,20 +98,20 @@ void streamQuery(QueryRequest req, Context ctx, Observer<QueryOk> observer);
  * @param ctx     the invoke context
  * @return the iterator of record data
  */
-Iterator<Record> blockingStreamQuery(QueryRequest req, long timeout, TimeUnit unit, Context ctx);
+Iterator<Row> blockingStreamSqlQuery(SqlQueryRequest req, long timeout, TimeUnit unit, Context ctx);
 ```
 
 流式查询有两种 API，一种是基于 Observer 回调，灵活性更高，适合非阻塞的异步场景；
-另一种是返回一个 Iterator，每个 element 即是一行数据(Record)，hasNext 方法有可能被阻塞直到服务端返回数据流或者数据流结束。
+另一种是返回一个 Iterator，每个 element 即是一行数据(Row)，hasNext 方法有可能被阻塞直到服务端返回数据流或者数据流结束。
 
 #### 参数说明
 
-| name | desc |
-| --- | --- |
-| `QueryRequest req` | 查询条件，这一点和普通查询没有任何区别 |
-| `Context ctx` | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
-| `Observer<QueryOk> observer` | response 回调观察者，可以不断的接收 server 端返回的数据，在 server 端把数据吐完后 onCompleted 会被调用 |
-| `timeout` | 调用 `Iterator#hasNext` 的最大等待时间（因为是基于 buffer 的惰性拉取数据，在 buffer 为空时会从 server 现拉取数据） |
+| name                            | desc |
+|---------------------------------| --- |
+| `SqlQueryRequest req`           | 查询条件，这一点和普通查询没有任何区别 |
+| `Context ctx`                   | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
+| `Observer<SqlQueryOk> observer` | response 回调观察者，可以不断的接收 server 端返回的数据，在 server 端把数据吐完后 onCompleted 会被调用 |
+| `timeout`                       | 调用 `Iterator#hasNext` 的最大等待时间（因为是基于 buffer 的惰性拉取数据，在 buffer 为空时会从 server 现拉取数据） |
 
 Observer 的 API 如下：
 ```java
