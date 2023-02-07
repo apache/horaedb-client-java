@@ -155,13 +155,14 @@ public class CeresDBTest {
         final String timeString = format.format(time.getTime());
         System.out.println("time=" + timeString + " " + time.getTimeInMillis() + " " + time.getTime());
 
-        final int writeCount = ThreadLocalRandom.current().nextInt(10);
+        final int writeCount = ThreadLocalRandom.current().nextInt(1,10);
 
         final Result<WriteOk, Err> writeR = write(time, writeCount);
 
         LOG.info("#comprehensiveTest write result={}.", writeR);
 
         Assert.assertTrue(writeR.isOk());
+        Assert.assertEquals(writeR.getOk().getSuccess(), writeCount);
 
         final SqlQueryRequest req = SqlQueryRequest.newBuilder() //
                 .sql("select * from %s where ts < to_timestamp_millis('%s')", TEST_TABLE_NAME, timeString) //

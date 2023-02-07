@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -56,7 +57,6 @@ import io.ceresdb.models.Point;
 import io.ceresdb.models.Row;
 import io.ceresdb.models.SqlQueryOk;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.proto.internal.Common;
@@ -84,7 +84,7 @@ import org.apache.arrow.vector.ipc.ArrowStreamReader;
 import org.apache.arrow.vector.types.Types;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.Schema;
-
+import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdInputStream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteStringHelper;
@@ -448,17 +448,25 @@ public final class Utils {
         try {
             InputStream arrowStream = batch.newInput();
             if (compression == Storage.ArrowPayload.Compression.ZSTD) {
-                ZstdInputStream zstdInputStream = new ZstdInputStream(batch.newInput());
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(batch.size());
-
-                byte[] block = new byte[128 * 1024];
-                int size = zstdInputStream.read(block);
-                byteArrayOutputStream.write(block);
-                while (size > 0) {
-                    size = zstdInputStream.read(block);
+                byte[] batchBuffer = batch.toByteArray();
+                long decompressedSize = Zstd.decompressedSize(batchBuffer);
+                if (decompressedSize > 0 ) {
+                    // batch compress mode
+                     byte[] decompressedByteBuffer = Zstd.decompress(batchBuffer, (int)decompressedSize);
+                     arrowStream = new ByteArrayInputStream(decompressedByteBuffer);
+                } else {
+                    // stream compress mode
+                    ZstdInputStream zstdInputStream = new ZstdInputStream(batch.newInput());
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(batch.size());
+                    byte[] block = new byte[128 * 1024];
+                    int size = zstdInputStream.read(block);
                     byteArrayOutputStream.write(block);
+                    while (size > 0) {
+                        size = zstdInputStream.read(block);
+                        byteArrayOutputStream.write(block);
+                    }
+                    arrowStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
                 }
-                arrowStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             }
 
             ArrowStreamReader arrowStreamReader = new ArrowStreamReader(arrowStream, new RootAllocator());
