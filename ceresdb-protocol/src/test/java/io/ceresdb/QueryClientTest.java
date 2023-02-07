@@ -224,8 +224,8 @@ public class QueryClientTest {
 
         Assert.assertEquals("test", row.getColumnValue("fString").getString());
         Assert.assertEquals(Boolean.TRUE, row.getColumnValue("fBool").getBoolean());
-        Assert.assertEquals(0.64, row.getColumnValue("fFloat64").getFloat64(), 0.000001);
-        Assert.assertEquals(0.32f, row.getColumnValue("fFloat32").getFloat32(), 0.000001);
+        Assert.assertEquals(0.64, row.getColumnValue("fDouble").getDouble(), 0.000001);
+        Assert.assertEquals(0.32f, row.getColumnValue("fFloat").getFloat(), 0.000001);
         Assert.assertEquals(-64, row.getColumnValue("fInt64").getInt64());
         Assert.assertEquals(-32, row.getColumnValue("fInt32").getInt32());
         Assert.assertEquals(-16, row.getColumnValue("fInt16").getInt16());
@@ -341,8 +341,8 @@ public class QueryClientTest {
         BufferAllocator allocator = new RootAllocator();
         VarCharVector stringVector = new VarCharVector("fString", allocator);
         BitVector boolVector = new BitVector("fBool", allocator);
-        Float8Vector float64Vector = new Float8Vector("fFloat64", allocator);
-        Float4Vector float32Vector = new Float4Vector("fFloat32", allocator);
+        Float8Vector doubleVector = new Float8Vector("fDouble", allocator);
+        Float4Vector floatVector = new Float4Vector("fFloat", allocator);
         BigIntVector int64Vector = new BigIntVector("fInt64", allocator);
         IntVector int32Vector = new IntVector("fInt32", allocator);
         SmallIntVector int16Vector = new SmallIntVector("fInt16", allocator);
@@ -357,8 +357,8 @@ public class QueryClientTest {
         for (int i = 0; i < rowCount; i++) {
             stringVector.setSafe(i, "test".getBytes());
             boolVector.setSafe(i, 1);
-            float64Vector.setSafe(i, 0.64);
-            float32Vector.setSafe(i, 0.32f);
+            doubleVector.setSafe(i, 0.64);
+            floatVector.setSafe(i, 0.32f);
             int64Vector.setSafe(i, -64);
             int32Vector.setSafe(i, -32);
             int16Vector.setSafe(i, -16);
@@ -372,8 +372,8 @@ public class QueryClientTest {
         }
         stringVector.setValueCount(rowCount);
         boolVector.setValueCount(rowCount);
-        float64Vector.setValueCount(rowCount);
-        float32Vector.setValueCount(rowCount);
+        doubleVector.setValueCount(rowCount);
+        floatVector.setValueCount(rowCount);
         int64Vector.setValueCount(rowCount);
         int32Vector.setValueCount(rowCount);
         int16Vector.setValueCount(rowCount);
@@ -385,12 +385,12 @@ public class QueryClientTest {
         tsVector.setValueCount(rowCount);
         varBinaryVector.setValueCount(rowCount);
 
-        List<Field> fields = Arrays.asList(stringVector.getField(), boolVector.getField(), float64Vector.getField(),
-                float32Vector.getField(), int64Vector.getField(), int32Vector.getField(), int16Vector.getField(),
+        List<Field> fields = Arrays.asList(stringVector.getField(), boolVector.getField(), doubleVector.getField(),
+                floatVector.getField(), int64Vector.getField(), int32Vector.getField(), int16Vector.getField(),
                 int8Vector.getField(), uint64Vector.getField(), uint32Vector.getField(), uint16Vector.getField(),
                 uint8Vector.getField(), tsVector.getField(), varBinaryVector.getField());
 
-        List<FieldVector> vectors = Arrays.asList(stringVector, boolVector, float64Vector, float32Vector, int64Vector,
+        List<FieldVector> vectors = Arrays.asList(stringVector, boolVector, doubleVector, floatVector, int64Vector,
                 int32Vector, int16Vector, int8Vector, uint64Vector, uint32Vector, uint16Vector, uint8Vector, tsVector,
                 varBinaryVector);
         VectorSchemaRoot root = new VectorSchemaRoot(fields, vectors);

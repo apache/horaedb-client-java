@@ -31,7 +31,7 @@ public class PointTest {
         Point.newPointsBuilder("test_table").addPoint().setTimestamp(Clock.defaultClock().getTick())
                 .addTag("timestamp", Value.withString("ts")) //
                 .addTag("tag2", Value.withString("v")) //
-                .addField("test", Value.withFloat32(0.1f)).build().build();
+                .addField("test", Value.withFloat(0.1f)).build().build();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -39,6 +39,6 @@ public class PointTest {
         Point.newPointsBuilder("test_table").addPoint().setTimestamp(Clock.defaultClock().getTick())
                 .addTag("tag1", Value.withString("t1")) //
                 .addTag("tag2", Value.withString("t2")) //
-                .addField("tsid", Value.withFloat32(0.1f)).build().build();
+                .addField("tsid", Value.withFloat(0.1f)).build().build();
     }
 }

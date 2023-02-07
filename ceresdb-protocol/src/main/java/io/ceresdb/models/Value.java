@@ -30,8 +30,8 @@ public class Value {
     public enum DataType {
         String(String.class), //
         Boolean(Boolean.class), //
-        Float64(Double.class), //
-        Float32(Float.class), //
+        Double(Double.class), //
+        Float(Float.class), //
         Int64(Long.class), //
         Int32(Integer.class), //
         Int16(Integer.class), //
@@ -58,8 +58,8 @@ public class Value {
         String(DataType.String), //
         Boolean(DataType.Boolean), //
         Int64(DataType.Int64), //
-        Float64(DataType.Float64), //
-        Float32(DataType.Float32), //
+        Double(DataType.Double), //
+        Float(DataType.Float), //
         Int32(DataType.Int32), //
         Int16(DataType.Int16), //
         Int8(DataType.Int8), //
@@ -138,20 +138,20 @@ public class Value {
         return isNull() ? Optional.empty() : Optional.of(getBoolean());
     }
 
-    public double getFloat64() {
-        return getCheckedValue(DataType.Float64);
+    public double getDouble() {
+        return getCheckedValue(DataType.Double);
     }
 
-    public Optional<Double> getFloat64OrNull() {
-        return isNull() ? Optional.empty() : Optional.of(getFloat64());
+    public Optional<Double> getDoubleOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getDouble());
     }
 
-    public float getFloat32() {
-        return getCheckedValue(DataType.Float32);
+    public float getFloat() {
+        return getCheckedValue(DataType.Float);
     }
 
-    public Optional<Float> getFloat32OrNull() {
-        return isNull() ? Optional.empty() : Optional.of(getFloat32());
+    public Optional<Float> getFloatOrNull() {
+        return isNull() ? Optional.empty() : Optional.of(getFloat());
     }
 
     public long getInt64() {
@@ -257,20 +257,20 @@ public class Value {
         return val == null ? Value.NullValue.Boolean.value : withBoolean(val);
     }
 
-    public static Value withFloat64(final double val) {
-        return new Value(DataType.Float64, val);
+    public static Value withDouble(final double val) {
+        return new Value(DataType.Double, val);
     }
 
-    public static Value withFloat64OrNull(final Double val) {
-        return val == null ? Value.NullValue.Float64.value : withFloat64(val);
+    public static Value withDoubleOrNull(final Double val) {
+        return val == null ? Value.NullValue.Double.value : withDouble(val);
     }
 
-    public static Value withFloat32(final float val) {
-        return new Value(DataType.Float32, val);
+    public static Value withFloat(final float val) {
+        return new Value(DataType.Float, val);
     }
 
-    public static Value withFloat32OrNull(final Float val) {
-        return val == null ? Value.NullValue.Float32.value : withFloat32(val);
+    public static Value withFloatOrNull(final Float val) {
+        return val == null ? Value.NullValue.Float.value : withFloat(val);
     }
 
     public static Value withInt64(final long val) {

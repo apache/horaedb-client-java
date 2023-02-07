@@ -80,8 +80,8 @@ SqlQueryOk: 查询成功的结果，其中 sql 是查询时的语句，affectedR
 在处理查询返回结果时，用户可以直接获取List<Row>，也可以通过 stream 的方式处理，Row是一个 Value 的集合，是很简单的数据结构。
 需要注意的是，在 Value 获取 java primitive 值的时候，需要传入和建表匹配的数值类型方法，否则将会报错。        
 代码示例：
-        // column cpu_util 是一个 FLOAT64 类型的field
-        row.getColumnValue("cpu_util").getFloat64()
+        // column cpu_util 是一个 Double 类型的field
+        row.getColumnValue("cpu_util").getDouble()
 
 Err: 查询失败结果展示，包含错误状态码、错误文本信息、抛错的服务器地址。
 ```

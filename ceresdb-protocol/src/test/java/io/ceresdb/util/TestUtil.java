@@ -39,11 +39,11 @@ public class TestUtil {
         return Point.newPointsBuilder(table) //
                 .addPoint().setTimestamp(time).addTag("tag1", Value.withString("tag_v1")) //
                 .addTag("tag2", Value.withString("tag_v2")) //
-                .addField("field1", Value.withFloat64(0.1)) //
+                .addField("field1", Value.withDouble(0.1)) //
                 .addField("field2", Value.withString("string_value")) //
                 .build().addPoint().setTimestamp(time + 1).addTag("tag1", Value.withString("tag_v1")) //
                 .addTag("tag2", Value.withString("tag_v2")) //
-                .addField("field1", Value.withFloat64(0.2)) //
+                .addField("field1", Value.withDouble(0.2)) //
                 .addField("field2", Value.withString("string_value_2")) //
                 .build().build();
     }

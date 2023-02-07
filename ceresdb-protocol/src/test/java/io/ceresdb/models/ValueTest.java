@@ -46,23 +46,23 @@ public class ValueTest {
     }
 
     @Test
-    public void nullableFloat64Test() {
-        final Value f1 = Value.withFloat64(0.1);
-        Assert.assertTrue(f1.getFloat64OrNull().isPresent());
+    public void nullableDoubleTest() {
+        final Value f1 = Value.withDouble(0.1);
+        Assert.assertTrue(f1.getDoubleOrNull().isPresent());
 
-        final Value f2 = Value.withFloat64OrNull(null);
+        final Value f2 = Value.withDoubleOrNull(null);
         Assert.assertTrue(f2.isNull());
-        Assert.assertFalse(f2.getFloat64OrNull().isPresent());
+        Assert.assertFalse(f2.getDoubleOrNull().isPresent());
     }
 
     @Test
-    public void nullableFloat32Test() {
-        final Value f1 = Value.withFloat32OrNull(123.01f);
-        Assert.assertTrue(f1.getFloat32OrNull().isPresent());
+    public void nullableFloatTest() {
+        final Value f1 = Value.withFloatOrNull(123.01f);
+        Assert.assertTrue(f1.getFloatOrNull().isPresent());
 
-        final Value f2 = Value.withFloat32OrNull(null);
+        final Value f2 = Value.withFloatOrNull(null);
         Assert.assertTrue(f2.isNull());
-        Assert.assertFalse(f2.getFloat32OrNull().isPresent());
+        Assert.assertFalse(f2.getFloatOrNull().isPresent());
     }
 
     @Test

@@ -155,22 +155,22 @@ final List<Point> data = Point.newPointsBuilder("machine_table")
             .setTimestamp(t0)
             .addTag("city", "Singapore")
             .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withFloat64(0.23))
-            .addField("mem", Value.withFloat64(0.55))
+            .addField("cpu", Value.withDouble(0.23))
+            .addField("mem", Value.withDouble(0.55))
             .build()
         .addPoint() // second point
             .setTimestamp(t1)
             .addTag("city", "Singapore")
             .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withFloat64(0.25))
-            .addField("mem", Value.withFloat64(0.56))
+            .addField("cpu", Value.withDouble(0.25))
+            .addField("mem", Value.withDouble(0.56))
             .build()
         .addPoint()// third point
             .setTimestamp(t1)
             .addTag("city", "Shanghai")
             .addTag("ip", "10.0.0.2")
-            .addField("cpu", Value.withFloat64(0.21))
-            .addField("mem", Value.withFloat64(0.52))
+            .addField("cpu", Value.withDouble(0.21))
+            .addField("mem", Value.withDouble(0.52))
             .build()
         .build();
 
@@ -206,8 +206,8 @@ final List<Row> rows = queryOk.getRowList();
 Assert.assertEquals(t0, rows.get(0).getColumnValue("ts").getTimestamp());
 Assert.assertEquals("Singapore", rows.get(0).getColumnValue("city").getString());
 Assert.assertEquals("10.0.0.1", rows.get(0).getColumnValue("ip").getString());
-Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getFloat64(), 0.0000001);
-Assert.assertEquals(0.55, rows.get(0).getColumnValue("mem").getFloat64(), 0.0000001);
+Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getDouble(), 0.0000001);
+Assert.assertEquals(0.55, rows.get(0).getColumnValue("mem").getDouble(), 0.0000001);
 
 // get rows as stream
 final Stream<Row> rowStream = queryOk.stream();
@@ -228,8 +228,8 @@ for (int i = 0; i < 1000; i++) {
             .setTimestamp(t)
             .addTag("city", "Beijing")
             .addTag("ip", "10.0.0.3")
-            .addField("cpu", Value.withFloat64(0.42))
-            .addField("mem", Value.withFloat64(0.67))
+            .addField("cpu", Value.withDouble(0.42))
+            .addField("mem", Value.withDouble(0.67))
             .build()
         .build();
         writeBuf.writeAndFlush(streamData);

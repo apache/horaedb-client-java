@@ -112,14 +112,14 @@ final List<Point> points = Point.newPointsBuilder(table) // 指定 table
             .setTimestamp(time) // 设置第一个点的时间戳
             .addTag("tag1", "tag_v1")
             .addTag("tag2", "tag_v2") 
-            .addField("field1", Value.withFloat64(0.64)) 
+            .addField("field1", Value.withDouble(0.64)) 
             .addField("field2", Value.withString("string_value"))
             .build() // 完成第一个点的构建
         .addPoint() // 添加第二个点
             .setTimestamp(time+10) // 设置第二个点的时间戳
             .addTag("tag1", "tag_v1")
             .addTag("tag2", "tag_v2")
-            .addField("field1", Value.withFloat64(1.28))
+            .addField("field1", Value.withDouble(1.28))
             .addField("field2", Value.withString("string_value 2"))
             .build() // 完成第二个点的构建
         .build() // 完成所有point的构建

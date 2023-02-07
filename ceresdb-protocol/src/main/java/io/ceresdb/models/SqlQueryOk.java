@@ -77,7 +77,7 @@ public class SqlQueryOk implements Streamable<Row> {
         return "QueryOk{" + //
                "sql='" + sql + '\'' + //
                ", affectedRows=" + affectedRows + //
-               ", rows=" +  getRowCount() + //
+               ", rows=" + getRowCount() + //
                '}';
     }
 

@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,7 +34,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import io.ceresdb.Route;
@@ -377,14 +375,14 @@ public final class Utils {
     public static Storage.Value toProtoValue(final Value value) {
         final Storage.Value.Builder vb = Storage.Value.newBuilder();
         switch (value.getDataType()) {
-            case Float64:
-                return vb.setFloat64Value(value.getFloat64()).build();
+            case Double:
+                return vb.setFloat64Value(value.getDouble()).build();
             case String:
                 return vb.setStringValue(value.getString()).build();
             case Int64:
                 return vb.setInt64Value(value.getInt64()).build();
-            case Float32:
-                return vb.setFloat32Value(value.getFloat32()).build();
+            case Float:
+                return vb.setFloat32Value(value.getFloat()).build();
             case Int32:
                 return vb.setInt32Value(value.getInt32()).build();
             case Int16:
@@ -450,10 +448,10 @@ public final class Utils {
             if (compression == Storage.ArrowPayload.Compression.ZSTD) {
                 byte[] batchBuffer = batch.toByteArray();
                 long decompressedSize = Zstd.decompressedSize(batchBuffer);
-                if (decompressedSize > 0 ) {
+                if (decompressedSize > 0) {
                     // batch compress mode
-                     byte[] decompressedByteBuffer = Zstd.decompress(batchBuffer, (int)decompressedSize);
-                     arrowStream = new ByteArrayInputStream(decompressedByteBuffer);
+                    byte[] decompressedByteBuffer = Zstd.decompress(batchBuffer, (int) decompressedSize);
+                    arrowStream = new ByteArrayInputStream(decompressedByteBuffer);
                 } else {
                     // stream compress mode
                     ZstdInputStream zstdInputStream = new ZstdInputStream(batch.newInput());
@@ -517,10 +515,10 @@ public final class Utils {
                     Float8Vector float8Vector = (Float8Vector) vector;
                     for (int rowIdx = 0; rowIdx < float8Vector.getValueCount(); rowIdx++) {
                         if (float8Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloat64OrNull(null));
+                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withDoubleOrNull(null));
                         } else {
                             rows.get(rowIdx).setColumnValue(field.getName(),
-                                    Value.withFloat64(float8Vector.get(rowIdx)));
+                                    Value.withDouble(float8Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -528,10 +526,9 @@ public final class Utils {
                     Float4Vector float4Vector = (Float4Vector) vector;
                     for (int rowIdx = 0; rowIdx < float4Vector.getValueCount(); rowIdx++) {
                         if (float4Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloat32OrNull(null));
+                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloatOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
-                                    Value.withFloat32(float4Vector.get(rowIdx)));
+                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloat(float4Vector.get(rowIdx)));
                         }
                     }
                     break;

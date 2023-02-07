@@ -96,8 +96,8 @@ public class CeresDBTest {
                                                                                               "tInt64 INT64 TAG NULL," + //
                                                                                               "fString STRING NULL," + //
                                                                                               "fBool BOOLEAN NULL," + //
-                                                                                              "fFloat64 DOUBLE NULL," + //
-                                                                                              "fFloat32 FLOAT NULL," + //
+                                                                                              "fDouble DOUBLE NULL," + //
+                                                                                              "fFloat FLOAT NULL," + //
                                                                                               "fInt64 INT64 NULL," + //
                                                                                               "fInt32 INT32 NULL," + //
                                                                                               "fInt16 INT16 NULL," + //
@@ -155,7 +155,7 @@ public class CeresDBTest {
         final String timeString = format.format(time.getTime());
         System.out.println("time=" + timeString + " " + time.getTimeInMillis() + " " + time.getTime());
 
-        final int writeCount = ThreadLocalRandom.current().nextInt(1,10);
+        final int writeCount = ThreadLocalRandom.current().nextInt(1, 10);
 
         final Result<WriteOk, Err> writeR = write(time, writeCount);
 
@@ -178,7 +178,7 @@ public class CeresDBTest {
 
         ok.stream().forEach(row -> {
             LOG.info(
-                    "Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fFloat64={}, fFloat32={}, fInt64={}, fInt32={}, fInt16={},"
+                    "Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
                      + //
             "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}, fVarbinary={}", //
                     row.getColumnValue("ts").getTimestamp(), //
@@ -186,8 +186,8 @@ public class CeresDBTest {
                     row.getColumnValue("tInt64").getInt64(), //
                     row.getColumnValue("fString").getString(), //
                     row.getColumnValue("fBool").getBoolean(), //
-                    row.getColumnValue("fFloat64").getFloat64(), //
-                    row.getColumnValue("fFloat32").getFloat32(), //
+                    row.getColumnValue("fDouble").getDouble(), //
+                    row.getColumnValue("fFloat").getFloat(), //
                     row.getColumnValue("fInt64").getInt64(), //
                     row.getColumnValue("fInt32").getInt32(), //
                     row.getColumnValue("fInt16").getInt16(), //
@@ -242,8 +242,8 @@ public class CeresDBTest {
         for (long ts = (timestamp - count); ts < timestamp; ts++) {
             builder.addPoint().setTimestamp(ts).addTag("tString", Value.withString("first_c1"))
                     .addTag("tInt64", Value.withInt64(12)).addField("fString", Value.withString("string value"))
-                    .addField("fBool", Value.withBoolean(true)).addField("fFloat64", Value.withFloat64(0.64))
-                    .addField("fFloat32", Value.withFloat32(0.32f)).addField("fInt64", Value.withInt64(-64))
+                    .addField("fBool", Value.withBoolean(true)).addField("fDouble", Value.withDouble(0.64))
+                    .addField("fFloat", Value.withFloat(0.32f)).addField("fInt64", Value.withInt64(-64))
                     .addField("fInt32", Value.withInt32(-32)).addField("fInt16", Value.withInt16(-16))
                     .addField("fInt8", Value.withInt8(-8)).addField("fUint64", Value.withUInt64(64))
                     .addField("fUint32", Value.withUInt32(32)).addField("fUint16", Value.withUInt16(16))
