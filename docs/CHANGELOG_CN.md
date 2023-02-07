@@ -19,6 +19,16 @@ X.Y.Z
 | Final | 最终版本 |
 
 ---
+## 1.0.0.alpha
+- Features
+  - 
+- Fixes
+  -
+- Breaking Changes
+  - SDK 重新定义新的读写接口
+  - 移除了management客户端，使用和查询数据一致的通用 `SqlQuery`
+  - CeresDBClient 构建增加必选参数 `RouteMode`
+
 ## 0.0.3.RC2
 - Features
   - TageValue 追加 withBooleanOrNull 的 nullable API

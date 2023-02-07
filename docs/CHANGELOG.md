@@ -19,6 +19,16 @@ The label below（modifier）：
 | Final | Final version |
 
 ---
+## 1.0.0.alpha
+- Features
+  - 
+- Fixes
+  -
+- Breaking Changes
+  - SDK refactor query/write API
+  - Remove management client side, replaced by generic `SqlQuery`
+  - CeresDBClient builder add required parameter `RouteMode`
+
 ## 0.0.3.RC2
 - Features
   - TageValue add withBooleanOrNull nullable API
@@ -97,9 +107,9 @@ The label below（modifier）：
   - remove unnecessary metric collect
 - Fixes
 - Breaking Changes
-  - QueryOptions#setRoutedClient 改为 QueryOptions#setRouterClient
-  - QueryOptions#getRoutedClient 改为 QueryOptions#getRouterClient
-  - CeresDBOptions.Builder.limitedPolicy 改为 CeresDBOptions.Builder.writeLimitedPolicy
+  - Rename QueryOptions#setRoutedClient to QueryOptions#setRouterClient
+  - Rename QueryOptions#getRoutedClient to QueryOptions#getRouterClient
+  - Rename CeresDBOptions.Builder.limitedPolicy to CeresDBOptions.Builder.writeLimitedPolicy
 
 ## 0.0.2.RC13 (2021-12-27)
 - Features
