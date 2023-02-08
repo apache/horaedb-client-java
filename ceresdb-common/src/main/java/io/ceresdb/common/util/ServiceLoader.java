@@ -40,7 +40,6 @@ import io.ceresdb.common.SPI;
 /**
  * A simple service-provider loading facility (SPI).
  *
- * @author jiachun.fjc
  */
 @SuppressWarnings("PMD")
 public final class ServiceLoader<S> implements Iterable<S> {

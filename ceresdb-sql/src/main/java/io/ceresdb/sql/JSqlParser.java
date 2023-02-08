@@ -36,7 +36,6 @@ import net.sf.jsqlparser.statement.select.Select;
 /**
  * Parse SQL use JSqlParser.
  *
- * @author xvyang.xy
  */
 public class JSqlParser implements SqlParser {
 

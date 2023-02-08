@@ -32,7 +32,6 @@ import com.google.protobuf.MessageLite;
 /**
  * Request method metric interceptor.
  *
- * @author jiachun.fjc
  */
 public class MetricInterceptor implements ClientInterceptor {
 

@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * A {@code ByteString} helper.
  *
- * @author jiachun.fjc
  */
 public class ByteStringHelper {
 

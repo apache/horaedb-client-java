@@ -30,7 +30,6 @@ import io.ceresdb.common.signal.SignalHandler;
 /**
  * A signal handler that can clear the route cache.
  *
- * @author jiachun.fjc
  */
 @SPI(priority = 94)
 public class ClearRouteCacheSignalHandler implements SignalHandler {

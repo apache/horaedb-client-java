@@ -25,7 +25,6 @@ import io.ceresdb.common.util.SystemPropertyUtil;
 /**
  * Contains the success value of write.
  *
- * @author xvyang.xy
  */
 public class WriteOk {
 

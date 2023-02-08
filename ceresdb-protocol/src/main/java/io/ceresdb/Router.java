@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 /**
  * A RPC router for CeresDB.
  *
- * @author jiachun.fjc
  */
 public interface Router<Req, Resp> {
 

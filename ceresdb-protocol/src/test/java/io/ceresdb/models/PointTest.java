@@ -20,10 +20,6 @@ import org.junit.Test;
 
 import io.ceresdb.common.util.Clock;
 
-/**
- *
- * @author xvyang.xy
- */
 public class PointTest {
 
     @Test(expected = IllegalArgumentException.class)

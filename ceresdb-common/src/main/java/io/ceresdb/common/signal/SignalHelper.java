@@ -26,7 +26,6 @@ import io.ceresdb.common.util.Platform;
 /**
  * A signal helper, provides ANSI/ISO C signal support.
  *
- * @author jiachun.fjc
  */
 public final class SignalHelper {
 

@@ -16,9 +16,6 @@
  */
 package io.ceresdb.common.util.internal;
 
-/**
- * @author jiachun.fjc
- */
 public interface ReferenceFieldUpdater<U, W> {
 
     void set(final U obj, final W newValue);

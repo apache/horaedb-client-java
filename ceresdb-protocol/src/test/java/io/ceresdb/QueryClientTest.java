@@ -78,9 +78,6 @@ import io.ceresdb.util.Utils;
 
 import com.google.protobuf.ByteStringHelper;
 
-/**
- * @author xvyang.xy
- */
 @RunWith(value = MockitoJUnitRunner.class)
 public class QueryClientTest {
 

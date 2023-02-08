@@ -24,9 +24,6 @@ import java.util.stream.IntStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author xvyang.xy
- */
 public class ResultTest {
 
     @Test

@@ -19,10 +19,6 @@ package io.ceresdb.models;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author xvyang.xy
- */
 public class ValueTest {
 
     @Test

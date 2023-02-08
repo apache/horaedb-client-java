@@ -90,7 +90,6 @@ import com.google.protobuf.ByteStringHelper;
 /**
  * Utils for CeresDBClient.
  *
- * @author xvyang.xy
  */
 public final class Utils {
 

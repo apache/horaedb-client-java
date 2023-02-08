@@ -18,10 +18,6 @@ package io.ceresdb.common.util.internal;
 
 import java.lang.reflect.Field;
 
-/**
- *
- * @author jiachun.fjc
- */
 @SuppressWarnings("unchecked")
 final class ReflectionReferenceFieldUpdater<U, W> implements ReferenceFieldUpdater<U, W> {
 

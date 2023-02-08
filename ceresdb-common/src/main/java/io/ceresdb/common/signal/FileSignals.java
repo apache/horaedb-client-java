@@ -19,9 +19,6 @@ package io.ceresdb.common.signal;
 import java.io.File;
 import java.nio.file.Paths;
 
-/**
- * @author jiachun.fjc
- */
 public class FileSignals {
 
     private static final String[] EMPTY_ARRAY = new String[0];

@@ -25,7 +25,6 @@ import io.ceresdb.common.util.internal.ThrowUtil;
 /**
  * Parse SQL.
  *
- * @author jiachun.fjc
  */
 public class CeresDBParser implements SqlParser {
 

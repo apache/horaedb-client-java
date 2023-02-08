@@ -24,7 +24,6 @@ import com.netflix.concurrency.limits.MetricRegistry;
 /**
  * For tracking metrics in the limiters.
  *
- * @author jiachun.fjc
  */
 public class LimitMetricRegistry implements MetricRegistry {
 

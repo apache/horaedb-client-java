@@ -25,7 +25,6 @@ import io.ceresdb.common.Copiable;
 /**
  * Invoke context.
  *
- * @author jiachun.fjc
  */
 @SuppressWarnings("unchecked")
 public class Context implements Copiable<Context> {

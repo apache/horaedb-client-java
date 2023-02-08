@@ -31,7 +31,6 @@ import io.ceresdb.rpc.Observer;
 /**
  * The query API for CeresDB client.
  *
- * @author xvyang.xy
  */
 public interface Query {
 

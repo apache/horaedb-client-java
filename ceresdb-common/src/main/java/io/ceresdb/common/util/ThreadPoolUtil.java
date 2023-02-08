@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
  * Factory and utility methods for creating {@link ThreadPoolExecutor} and
  * {@link ScheduledThreadPoolExecutor}.
  *
- * @author jiachun.fjc
  */
 public final class ThreadPoolUtil {
 

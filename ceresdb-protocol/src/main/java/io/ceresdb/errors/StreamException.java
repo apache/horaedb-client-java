@@ -19,7 +19,6 @@ package io.ceresdb.errors;
 /**
  * Error about stream-query or stream-write.
  *
- * @author jiachun.fjc
  */
 public class StreamException extends RuntimeException {
 

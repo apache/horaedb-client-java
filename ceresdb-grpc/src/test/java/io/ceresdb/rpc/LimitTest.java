@@ -27,9 +27,6 @@ import io.ceresdb.rpc.limit.Gradient2Limit;
 import io.ceresdb.rpc.limit.VegasLimit;
 import com.netflix.concurrency.limits.Limit;
 
-/**
- * @author jiachun.fjc
- */
 public class LimitTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(LimitTest.class);

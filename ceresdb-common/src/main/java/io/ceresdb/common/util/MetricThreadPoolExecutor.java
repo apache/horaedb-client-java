@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
  * A {@link java.util.concurrent.ExecutorService} that with a timer metric
  * which aggregates timing durations and provides duration statistics.
  *
- * @author jiachun.fjc
  */
 public class MetricThreadPoolExecutor extends LogThreadPoolExecutor {
 

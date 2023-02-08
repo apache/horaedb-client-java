@@ -25,7 +25,6 @@ import io.ceresdb.common.util.Cpus;
 /**
  * RPC client options.
  *
- * @author jiachun.fjc
  */
 public class RpcOptions implements Copiable<RpcOptions> {
 

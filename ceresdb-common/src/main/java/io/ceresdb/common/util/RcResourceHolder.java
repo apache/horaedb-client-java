@@ -22,10 +22,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class RcResourceHolder<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RcResourceHolder.class);

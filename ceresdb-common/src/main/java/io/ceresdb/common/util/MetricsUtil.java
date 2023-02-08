@@ -34,7 +34,6 @@ import com.codahale.metrics.Timer;
  * In CeresDB client, metrics are required. As for whether to output (log) metrics
  * results, you decide.
  *
- * @author jiachun.fjc
  */
 public final class MetricsUtil {
 

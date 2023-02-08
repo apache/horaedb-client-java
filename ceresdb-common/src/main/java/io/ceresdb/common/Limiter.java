@@ -18,10 +18,6 @@ package io.ceresdb.common;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- * @author jiachun.fjc
- */
 public interface Limiter {
 
     /**

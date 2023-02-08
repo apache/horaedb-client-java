@@ -18,10 +18,6 @@ package io.ceresdb.common;
 
 import java.util.stream.Stream;
 
-/**
- *
- * @author jiachun.fjc
- */
 public interface Streamable<T> {
 
     /**

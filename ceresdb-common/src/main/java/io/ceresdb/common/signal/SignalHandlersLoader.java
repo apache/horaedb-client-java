@@ -33,7 +33,6 @@ import io.ceresdb.common.util.SystemPropertyUtil;
  *
  * Do not support windows.
  *
- * @author jiachun.fjc
  */
 public class SignalHandlersLoader {
 

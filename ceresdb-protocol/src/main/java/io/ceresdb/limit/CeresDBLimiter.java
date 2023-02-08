@@ -34,7 +34,6 @@ import com.codahale.metrics.Histogram;
  * that the available permits are equal to the maximum number of permits,
  * i.e., there are no in-flight requests.
  *
- * @author jiachun.fjc
  */
 public abstract class CeresDBLimiter<In, Out> {
 

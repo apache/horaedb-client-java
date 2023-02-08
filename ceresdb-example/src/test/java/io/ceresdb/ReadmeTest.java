@@ -29,9 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
-/**
- * @author kesheng
- */
 public class ReadmeTest {
 
     @Ignore

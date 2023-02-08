@@ -30,7 +30,6 @@ import io.ceresdb.common.Streamable;
 /**
  * Contains the write or query error value.
  *
- * @author xvyang.xy
  */
 public class Err implements Streamable<Err> {
     // error code from server

@@ -29,9 +29,6 @@ import io.ceresdb.models.Value;
 import io.ceresdb.proto.internal.Common;
 import io.ceresdb.proto.internal.Storage;
 
-/**
- * @author xvyang.xy
- */
 public class TestUtil {
 
     public static List<Point> newTablePoints(final String table) {

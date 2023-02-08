@@ -21,7 +21,6 @@ import com.codahale.metrics.MetricRegistry;
 /**
  * A global timer metric registry for thread pool, use threadLocal to pass timer context.
  *
- * @author jiachun.fjc
  */
 public class ThreadPoolMetricRegistry {
 

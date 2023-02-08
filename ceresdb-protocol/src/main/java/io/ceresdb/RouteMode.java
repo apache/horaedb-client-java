@@ -16,11 +16,6 @@
  */
 package io.ceresdb;
 
-/**
- *  route mode
- * @author lee
- * @version : RouteMode.java, v 0.1 2023.01.17 14:23 lee Exp $
- */
 public enum RouteMode {
 
     /**

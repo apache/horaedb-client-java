@@ -41,10 +41,6 @@ import io.ceresdb.options.CeresDBOptions;
 import io.ceresdb.util.TestUtil;
 import io.ceresdb.util.Utils;
 
-/**
- *
- * @author xvyang.xy
- */
 @RunWith(value = MockitoJUnitRunner.class)
 public class CeresDBClientTest {
 

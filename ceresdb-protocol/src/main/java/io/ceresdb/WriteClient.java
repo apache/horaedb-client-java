@@ -66,7 +66,6 @@ import com.google.common.collect.Lists;
 /**
  * Default Write API impl.
  *
- * @author xvyang.xy
  */
 public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 

@@ -19,7 +19,6 @@ package io.ceresdb.errors;
 /**
  * Iterator timeout error on stream query.
  *
- * @author jiachun.fjc
  */
 public class IteratorException extends RuntimeException {
 

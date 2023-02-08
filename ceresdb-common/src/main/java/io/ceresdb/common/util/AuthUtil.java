@@ -27,7 +27,6 @@ import io.ceresdb.common.Tenant;
 /**
  * A tool class for generating auth headers.
  *
- * @author jiachun.fjc
  */
 public class AuthUtil {
 

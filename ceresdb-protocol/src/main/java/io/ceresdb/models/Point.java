@@ -29,7 +29,6 @@ import io.ceresdb.common.util.Requires;
 /**
  * A time series data point with multiple fields
  *
- * @author xvyang.xy
  */
 public class Point {
     protected String                   table;

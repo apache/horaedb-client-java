@@ -20,10 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author xvyang.xy
- */
 public class Row {
     private Map<String, Value> values;
 

@@ -23,7 +23,6 @@ import java.io.PrintWriter;
  * their own state and output state information via the {@code display}
  * method.
  *
- * @author jiachun.fjc
  */
 public interface Display {
 

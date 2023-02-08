@@ -29,7 +29,6 @@ import io.ceresdb.common.signal.FileSignals;
 /**
  * A signal handler that can reset RW_LOGGING by {@link Utils#resetRwLogging()}.
  *
- * @author jiachun.fjc
  */
 @SPI(priority = 95)
 public class RwLoggingSignalHandler implements SignalHandler {

@@ -19,7 +19,6 @@ package io.ceresdb.rpc;
 /**
  * CeresDB's RPC service factory.
  *
- * @author jiachun.fjc
  */
 public interface RpcFactory {
 

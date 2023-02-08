@@ -26,10 +26,6 @@ import io.ceresdb.common.OptKeys;
 import io.ceresdb.common.util.Files;
 import io.ceresdb.common.util.SystemPropertyUtil;
 
-/**
- *
- * @author jiachun.fjc
- */
 public final class FileOutputHelper {
 
     private static final String OUT_DIR = SystemPropertyUtil.get(OptKeys.SIG_OUT_DIR, "");

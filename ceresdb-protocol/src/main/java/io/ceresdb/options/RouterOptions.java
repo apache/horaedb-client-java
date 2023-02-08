@@ -24,7 +24,6 @@ import io.ceresdb.rpc.RpcClient;
 /**
  * Router options.
  *
- * @author jiachun.fjc
  */
 public class RouterOptions implements Copiable<RouterOptions> {
 

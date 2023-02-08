@@ -22,9 +22,6 @@ import java.util.concurrent.SynchronousQueue;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author jiachun.fjc
- */
 public class ExecutorServiceHelperTest {
 
     @Test

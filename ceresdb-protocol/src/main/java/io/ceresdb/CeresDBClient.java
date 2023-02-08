@@ -61,7 +61,6 @@ import com.codahale.metrics.Meter;
 /**
  * CeresDB client.
  *
- * @author xvyang.xy
  */
 public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, Display {
 

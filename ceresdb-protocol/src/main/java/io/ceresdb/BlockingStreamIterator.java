@@ -31,7 +31,6 @@ import io.ceresdb.rpc.Observer;
  * A blocking iterator, the `hasNext` method will be blocked until
  * the server returns data or the process ends.
  *
- * @author jiachun.fjc
  */
 public class BlockingStreamIterator implements Iterator<Stream<Row>> {
 

@@ -18,10 +18,6 @@ package io.ceresdb.common.util.internal;
 
 import java.lang.reflect.Field;
 
-/**
- *
- * @author jiachun.fjc
- */
 final class ReflectionIntegerFieldUpdater<U> implements IntegerFieldUpdater<U> {
 
     private final Field field;

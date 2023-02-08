@@ -35,9 +35,6 @@ import io.ceresdb.models.WriteOk;
 import io.ceresdb.util.TestUtil;
 import io.ceresdb.util.Utils;
 
-/**
- * @author xvyang.xy
- */
 public class WriteLimitTest {
 
     @Test(expected = LimitedException.class)

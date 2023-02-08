@@ -56,9 +56,6 @@ import io.ceresdb.util.StreamWriteBuf;
 import io.ceresdb.util.TestUtil;
 import io.ceresdb.util.Utils;
 
-/**
- * @author xvyang.xy
- */
 @RunWith(value = MockitoJUnitRunner.class)
 public class WriteClientTest {
 

@@ -34,7 +34,6 @@ import io.ceresdb.common.util.Strings;
 /**
  * CeresDB auth interceptor.
  *
- * @author jiachun.fjc
  */
 public class AuthHeadersInterceptor implements ClientInterceptor {
 

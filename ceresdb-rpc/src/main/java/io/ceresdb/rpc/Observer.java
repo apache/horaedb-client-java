@@ -23,7 +23,6 @@ import io.ceresdb.common.util.internal.ThrowUtil;
 /**
  * Receives notifications from an observable stream of messages.
  *
- * @author jiachun.fjc
  */
 public interface Observer<V> {
 

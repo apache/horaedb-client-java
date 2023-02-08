@@ -29,7 +29,6 @@ import io.ceresdb.rpc.RpcOptions;
 /**
  * CeresDB client options.
  *
- * @author xvyang.xy
  */
 public class CeresDBOptions implements Copiable<CeresDBOptions> {
     private Endpoint      clusterAddress;

@@ -19,7 +19,6 @@ package io.ceresdb.common.signal;
 /**
  * Signal types.
  *
- * @author jiachun.fjc
  */
 public enum Signal {
     SIG_USR2("USR2");

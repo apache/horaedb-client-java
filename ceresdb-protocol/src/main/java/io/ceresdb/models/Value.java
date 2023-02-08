@@ -21,10 +21,6 @@ import java.util.Optional;
 
 import io.ceresdb.common.util.Requires;
 
-/**
- *
- * @author xvyang.xy
- */
 public class Value {
 
     public enum DataType {

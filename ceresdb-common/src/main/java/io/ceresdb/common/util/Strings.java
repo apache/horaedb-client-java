@@ -23,7 +23,6 @@ import java.util.List;
  * Static utility methods pertaining to {@code String} or {@code CharSequence}
  * instances.
  *
- * @author jiachun.fjc
  */
 public final class Strings {
 

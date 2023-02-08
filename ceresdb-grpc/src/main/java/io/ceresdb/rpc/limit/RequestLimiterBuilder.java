@@ -25,7 +25,6 @@ import com.netflix.concurrency.limits.limiter.BlockingLimiter;
 /**
  * Refer to `concurrency-limit-grpc`
  *
- * @author jiachun.fjc
  */
 public class RequestLimiterBuilder extends AbstractPartitionedLimiter.Builder<RequestLimiterBuilder, RequestLimitCtx> {
 

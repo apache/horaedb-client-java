@@ -33,9 +33,6 @@ import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 import io.ceresdb.util.Utils;
 
-/**
- * @author jiachun.fjc
- */
 public class QueryLimiterTest {
 
     @Test(expected = LimitedException.class)

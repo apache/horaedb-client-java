@@ -53,7 +53,6 @@ import com.codahale.metrics.Meter;
 /**
  * Default Query API impl.
  *
- * @author xvyang.xy
  */
 public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
 

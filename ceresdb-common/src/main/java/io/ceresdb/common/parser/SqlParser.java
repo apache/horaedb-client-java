@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * A SQL parser that can extract table names from the given SQL.
  *
- * @author xvyang.xy
  */
 public interface SqlParser {
 

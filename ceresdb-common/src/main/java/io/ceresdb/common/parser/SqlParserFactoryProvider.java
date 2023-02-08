@@ -18,10 +18,6 @@ package io.ceresdb.common.parser;
 
 import io.ceresdb.common.util.ServiceLoader;
 
-/**
- *
- * @author xvyang.xy
- */
 public class SqlParserFactoryProvider {
 
     private static final SqlParserFactory METRIC_PARSER_FACTORY = ServiceLoader //

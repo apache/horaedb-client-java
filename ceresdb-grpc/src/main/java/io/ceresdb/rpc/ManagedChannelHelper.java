@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Managed channel shutdown helper.
  *
- * @author jiachun.fjc
  */
 public final class ManagedChannelHelper {
 

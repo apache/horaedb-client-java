@@ -38,7 +38,6 @@ import io.ceresdb.common.util.Files;
 /**
  * A signal handler that can log all of the route cache items to file.
  *
- * @author jiachun.fjc
  */
 @SPI(priority = 96)
 public class ShowRouteCacheSignalHandler implements SignalHandler {

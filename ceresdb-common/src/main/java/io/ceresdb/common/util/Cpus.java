@@ -21,7 +21,6 @@ import io.ceresdb.common.OptKeys;
 /**
  * Utility for cpu.
  *
- * @author jiachun.fjc
  */
 public class Cpus {
 

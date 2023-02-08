@@ -29,7 +29,6 @@ import io.ceresdb.util.Utils;
  *
  * cached nothing about table information, and return
  * clusterAddress directly
- * @author lee
  */
 public class ProxyRouterClient extends RouterClient {
 

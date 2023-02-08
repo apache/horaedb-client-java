@@ -16,9 +16,6 @@
  */
 package io.ceresdb.common.util.internal;
 
-/**
- * @author jiachun.fjc
- */
 public interface IntegerFieldUpdater<U> {
 
     void set(final U obj, final int newValue);

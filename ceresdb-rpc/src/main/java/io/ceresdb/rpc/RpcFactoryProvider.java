@@ -18,10 +18,6 @@ package io.ceresdb.rpc;
 
 import io.ceresdb.common.util.ServiceLoader;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class RpcFactoryProvider {
 
     /**

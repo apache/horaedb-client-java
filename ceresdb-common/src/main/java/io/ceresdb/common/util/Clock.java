@@ -16,10 +16,6 @@
  */
 package io.ceresdb.common.util;
 
-/**
- *
- * @author jiachun.fjc
- */
 public abstract class Clock {
 
     /**

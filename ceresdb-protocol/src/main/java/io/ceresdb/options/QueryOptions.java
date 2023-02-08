@@ -25,7 +25,6 @@ import io.ceresdb.common.Copiable;
 /**
  * Query options.
  *
- * @author xvyang.xy
  */
 public class QueryOptions implements Copiable<QueryOptions> {
 

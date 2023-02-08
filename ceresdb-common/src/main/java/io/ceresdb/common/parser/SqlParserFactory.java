@@ -16,10 +16,6 @@
  */
 package io.ceresdb.common.parser;
 
-/**
- *
- * @author xvyang.xy
- */
 public interface SqlParserFactory {
 
     SqlParserFactory DEFAULT = new NoopFactory();

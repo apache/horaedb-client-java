@@ -16,7 +16,6 @@
  */
 package io.ceresdb.models;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,9 +28,6 @@ import org.junit.Test;
 
 import io.ceresdb.common.Endpoint;
 
-/**
- * @author jiachun.fjc
- */
 public class ErrTest {
 
     @Test

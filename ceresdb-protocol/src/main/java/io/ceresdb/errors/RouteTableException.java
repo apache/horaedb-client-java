@@ -19,7 +19,6 @@ package io.ceresdb.errors;
 /**
  * Get route table exception.
  *
- * @author jiachun.fjc
  */
 public class RouteTableException extends Exception {
 

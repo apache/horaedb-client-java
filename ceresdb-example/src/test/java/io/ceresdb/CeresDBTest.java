@@ -50,10 +50,6 @@ import io.ceresdb.options.CeresDBOptions;
 import io.ceresdb.rpc.RpcOptions;
 import io.ceresdb.util.StreamWriteBuf;
 
-/**
- *
- * @author xvyang.xy
- */
 public class CeresDBTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CeresDBTest.class);

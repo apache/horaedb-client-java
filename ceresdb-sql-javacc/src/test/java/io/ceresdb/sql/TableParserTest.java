@@ -28,9 +28,6 @@ import io.ceresdb.common.parser.SqlParserFactory;
 import io.ceresdb.common.parser.SqlParserFactoryProvider;
 import io.ceresdb.common.util.ServiceLoader;
 
-/**
- * @author xvyang.xy
- */
 public class TableParserTest {
 
     @Test

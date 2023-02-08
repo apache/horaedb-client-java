@@ -19,10 +19,6 @@ package io.ceresdb.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author xvyang.xy
- */
 public class Spines {
 
     public static <E> List<E> newBuf() {

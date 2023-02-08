@@ -16,9 +16,6 @@
  */
 package io.ceresdb.common.util;
 
-/**
- * @author jiachun.fjc
- */
 public class RefCell<T> {
 
     private T value;

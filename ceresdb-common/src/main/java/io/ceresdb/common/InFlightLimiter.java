@@ -28,7 +28,6 @@ import com.codahale.metrics.Timer;
 /**
  * In-flight limiter.
  *
- * @author jiachun.fjc
  */
 public class InFlightLimiter implements Limiter {
 

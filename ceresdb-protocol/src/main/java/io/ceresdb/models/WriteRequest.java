@@ -18,10 +18,6 @@ package io.ceresdb.models;
 
 import java.util.List;
 
-/**
- *
- * @author xvyang.xy
- */
 public class WriteRequest {
     private List<Point> points;
 

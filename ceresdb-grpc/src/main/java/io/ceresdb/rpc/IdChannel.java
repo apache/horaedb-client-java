@@ -28,7 +28,6 @@ import io.grpc.MethodDescriptor;
 /**
  * A managed channel that has a channel id.
  *
- * @author jiachun.fjc
  */
 public class IdChannel extends ManagedChannel {
 

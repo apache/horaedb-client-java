@@ -16,9 +16,6 @@
  */
 package io.ceresdb.rpc.errors;
 
-/**
- * @author jiachun.fjc
- */
 public class InvokeTimeoutException extends RemotingException {
 
     private static final long serialVersionUID = -4710810309766380565L;

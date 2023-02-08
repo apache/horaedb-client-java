@@ -24,7 +24,6 @@ import io.ceresdb.rpc.errors.RemotingException;
 /**
  * A common RPC client.
  *
- * @author jiachun.fjc
  */
 public interface RpcClient extends Lifecycle<RpcOptions>, Display {
 

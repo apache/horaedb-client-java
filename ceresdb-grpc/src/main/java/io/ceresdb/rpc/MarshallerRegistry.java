@@ -27,7 +27,6 @@ import com.google.protobuf.Message;
 /**
  * Marshaller registry for grpc service.
  *
- * @author jiachun.fjc
  */
 public interface MarshallerRegistry {
 

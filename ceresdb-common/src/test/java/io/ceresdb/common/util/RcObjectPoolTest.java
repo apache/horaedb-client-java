@@ -19,10 +19,6 @@ package io.ceresdb.common.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class RcObjectPoolTest {
 
     static final ObjectPool.Resource<Object> RESOURCE = new ObjectPool.Resource<Object>() {

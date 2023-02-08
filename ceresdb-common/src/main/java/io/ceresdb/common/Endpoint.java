@@ -23,7 +23,6 @@ import io.ceresdb.common.util.Strings;
 /**
  * A IP address with port.
  *
- * @author jiachun.fjc
  */
 public class Endpoint implements Serializable {
 

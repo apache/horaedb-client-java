@@ -63,7 +63,6 @@ import com.codahale.metrics.Timer;
  * cached the routing table information locally
  * and will refresh when the server returns an error code of INVALID_ROUTE
  *
- * @author xvyang.xy
  */
 public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable<Route> {
 

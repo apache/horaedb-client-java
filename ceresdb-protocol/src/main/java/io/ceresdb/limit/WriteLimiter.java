@@ -26,7 +26,6 @@ import io.ceresdb.models.WriteOk;
 /**
  * Like rust: pub type WriteLimiter = CeresDBLimiter<Collection<Rows>, Result<WriteOk, Err>>
  *
- * @author xvyang.xy
  */
 public abstract class WriteLimiter extends CeresDBLimiter<List<Point>, Result<WriteOk, Err>> {
 

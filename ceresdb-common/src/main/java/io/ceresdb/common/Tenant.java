@@ -19,7 +19,6 @@ package io.ceresdb.common;
 /**
  * A tenant for CeresDB.
  *
- * @author jiachun.fjc
  */
 public final class Tenant implements Copiable<Tenant> {
 

@@ -22,10 +22,6 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class Files {
 
     /**

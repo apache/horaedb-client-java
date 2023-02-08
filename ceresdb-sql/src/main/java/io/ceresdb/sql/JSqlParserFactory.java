@@ -20,10 +20,6 @@ import io.ceresdb.common.parser.SqlParser;
 import io.ceresdb.common.parser.SqlParserFactory;
 import io.ceresdb.common.SPI;
 
-/**
- *
- * @author xvyang.xy
- */
 @SPI
 public class JSqlParserFactory implements SqlParserFactory {
 

@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 /**
  * For the {@link sun.misc.Unsafe} access.
  *
- * @author jiachun.fjc
  */
 @SuppressWarnings({ "ConstantConditions", "PMD" })
 public final class UnsafeUtil {

@@ -25,7 +25,6 @@ import io.ceresdb.common.Copiable;
 /**
  * Write options.
  *
- * @author xvyang.xy
  */
 public class WriteOptions implements Copiable<WriteOptions> {
 

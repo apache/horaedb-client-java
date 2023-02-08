@@ -29,9 +29,6 @@ import io.ceresdb.common.parser.SqlParserFactory;
 import io.ceresdb.common.parser.SqlParserFactoryProvider;
 import io.ceresdb.common.util.ServiceLoader;
 
-/**
- * @author jiachun.fjc
- */
 public class JSqlMetricParserTest {
 
     @Test

@@ -25,9 +25,6 @@ import io.ceresdb.common.signal.FileSignal;
 import io.ceresdb.common.signal.FileSignals;
 import io.ceresdb.common.signal.SignalHandler;
 
-/**
- * @author jiachun.fjc
- */
 @SPI(priority = 99)
 public class ShowHelpSignalHandler implements SignalHandler {
 

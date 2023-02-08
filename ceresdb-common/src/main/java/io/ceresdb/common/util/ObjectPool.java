@@ -19,7 +19,6 @@ package io.ceresdb.common.util;
 /**
  * An object pool.
  *
- * @author jiachun.fjc
  */
 public interface ObjectPool<T> {
 

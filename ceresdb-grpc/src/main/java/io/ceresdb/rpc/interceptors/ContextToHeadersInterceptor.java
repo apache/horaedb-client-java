@@ -29,7 +29,6 @@ import io.ceresdb.rpc.Context;
 /**
  * Add RPC context to Grpc headers.
  *
- * @author jiachun.fjc
  */
 public class ContextToHeadersInterceptor implements ClientInterceptor {
 

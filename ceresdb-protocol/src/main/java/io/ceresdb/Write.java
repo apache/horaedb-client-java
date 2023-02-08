@@ -30,7 +30,6 @@ import io.ceresdb.util.StreamWriteBuf;
  * CeresDB write API. Writes the streaming data to the database, support
  * failed retries.
  *
- * @author xvyang.xy
  */
 public interface Write {
 

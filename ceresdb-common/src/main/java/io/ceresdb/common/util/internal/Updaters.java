@@ -19,7 +19,6 @@ package io.ceresdb.common.util.internal;
 /**
  * Sometime instead of reflection, better performance.
  *
- * @author jiachun.fjc
  */
 public class Updaters {
 

@@ -85,7 +85,6 @@ import com.netflix.concurrency.limits.MetricRegistry;
 /**
  * Grpc client implementation.
  *
- * @author jiachun.fjc
  */
 public class GrpcClient implements RpcClient {
 

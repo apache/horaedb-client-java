@@ -18,10 +18,6 @@ package io.ceresdb.common.util.internal;
 
 import java.lang.reflect.Field;
 
-/**
- *
- * @author jiachun.fjc
- */
 @SuppressWarnings("PMD")
 final class UnsafeLongFieldUpdater<U> implements LongFieldUpdater<U> {
 

@@ -22,10 +22,6 @@ import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.MethodDescriptor;
 import io.ceresdb.rpc.RpcFactoryProvider;
 
-/**
- *
- * @author xvyang.xy
- */
 public class RpcServiceRegister {
 
     private static final double WRITE_LIMIT_PERCENT = writeLimitPercent();

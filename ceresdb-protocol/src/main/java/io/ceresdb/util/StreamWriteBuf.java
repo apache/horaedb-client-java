@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 /**
  * A stream-write buffer.
  *
- * @author jiachun.fjc
  */
 public interface StreamWriteBuf<V, R> {
 

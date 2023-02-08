@@ -16,18 +16,13 @@
  */
 package io.ceresdb.models;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author jiachun.fjc
- */
 public class WriteOkTest {
 
     @Test
@@ -39,7 +34,7 @@ public class WriteOkTest {
 
         Assert.assertEquals(300, writeOk.getSuccess());
         Assert.assertEquals(2, writeOk.getFailed());
-        Assert.assertEquals(Arrays.asList("test1", "test2", "test3"), writeOk.getTables());
+        Assert.assertEquals(new HashSet<>(Arrays.asList("test1", "test2", "test3")), writeOk.getTables());
     }
 
     @Test
@@ -49,12 +44,12 @@ public class WriteOkTest {
 
         Assert.assertEquals(300, writeOk.getSuccess());
         Assert.assertEquals(2, writeOk.getFailed());
-        Assert.assertEquals(Arrays.asList("test2", "test3"), writeOk.getTables());
+        Assert.assertEquals(new HashSet<>(Arrays.asList("test2", "test3")), writeOk.getTables());
 
         writeOk.combine(WriteOk.ok(100, 0, null));
 
         Assert.assertEquals(400, writeOk.getSuccess());
         Assert.assertEquals(2, writeOk.getFailed());
-        Assert.assertEquals(Arrays.asList("test2", "test3"), writeOk.getTables());
+        Assert.assertEquals(new HashSet<>(Arrays.asList("test2", "test3")), writeOk.getTables());
     }
 }

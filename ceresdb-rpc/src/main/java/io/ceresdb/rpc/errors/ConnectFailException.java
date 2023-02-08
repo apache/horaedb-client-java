@@ -16,9 +16,6 @@
  */
 package io.ceresdb.rpc.errors;
 
-/**
- * @author jiachun.fjc
- */
 public class ConnectFailException extends RemotingException {
 
     private static final long serialVersionUID = 3129127065579018606L;

@@ -23,7 +23,6 @@ import com.codahale.metrics.Timer;
 /**
  * An executor that run task directly.
  *
- * @author jiachun.fjc
  */
 public class DirectExecutor implements Executor {
     private final String name;

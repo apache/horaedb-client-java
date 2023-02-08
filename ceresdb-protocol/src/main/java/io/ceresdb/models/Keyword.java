@@ -16,10 +16,6 @@
  */
 package io.ceresdb.models;
 
-/**
- *
- * @author jiachun.fjc
- */
 public enum Keyword {
     Timestamp, //
     Tsid;

@@ -18,10 +18,6 @@ package io.ceresdb.common.util;
 
 import java.math.BigInteger;
 
-/**
- *
- * @author jiachun.fjc
- */
 public final class UnsignedUtil {
 
     /**

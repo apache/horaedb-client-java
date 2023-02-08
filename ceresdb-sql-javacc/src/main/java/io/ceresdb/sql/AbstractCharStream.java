@@ -22,7 +22,6 @@ package io.ceresdb.sql;
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (without unicode processing).
  */
-
 public abstract class AbstractCharStream implements CharStream {
     /** Default buffer size if nothing is specified */
     public static final int DEFAULT_BUF_SIZE = 4096;

@@ -23,10 +23,6 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class SpinedBufTest {
 
     @Test

@@ -23,10 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import io.ceresdb.common.OptKeys;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class Platform {
 
     private static final Logger LOG = LoggerFactory.getLogger(Platform.class);

@@ -20,10 +20,6 @@ import java.util.Iterator;
 
 import io.ceresdb.models.Row;
 
-/**
- *
- * @author xvyang.xy
- */
 public class RowIterator implements Iterator<Row> {
 
     private final BlockingStreamIterator streams;

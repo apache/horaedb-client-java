@@ -16,10 +16,6 @@
  */
 package io.ceresdb.rpc.limit;
 
-/**
- *
- * @author jiachun.fjc
- */
 public interface RequestLimitCtx {
 
     String partitionKey();

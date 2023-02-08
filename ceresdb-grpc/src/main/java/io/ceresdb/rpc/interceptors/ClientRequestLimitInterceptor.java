@@ -41,7 +41,6 @@ import com.netflix.concurrency.limits.Limiter;
  *
  * Refer to `concurrency-limit-grpc`
  *
- * @author jiachun.fjc
  */
 public class ClientRequestLimitInterceptor implements ClientInterceptor {
 

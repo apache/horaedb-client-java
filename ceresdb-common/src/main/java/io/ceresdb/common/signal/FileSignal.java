@@ -18,9 +18,6 @@ package io.ceresdb.common.signal;
 
 import java.util.Optional;
 
-/**
- * @author jiachun.fjc
- */
 public enum FileSignal {
     ClearCache("clear_cache.sig", "How to clear route cache"), //
     RwLogging("rw_logging.sig", "How to open or close read/write log(The second execution means close)"), //

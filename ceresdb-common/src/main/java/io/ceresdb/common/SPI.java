@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 /**
  * Service provide interface annotation.
  *
- * @author jiachun.fjc
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

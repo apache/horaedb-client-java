@@ -19,7 +19,6 @@ package io.ceresdb.common;
 /**
  * System properties option keys
  *
- * @author jiachun.fjc
  */
 public final class OptKeys {
 

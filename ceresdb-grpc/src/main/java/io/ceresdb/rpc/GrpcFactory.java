@@ -22,7 +22,6 @@ import com.google.protobuf.Message;
 /**
  * CeresDB grpc impl service factory.
  *
- * @author jiachun.fjc
  */
 @SPI
 public class GrpcFactory implements RpcFactory {

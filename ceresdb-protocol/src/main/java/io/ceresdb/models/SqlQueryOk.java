@@ -26,7 +26,6 @@ import io.ceresdb.common.Streamable;
 /**
  * Contains the success value of query.
  *
- * @author xvyang.xy
  */
 public class SqlQueryOk implements Streamable<Row> {
 

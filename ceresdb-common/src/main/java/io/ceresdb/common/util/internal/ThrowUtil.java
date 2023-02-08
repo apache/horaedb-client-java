@@ -19,7 +19,6 @@ package io.ceresdb.common.util.internal;
 /**
  * Throwing tool.
  *
- * @author jiachun.fjc
  */
 public final class ThrowUtil {
 

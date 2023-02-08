@@ -29,10 +29,6 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
-/**
- *
- * @author jiachun.fjc
- */
 public class SqlParserUtil {
 
     private static final String _TIMESTAMP_KEY_UC = "TIMESTAMP KEY";

@@ -22,7 +22,6 @@ import java.nio.ByteBuffer;
 /**
  * Try to gets the bytes form ByteString with no copy.
  *
- * @author jiachun.fjc
  */
 public class BytesStealer extends ByteOutput {
 

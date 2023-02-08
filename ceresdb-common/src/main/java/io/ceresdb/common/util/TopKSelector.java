@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 /**
  * TopK selector based on a priority heap.
  *
- * @author jiachun.fjc
  */
 public class TopKSelector {
 

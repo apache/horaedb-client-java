@@ -21,9 +21,6 @@ import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author jiachun.fjc
- */
 public class UnsignedUtilTest {
 
     @SuppressWarnings("all")

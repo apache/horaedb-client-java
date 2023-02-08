@@ -24,7 +24,6 @@ import io.ceresdb.errors.LimitedException;
 /**
  * A limited policy using a given {@code Limiter}.
  *
- * @author jiachun.fjc
  */
 public interface LimitedPolicy {
 

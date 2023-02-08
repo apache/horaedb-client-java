@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Named thread factory.
  *
- * @author jiachun.fjc
  */
 public class NamedThreadFactory implements ThreadFactory {
 

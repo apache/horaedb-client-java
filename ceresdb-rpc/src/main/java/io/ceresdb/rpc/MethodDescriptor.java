@@ -21,7 +21,6 @@ import java.util.Objects;
 /**
  * Description of a remote method.
  *
- * @author jiachun.fjc
  */
 public class MethodDescriptor {
     private final String     name;

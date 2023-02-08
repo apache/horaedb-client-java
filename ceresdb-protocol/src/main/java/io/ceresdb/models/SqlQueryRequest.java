@@ -27,7 +27,6 @@ import io.ceresdb.common.util.Strings;
 /**
  * The query request condition.
  *
- * @author xvyang.xy
  */
 public class SqlQueryRequest {
 

@@ -24,7 +24,6 @@ import io.ceresdb.models.Result;
 /**
  * Like rust: pub type QueryLimiter = CeresDBLimiter<QueryRequest, Result<QueryOk, Err>>
  *
- * @author jiachun.fjc
  */
 public abstract class QueryLimiter extends CeresDBLimiter<SqlQueryRequest, Result<SqlQueryOk, Err>> {
 

@@ -24,7 +24,6 @@ import io.ceresdb.common.util.Clock;
 /**
  * Route info for metric.
  *
- * @author xvyang.xy
  */
 public class Route {
     private String           table;
