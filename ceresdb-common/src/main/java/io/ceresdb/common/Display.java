@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
 package io.ceresdb.common;
 
 import java.io.PrintWriter;
