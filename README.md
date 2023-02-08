@@ -102,7 +102,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 <dependency>
   <groupId>io.ceresdb</groupId>
   <artifactId>ceresdb-all</artifactId>
-  <version>0.1.0</version>
+  <version>1.0.0.alpha</version>
 </dependency>
 ```
 
