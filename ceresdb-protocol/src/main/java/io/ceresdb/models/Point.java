@@ -45,15 +45,19 @@ public class Point {
         return fields;
     }
 
-    public static PointsBuilder newPointsBuilder(String table) {
-        return new PointsBuilder(table);
+    public static TablePointsBuilder newTablePointsBuilder(String table) {
+        return new TablePointsBuilder(table);
     }
 
-    public static class PointsBuilder {
+    public static PointBuilder newPointBuilder(String table) {
+        return new PointBuilder(table);
+    }
+
+    public static class TablePointsBuilder {
         private final String  table;
         protected List<Point> points;
 
-        public PointsBuilder(String table) {
+        public TablePointsBuilder(String table) {
             this.table = table;
             this.points = new LinkedList<>();
         }
@@ -63,23 +67,20 @@ public class Point {
         }
 
         public List<Point> build() {
-            this.points.forEach(PointsBuilder::check);
+            this.points.forEach(PointBuilder::check);
             return this.points;
-        }
-
-        public static void check(final Point point) throws IllegalArgumentException {
-            Requires.requireNonNull(point.fields, "Null.fields");
-            Requires.requireTrue(!point.fields.isEmpty(), "Empty.fields");
-            Utils.checkKeywords(point.tags.keySet().stream().iterator());
-            Utils.checkKeywords(point.fields.keySet().stream().iterator());
         }
     }
 
     public static class PointBuilder {
-        private PointsBuilder root;
-        private Point         point;
+        private TablePointsBuilder root;
+        private Point              point;
 
-        protected PointBuilder(PointsBuilder root, String table) {
+        public PointBuilder(String table) {
+            this.point = new Point(table);
+        }
+
+        protected PointBuilder(TablePointsBuilder root, String table) {
             this.root = root;
             this.point = new Point(table);
         }
@@ -104,9 +105,21 @@ public class Point {
             return this;
         }
 
-        public PointsBuilder build() {
+        public Point build() {
+            check(this.point);
+            return point;
+        }
+
+        public TablePointsBuilder buildAndContinue() {
             this.root.points.add(this.point);
             return this.root;
+        }
+
+        private static void check(final Point point) throws IllegalArgumentException {
+            Requires.requireNonNull(point.fields, "Null.fields");
+            Requires.requireTrue(!point.fields.isEmpty(), "Empty.fields");
+            Utils.checkKeywords(point.tags.keySet().stream().iterator());
+            Utils.checkKeywords(point.fields.keySet().stream().iterator());
         }
     }
 }

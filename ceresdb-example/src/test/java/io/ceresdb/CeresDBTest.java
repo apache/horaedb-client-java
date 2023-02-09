@@ -221,7 +221,7 @@ public class CeresDBTest {
     private List<Point> makePoints(final Calendar time, final int count) {
         final long timestamp = time.getTimeInMillis();
 
-        Point.PointsBuilder builder = Point.newPointsBuilder(TEST_TABLE_NAME);
+        Point.TablePointsBuilder builder = Point.newTablePointsBuilder(TEST_TABLE_NAME);
         for (long ts = (timestamp - count); ts < timestamp; ts++) {
             builder.addPoint().setTimestamp(ts).addTag("tString", Value.withString("first_c1"))
                     .addTag("tInt64", Value.withInt64(12)).addField("fString", Value.withString("string value"))
@@ -232,7 +232,8 @@ public class CeresDBTest {
                     .addField("fUint32", Value.withUInt32(32)).addField("fUint16", Value.withUInt16(16))
                     .addField("fUint8", Value.withUInt8(8))
                     .addField("fTimestamp", Value.withTimestamp(time.getTimeInMillis()))
-                    .addField("fVarbinary", Value.withVarbinary("test".getBytes(StandardCharsets.UTF_8))).build();
+                    .addField("fVarbinary", Value.withVarbinary("test".getBytes(StandardCharsets.UTF_8)))
+                    .buildAndContinue();
         }
         return builder.build();
     }

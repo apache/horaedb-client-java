@@ -488,34 +488,35 @@ public class WriteClientTest {
 
     @Test
     public void rowsToWriteProtoTest() {
-        final List<Point> table1 = Point.newPointsBuilder("table1") //
+        final List<Point> table1 = Point.newTablePointsBuilder("table1") //
                 .addPoint().setTimestamp(Clock.defaultClock().getTick()).addTag("t1_tag1", Value.withString("v1")) //
                 .addTag("t1_tag2", Value.withString("v2")) //
                 .addTag("t1_tag3", Value.withString("v3")) //
                 .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
-                .addField("t1_field3", Value.withStringOrNull(null)).build().addPoint()
+                .addField("t1_field3", Value.withStringOrNull(null)).buildAndContinue().addPoint()
                 .setTimestamp(Clock.defaultClock().getTick() + 10).addTag("t1_tag1", Value.withString("v1")) //
                 .addTag("t1_tag2", Value.withString("v2")) //
                 .addTag("t1_tag3", Value.withString("v3")) //
                 .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
-                .addField("t1_field3", Value.withStringOrNull("surprise!!!")).build().build();
+                .addField("t1_field3", Value.withStringOrNull("surprise!!!")).buildAndContinue().build();
 
-        final List<Point> table2 = Point.newPointsBuilder("table2") //
+        final List<Point> table2 = Point.newTablePointsBuilder("table2") //
                 .addPoint().setTimestamp(Clock.defaultClock().getTick()).addTag("t2_tag1", Value.withString("v1")) //
                 .addTag("t2_tag2", Value.withString("v2")) //
                 .addTag("t2_tag3", Value.withString("v3")) //
-                .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he")).build()
-                .addPoint().setTimestamp(Clock.defaultClock().getTick() + 10).addTag("t2_tag1", Value.withString("v1")) //
+                .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he"))
+                .buildAndContinue().addPoint().setTimestamp(Clock.defaultClock().getTick() + 10)
+                .addTag("t2_tag1", Value.withString("v1")) //
                 .addTag("t2_tag2", Value.withString("v2")) //
                 .addTag("t2_tag3", Value.withString("v3")) //
                 .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he"))
-                .addField("t2_field3", Value.withStringOrNull("surprise!!!")).build().build();
+                .addField("t2_field3", Value.withStringOrNull("surprise!!!")).buildAndContinue().build();
 
-        final List<Point> table3 = Point.newPointsBuilder("table1").addPoint().setTimestamp(System.currentTimeMillis())
-                .addTag("t1_tag1", Value.withString("vv1")) //
+        final List<Point> table3 = Point.newTablePointsBuilder("table1").addPoint()
+                .setTimestamp(System.currentTimeMillis()).addTag("t1_tag1", Value.withString("vv1")) //
                 .addTag("t1_tag2", Value.withString("vv2")) //
-                .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he")).build()
-                .build();
+                .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
+                .buildAndContinue().build();
 
         final Storage.WriteRequest writeReq = this.writeClient.toWriteRequestObj(
                 Stream.of(table1, table2, table3).flatMap(List::stream).collect(Collectors.toList()).stream());

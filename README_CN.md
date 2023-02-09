@@ -143,36 +143,46 @@ if (!createResult.isOk()) {
 ```
 详情见 [table](docs/table.md)
 
-
-## 写入 Example
+## 构建写入数据
 ```java
-final long t0 = System.currentTimeMillis();
-final long t1 = t0 + 1000;
-final List<Point> data = Point.newPointsBuilder("machine_table") // 同一个表的数据可以一个builder快速构建数据
+// 构建单个Point
+final Point point = Point.newPointBuilder("machine_table")
+        .setTimestamp(t0)
+        .addTag("city", "Singapore")
+        .addTag("ip", "10.0.0.1")
+        .addField("cpu", Value.withDouble(0.23))
+        .addField("mem", Value.withDouble(0.55))
+        .build();
+
+// 同一个表的数据可以一个tableBuilder快速构建
+final List<Point> pointList = Point.newTablePointsBuilder("machine_table") 
         .addPoint() // 第一个点
             .setTimestamp(t0)
             .addTag("city", "Singapore")
             .addTag("ip", "10.0.0.1")
             .addField("cpu", Value.withDouble(0.23))
             .addField("mem", Value.withDouble(0.55))
-            .build()
+            .buildAndContinue()
         .addPoint() // 第二个点
             .setTimestamp(t1)
             .addTag("city", "Singapore")
             .addTag("ip", "10.0.0.1")
             .addField("cpu", Value.withDouble(0.25))
             .addField("mem", Value.withDouble(0.56))
-            .build()
+            .buildAndContinue()
         .addPoint() // 第三个点
             .setTimestamp(t1)
             .addTag("city", "Shanghai")
             .addTag("ip", "10.0.0.2")
             .addField("cpu", Value.withDouble(0.21))
             .addField("mem", Value.withDouble(0.52))
-            .build()
+            .buildAndContinue()
         .build();
+```
 
-final CompletableFuture<Result<WriteOk, Err>> wf = client.write(data);
+## 写入 Example
+```java
+final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(pointList));
 // 这里用 `future.get` 只是方便演示，推荐借助 CompletableFuture 强大的 API 实现异步编程
 final Result<WriteOk, Err> writeResult = wf.get();
 
@@ -180,7 +190,6 @@ Assert.assertTrue(writeResult.isOk());
 Assert.assertEquals(3, writeResult.getOk().getSuccess());
 // `Result` 类参考了 Rust 语言，提供了丰富的 mapXXX、andThen 类 function 方便对结果值进行转换，提高编程效率，欢迎参考 API 文档使用
 Assert.assertEquals(3, writeResult.mapOr(0, WriteOk::getSuccess).intValue());
-Assert.assertEquals(0, writeResult.getOk().getFailed());
 Assert.assertEquals(0, writeResult.mapOr(-1, WriteOk::getFailed).intValue());
 ```
 详情见 [write](docs/write.md)
@@ -202,11 +211,6 @@ Assert.assertEquals(1, queryOk.getRowCount());
 
 // 直接获取结果数组
 final List<Row> rows = queryOk.getRowList();
-Assert.assertEquals(t0, rows.get(0).getColumnValue("ts").getTimestamp());
-Assert.assertEquals("Singapore", rows.get(0).getColumnValue("city").getString());
-Assert.assertEquals("10.0.0.1", rows.get(0).getColumnValue("ip").getString());
-Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getDouble(), 0.0000001);
-Assert.assertEquals(0.55, rows.get(0).getColumnValue("mem").getDouble(), 0.0000001);
 
 // 获取结果流
 final Stream<Row> rowStream = queryOk.stream();
@@ -217,30 +221,20 @@ rowStream.forEach(row -> System.out.println(row.toString()));
 ## 流式读写 Example
 CeresDB 支持流式读写，适用于大规模数据读写。
 ```java
-long start = System.currentTimeMillis();
-long t = start;
 final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
 for (int i = 0; i < 1000; i++) {
-final List<Point> streamData = Point.newPointsBuilder("machine_table")
-        .addPoint()
-            .setTimestamp(t)
-            .addTag("city", "Beijing")
-            .addTag("ip", "10.0.0.3")
-            .addField("cpu", Value.withDouble(0.42))
-            .addField("mem", Value.withDouble(0.67))
-            .build()
+    final Point point = Point.newPointBuilder("machine_table")
+        .setTimestamp(timestamp)
+        .addTag("city", "Beijing")
+        .addTag("ip", "10.0.0.3")
+        .addField("cpu", Value.withDouble(0.42))
+        .addField("mem", Value.withDouble(0.67))
         .build();
-        writeBuf.writeAndFlush(streamData);
-        t = t+1;
+        writeBuf.writeAndFlush(Arrays.asList(point));
+        timestamp = timestamp+1;
 }
-final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
-Assert.assertEquals(1000, writeOk.join().getSuccess());
 
-final SqlQueryRequest streamQuerySql = SqlQueryRequest.newBuilder()
-        .sql("select * from %s where city = '%s' and ts >= %d and ts < %d", "machine_table", "Beijing", start, t).build();
-final Result<SqlQueryOk, Err> streamQueryResult = client.sqlQuery(streamQuerySql).get();
-Assert.assertTrue(streamQueryResult.isOk());
-Assert.assertEquals(1000, streamQueryResult.getOk().getRowCount());
+final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
 ```
 详情见 [streaming](docs/streaming.md)
 

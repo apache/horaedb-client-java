@@ -52,31 +52,31 @@ public class ReadmeTest {
 
         final long t0 = System.currentTimeMillis();
         final long t1 = t0 + 1000;
-        final List<Point> data = Point.newPointsBuilder("machine_table")
+        final List<Point> pointList = Point.newTablePointsBuilder("machine_table")
                 .addPoint() // first point
                     .setTimestamp(t0)
                     .addTag("city", "Singapore")
                     .addTag("ip", "10.0.0.1")
                     .addField("cpu", Value.withDouble(0.23))
                     .addField("mem", Value.withDouble(0.55))
-                    .build()
+                    .buildAndContinue()
                 .addPoint() // second point
                     .setTimestamp(t1)
                     .addTag("city", "Singapore")
                     .addTag("ip", "10.0.0.1")
                     .addField("cpu", Value.withDouble(0.25))
                     .addField("mem", Value.withDouble(0.56))
-                    .build()
+                    .buildAndContinue()
                 .addPoint()// third point
                     .setTimestamp(t1)
                     .addTag("city", "Shanghai")
                     .addTag("ip", "10.0.0.2")
                     .addField("cpu", Value.withDouble(0.21))
                     .addField("mem", Value.withDouble(0.52))
-                    .build()
+                    .buildAndContinue()
                 .build();
 
-        final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(data));
+        final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(pointList));
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
         final Result<WriteOk, Err> writeResult = wf.get();
         Assert.assertTrue(writeResult.isOk());
@@ -116,14 +116,14 @@ public class ReadmeTest {
         long t = start;
         final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
         for (int i = 0; i < 1000; i++) {
-            final List<Point> streamData = Point.newPointsBuilder("machine_table")
+            final List<Point> streamData = Point.newTablePointsBuilder("machine_table")
                     .addPoint()
                         .setTimestamp(t)
                         .addTag("city", "Beijing")
                         .addTag("ip", "10.0.0.3")
                         .addField("cpu", Value.withDouble(0.42))
                         .addField("mem", Value.withDouble(0.67))
-                        .build()
+                        .buildAndContinue()
                     .build();
             writeBuf.writeAndFlush(streamData);
             t = t+1;
