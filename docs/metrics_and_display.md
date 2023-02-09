@@ -1,60 +1,60 @@
-## 如何获取 metrics 和 display 数据？
-在程序运行时，可以利用 Linux 平台的 SIGUSR2 信号输出节点的状态信息（display）以及 metric 数据
+## How to get metrics and display data?
+When the program is running, the SIGUSR2 signal of the Linux platform can be used to output the status information (display) and metric data of the node
 
-### 执行方式:
+### How to use
 `kill -s SIGUSR2 pid`
 
-相关信息会输出到指定目录，默认在程序工作目录（cwd: lsof -p $pid | grep cwd）生成 2 个文件
-- CeresDB_client_metrics.log 为前缀的文件，记录了当前 client 节点的所有 metrics 信息
-- CeresDB_client_display.log 为前缀的文件，记录的当前 client 节点重要的内存状态信息
+Information will be output to the specified directory，by default, 2 files will be generated in the program working directory (cwd: lsof -p $pid | grep cwd)
+- The file prefixed with CeresDB_client_metrics.log records all the metrics information of the current client node
+- The file prefixed with CeresDB_client_display.log records important memory status information of the current client node
 
-### Metrics 输出到日志
-- 默认每 10 分钟会输出 metrics 到日志中
+### Metrics output to log
+- Metrics will be output to the log every 10 minutes by default
 
-### Metrics 列表（不断更新中）
-|name|description|
-| ---- | ---- |
-| req_bytes | RPC request 总的 bytes 统计 |
-| resp_bytes | RPC response 总的 bytes 统计 |
-| req_qps_${rpc_method} | RPC request 的 QPS 统计，每个 RPC method 单独统计 |
-| req_serialized_bytes_${rpc_method} | 每个 RPC request 的序列化后的大小统计，RPC method 统计粒度 |
-| resp_serialized_bytes_${rpc_method} | 每个 RPC response 的序列化后的大小统计，RPC method 统计粒度 |
-| req_rt_${rpc_method}_${tenant}| 请求 RT，方法 + 租户粒度 |
-| req_rt_${rpc_method}_${tenant}_${address} | 请求 RT，方法 + 租户 + Server 地址粒度 |
-| req_failed_${rpc_method}_${tenant}| 请求失败统计，方法 + 租户粒度 |
-| req_failed_${rpc_method}_${tenant}_${address} | 请求失败统计，方法 + 租户 + Server 地址粒度 |
-| thread_pool.${thread_pool_name} | 线程池执行任务耗时统计 |
-| scheduled_thread_pool.${schedule_thread_pool_name} | Schedule 线程池执行任务耗时统计 |
-| split_num_per_write | 根据路由表，每批写入会被分割成多个请求，这个指标统计的是写入被分割的情况 |
-| route_for_metrics_refreshed_size_${address} | 每次向 server 请求路由表的 metric 数量 |
-| route_for_metrics_cached_size_${address} | 本地缓存的路由表的 metric 数量 |
-| route_for_metrics_gc_times_${address} | 路由表每次 GC 需要循环次数的统计 |
-| route_for_metrics_gc_items_${address} | 路由表每次 GC 释放掉的 items 数量统计 |
-| route_for_metrics_gc_timer_${address} | 路由表 GC 时间统计 |
-| route_for_metrics_refresh_timer_${address} | 路由表远程刷新时间统计 |
-| write_rows_success_num | 写入成功的数据条数统计 |
-| write_rows_failed_num | 写入失败的数据条数统计 |
-| write_failed | 写入失败的次数统计 |
-| write_qps | 写入请求 QPS |
-| metrics_num_per_write | 每个写入请求的 metrics 数量统计 |
-| async_write_pool.time | SDK 中执行异步写入任务的 async pool 耗时统计，这个很重要，需要特别关注 |
-| async_read_pool.time | SDK 中执行异步读取任务的 async pool 耗时统计，这个很重要，需要特别关注 |
-| connection_counter | SDK 与 server 建立的连接个数 |
-| connection_failures | SDK 与 server 失败连接的统计 |
-| read_row_count | 每次查询数据条数的统计 |
-| read_failed | 查询失败的次数统计 |
-| read_qps | 查询 QPS |
-| write_by_retries_${n} | 第 n 次重试写入的 qps，n == 0 表示是第一次写入（非重试），n > 3 将视为 n == 3 来统计 |
-| read_by_retries_${n} | 第 n 次重试查询的 qps，n == 0 表示是第一次查询（非重试），n > 3 将视为 n == 3 来统计 |
-| write_limiter_acquire_wait_time | 被写入限流器 block 的时间统计 |
-| write_limiter_acquire_available_permits | 写入限流器 available_permits 统计 |
-| query_limiter_acquire_wait_time | 被查询限流器 block 的时间统计 |
-| query_limiter_acquire_available_permits | 查询限流器 available_permits 统计 |
-| direct_executor_timer_${name} | direct executor 任务执行耗时统计 |
-| serializing_executor_single_task_timer_${name} | serializing executor 单个任务执行耗时统计 |
-| serializing_executor_drain_timer_${name} | serializing executor 排干全部任务耗时统计 |
-| serializing_executor_drain_num_${name} | serializing executor 每次排干任务数量 histogram 统计 |
-| rpc_limiter_${name} | 基于 TCP Vegas 算法的 rpc 限流器相关统计指标 |
+### Metrics description （updating）
+|name| description                                                                                                              |
+| ---- |--------------------------------------------------------------------------------------------------------------------------|
+| req_bytes | RPC request total bytes statistics                                                                                       |
+| resp_bytes | RPC response total bytes statistics                                                                                      |
+| req_qps_${rpc_method} | QPS statistics of RPC request, separate for each RPC method                                                              |
+| req_serialized_bytes_${rpc_method} | The serialized size statistics of each RPC request, separate for each method                                             |
+| resp_serialized_bytes_${rpc_method} | The serialized size statistics of each RPC response, separate for each method                                            |
+| req_rt_${rpc_method}_${tenant}| Request RT, method + tenant                                                                                              |
+| req_rt_${rpc_method}_${tenant}_${address} | Rquest RT, method + tenant + server                                                                                      |
+| req_failed_${rpc_method}_${tenant}| Request failed, method + tenant                                                                                          |
+| req_failed_${rpc_method}_${tenant}_${address} | Request failed, method + tenant + server                                                                                 |
+| thread_pool.${thread_pool_name} | Time of thread pool execution tasks                                                                                      |
+| scheduled_thread_pool.${schedule_thread_pool_name} | Time of thread schedule pool execution tasks                                                                             |
+| split_num_per_write | Each batch of writes will be divided into multiple requests by router, and this indicator counts the splitting of writes |
+| route_for_metrics_refreshed_size_${address} | The count of metrics requested for the router from the server each time                                                  |
+| route_for_metrics_cached_size_${address} | The count of metrics in the locally cached router                                                                        |
+| route_for_metrics_gc_times_${address} | The count of cycles required for each GC of the router                                                                   |
+| route_for_metrics_gc_items_${address} | The count of items released by each GC of the router                                                                     |
+| route_for_metrics_gc_timer_${address} | The time of GC time                                                                                                      |
+| route_for_metrics_refresh_timer_${address} | The time of remote refresh                                                                                               |
+| write_rows_success_num | The count of successfully written point                                                                                  |
+| write_rows_failed_num | The count of failed written points                                                                                       |
+| write_failed | The count of failed write requests                                                                                       |
+| write_qps | Write QPS                                                                                                                |
+| metrics_num_per_write | The count of metrics for each write request                                                                              |
+| async_write_pool.time | The async pool time of executing asynchronous write tasks in the SDK is very important and requires special attention    |
+| async_read_pool.time | Same as `async_write_pool.time` for reading                                                                              |
+| connection_counter | The count of connections established between the SDK and the server                                                      |
+| connection_failures | The count of failed connections established between the SDK and the server                                               |
+| read_row_count | The count of point per query                                                                                             |
+| read_failed | The count of failed queried requests                                                                                     |
+| read_qps | Query QPS                                                                                                                |
+| write_by_retries_${n} | The QPS of the nth retry write, n == 0 means it is the first write (not retry), n > 3 will be counted as n == 3          |
+| read_by_retries_${n} | Same as `write_by_retries_${n}` for reading                                                                              |
+| write_limiter_acquire_wait_time | Time written to the current limiter block                                                                                |
+| write_limiter_acquire_available_permits | Write limiter available_permits                                                                                          |
+| query_limiter_acquire_wait_time | The time of the queried limiter block                                                                                    |
+| query_limiter_acquire_available_permits | Query limiter available_permits statistics                                                                               |
+| direct_executor_timer_${name} | The task execution time of direct executor                                                                               |
+| serializing_executor_single_task_timer_${name} | The task exeution time for serializing executor                                                                          |
+| serializing_executor_drain_timer_${name} | Drain all task time statistics                                                                                           |
+| serializing_executor_drain_num_${name} | Serializing executor histogram statistics on the number of tasks drained each time                                       |
+| rpc_limiter_${name} | The rpc metrics on TCP Vegas limiter                                                                                     |
 
 ### Metrics demo:
 ```

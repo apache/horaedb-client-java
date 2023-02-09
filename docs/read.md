@@ -1,4 +1,4 @@
-## 查询流程
+## Query process
 
 ```
                    ┌─────────────────────┐
@@ -38,19 +38,19 @@
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘
 ```
 
-## 名词解释
+## Description
 - CeresDBClient
-  - CeresDB 的 java client 实现，面向使用用户，提供写入、查询等 API
+  - The java client implementation of CeresDB is oriented to users and provides APIs such as writing and querying
 - QueryClient
-  - 查询的默认实现，纯异步
-  - 包含异步获取路由表，路由表失效自动重试
+  - The default implementation of queries, purely asynchronous
+  - Including asynchronous acquisition of routing table, automatic retry when routing table fails
 - RouterClient
-  - 路由表客户端，会在本地维护路由表信息，并从服务端刷新路由表
+  - The router client will maintain the routing table information locally and refresh the routing table from the server
 - RpcClient
-  - 一个纯异步的高性能 RPC 客户端，默认传输层基于 gRPC 实现
+  - A pure asynchronous high-performance RPC client, the default transport layer is implemented based on gRPC
 
 
-## 查询 API 说明
+## How to use
 
 ```java
 /**
@@ -63,26 +63,34 @@
 CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(SqlQueryRequest req, Context ctx);
 ```
 
-### 参数说明:
-| name                  | desc                                                                                                       |
-|-----------------------|------------------------------------------------------------------------------------------------------------|
-| `SqlQueryRequest req` | 查询条件，包含 tables 和 sql 字段，tables 为建议字段，填写话会有更高效的路由, 不填写的话会自动解析 sql 语句以便进行路由(需要引入 ceresdb-sql 模块); sql 为查询语言。 |
-| `Context ctx`         | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata                                                         |
+### Parameters
+| name                  | desc                                                                                                                                                                                                                                                          |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SqlQueryRequest req` | Query request, including `tables` and `sql` fields, `tables` is a suggested field, if filled in, there will be more efficient routing, if not filled, the sql statement will be automatically parsed for routing (need to introduce the ceresdb-sql module) |
+| `Context ctx`         | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                                                                                                                                           |
 
-### 返回值说明
+### Return
 
-```java
-CompletableFuture<Result<SqlQueryOk, Err>>: 返回结果一个 future，因为 query 是纯异步 API，整个链路上没有一处是阻塞的。
+`CompletableFuture<Result<SqlQueryOk, Err>>`
+-  Return a future, because query is a pure asynchronous API, and no part of the entire link is blocked.
 
-Result<SqlQueryOk, Err>: Result 的灵感来自 Rust 中的 Result，其中 QueryOk 和 Err 同时只能一个有值。
-SqlQueryOk: 查询成功的结果，其中 sql 是查询时的语句，affectedRows 是在更新或删除数据时返回的受影响数据行数，List<Row> 是查询返回的语句，一般来说，一类Sql只会返回 affectedRows 或者 List<Rows>，不会两个值都返回
-        
-在处理查询返回结果时，用户可以直接获取List<Row>，也可以通过 stream 的方式处理，Row是一个 Value 的集合，是很简单的数据结构。
-需要注意的是，在 Value 获取 java primitive 值的时候，需要传入和建表匹配的数值类型方法，否则将会报错。        
-代码示例：
-        // column cpu_util 是一个 Double 类型的field
-        row.getColumnValue("cpu_util").getDouble()
+`Result<SqlQueryOk, Err>`
+- Result is inspired by Result in Rust, where QueryOk and Err can only have a value at the same time
 
-Err: 查询失败结果展示，包含错误状态码、错误文本信息、抛错的服务器地址。
-```
+`SqlQueryOk`
+ - The result of a successful query, contains
+   - sql in SqlQueryRequest
+   - affectedRows is the number of affected data rows returned when updating or deleting data
+   - rows is the statement returned by the query, a class of Sql will only return affectedRows Or List<Rows>, will not return both values
+
+`Row`
+- When processing the results returned by the query, the user can directly obtain `List<Row>`, or process it through stream.
+- Row is a collection of Value, which is a very simple data structure
+- Note: When Value gets the java primitive value, you need to pass in the type method that matches the table creation, otherwise an error will be reported
+- Example to use `Row`: `row.getColumnValue("cpu_util").getDouble()
+  `
+
+`Err`
+- The result of the query failure is displayed, including the error status code, error text information, and the address of the server where the error was thrown.
+
 

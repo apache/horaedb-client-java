@@ -1,13 +1,13 @@
-## 一些运维工具
+## Some maintenance tools
 
-### 如何使用 `kill -s SIGUSR2 $pid`
+### How to use `kill -s SIGUSR2 $pid`
 
-第一次执行 `kill -s SIGUSR2 $pid` 会从日志输出上看到如下帮助信息，包括:
-1. 清除本地路由表缓存
-2. 开/关简洁版写查 response 日志的输出
-3. 输出内存中的 metrics、路由表 cache 和重要对象的内存状态信息到本地文件中
+The first time you execute `kill -s SIGUSR2 $pid`, will see the following help information from the log output, including:
+1. Clear the local router cache
+2. Turn on/off simple output of the response log
+3. Output in-memory metrics, router cache, and memory state information of important objects to local files
 
-按照帮助信息执行即可
+Follow the help information to execute
 
 ```
  - -- CeresDBClient Signal Help --

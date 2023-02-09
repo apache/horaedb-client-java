@@ -1,5 +1,5 @@
 
-## 写入流程图
+## Write process
 
 ```
                    ┌─────────────────────┐  
@@ -39,21 +39,22 @@
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
-## 名词解释
+## Description
 - CeresDBClient
-    - CeresDB 的 java client 实现，面向使用用户，提供写入、查询等 API
+  - The java client implementation of CeresDB is oriented to users and provides APIs such as writing and querying
 - WriteClient
-    - 写数据的默认实现，纯异步写入
-    - 包含异步获取路由表，自动拆分请求
-    - 支持异步重试以及异步合并多个服务端的响应
+    - The default implementation of writing data, pure asynchronous writing
+    - Contains asynchronously fetching router, automatically splitting requests
+    - Support asynchronous retry 
+    - Asynchronously merge responses from multiple servers
 - RouterClient
-    - 路由表客户端，会在本地维护路由表信息，并从服务端刷新路由表
+  - The router client will maintain the routing table information locally and refresh the routing table from the server
 - RpcClient
-    - 一个纯异步的高性能 RPC 客户端，默认传输层基于 gRPC 实现
+  - A pure asynchronous high-performance RPC client, the default transport layer is implemented based on gRPC
 
-## 创建表
-CeresDB 是一个 schema-less 时序数据库，如果你不指定 schema，会在你第一次写入时自动创建默认的 schema，你也可以自己指定 schema，下面是建表语句的一个例子，包含了所有支持的类型：
 
+## CreateTable
+Create table example
 ```
 CREATE TABLE my_first_table(
     ts TIMESTAMP NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE my_first_table(
 ) ENGINE=Analytic
 ```
 
-## 写入 API 说明
+## Write API
 
 ```java
 /**
@@ -90,38 +91,47 @@ CREATE TABLE my_first_table(
 CompletableFuture<Result<WriteOk, Err>> write(WriteRequest req, Context ctx);
 ```
 
-### 参数说明
-| name             | desc                                                             |
-|------------------|------------------------------------------------------------------|
-| `WriteRuest req` | 要写入的请求，主要是一个写入的平铺的 Point 集合，其中 Point 是一个支持多值的数据点，允许不同表的数据点放在一起写入 |
-| `Context ctx`    | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata               |
+### Parameters
+| name             | desc                                                                                                                                                                      |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `WriteRuest req` | Write request is a written Point collection, where Point is a data point that supports multiple values, allowing data points from different tables to be written together |
+| `Context ctx`    | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                                                                                                           |
 
-### 返回值说明
-CompletableFuture<Result<WriteOk, Err>>: 返回结果一个 future，因为 write 是纯异步 API，整个链路上没有一处是阻塞的。
+### Return
 
-Result<WriteOk, Err>: Result 的灵感来自 Rust 中的 Result，其中 WriteOk 和 Err 同时只能一个有值，由于 Write API 还会根据路由表拆分请求，所以 Result 必须有合并的能力。
-WriteOk: 写入成功的结果展示，包含 success(成功条数) 和 failed(失败条数) 以及写入的 metrics 列表，多个 WriteOk 支持合并
-Err: 写入失败结果展示，包含错误状态码、错误文本信息、抛错的服务器地址，同样支持多个 Err 合并
+`CompletableFuture<Result<WriteOk, Err>>`
+- Return a future, because write is a pure asynchronous API, and no part of the entire link is blocked
 
-### 如果构建一个 Point?
+`Result<WriteOk, Err>`
+- Result is inspired by Result in Rust, where QueryOk and Err can only have a value at the same time
+- Since the Write API also splits the request according to the router, the `Result` must have the ability to merge
+
+`WriteOk`
+- The display of successful writing results, including success (number of successful points) and failed (number of failed points) and a list of written tables
+- Multiple WriteOk supports merging
+
+`Err`
+- The result of the query failure is displayed, including the error status code, error text information, and the address of the server where the error was thrown
+
+### How to build `Point`?
 ```java
 //
 final long time = System.currentTimeMillis() - 1;
-final List<Point> points = Point.newPointsBuilder(table) // 指定 table
-        .addPoint() // 添加一个数据点
-            .setTimestamp(time) // 设置第一个点的时间戳
-            .addTag("tag1", "tag_v1")
+final List<Point> points = Point.newPointsBuilder(table) // set table
+        .addPoint() // add first point
+            .setTimestamp(time) // set first point timestamp
+            .addTag("tag1", "tag_v1") // add first point tag
             .addTag("tag2", "tag_v2") 
-            .addField("field1", Value.withDouble(0.64)) 
+            .addField("field1", Value.withDouble(0.64)) // add first point value
             .addField("field2", Value.withString("string_value"))
-            .build() // 完成第一个点的构建
-        .addPoint() // 添加第二个点
-            .setTimestamp(time+10) // 设置第二个点的时间戳
+            .build() // complete the build of first point
+        .addPoint() // add second point
+            .setTimestamp(time+10)
             .addTag("tag1", "tag_v1")
             .addTag("tag2", "tag_v2")
             .addField("field1", Value.withDouble(1.28))
             .addField("field2", Value.withString("string_value 2"))
-            .build() // 完成第二个点的构建
-        .build() // 完成所有point的构建
+            .build() // complete the build of second point
+        .build() // No need to add new point, return the collection of point
 ```
 

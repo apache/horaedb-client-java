@@ -1,29 +1,28 @@
-## 流式 API
-CeresDB 支持流式查询和写入，其中流式查询为 response streaming，适合用来大规模拉取数据；流式写入为 request streaming，适合大批量导入数据使用。
+## Stream API
+CeresDB supports streaming query and writing which is suitable for large amounts of data.
 
-### 流式写入 API 说明
+### Stream Write API
 
 ```java
 /**
  * Executes a streaming-write-call, returns a write request observer for streaming-write.
  *
- * @param metric the table to write
+ * @param table the table to write
  * @param ctx    the invoke context
  * @return a write request observer for streaming-write
  */
 StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx);
 ```
 
-#### 参数说明
+#### Parameters
 
 | name           | desc                                                                                |
 |----------------|-------------------------------------------------------------------------------------|
-| `String table` | 必须要指定一个 table，并且限制只能流式写入这个 table 的数据，这样做是为了高效，支持多个 table 数据同时流式写入并不能做到高效，意义不大，所以不支持 |
-| `Context ctx`  | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata                                  |
+| `String table` | A table must be specified, and the data that can only be streamed into this table for efficiency. Supporting multiple table data streamed at the same time is not efficient and meaningless, so it is not supported |
+| `Context ctx`  | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                   |
 
-#### 返回值说明
-返回值:
-`StreamWriteBuf<Point, WriteOk>`: 一个支持流式写入的 buffer 如下：
+#### Return
+`StreamWriteBuf<Point, WriteOk>`
 ```java
 public interface StreamWriteBuf<V, R> {
 
@@ -61,23 +60,25 @@ public interface StreamWriteBuf<V, R> {
 }
 ```
 
-用户不断的多次调用 write 将数据写入缓存，在 flush 时真正发起一次真正的流式写入调用，可以多次 flush，建议 write 一定条数再 flush 一次，当写入完成时再调用
-completed 告知 server 完成，接下来 server 端会返回一个汇总过的 result(`CompletableFuture<WriteOk>`)
+You can continuously calls write multiple times to write data into the cache, and actually initiates a real streaming write call when flushing, which can be flushed multiple times. 
+It is recommended to write batch of data and then flush once, and call again when the writing is completed
+
+`completed` method tells the server to complete, and then the server will return a summarized result(`CompletableFuture<WriteOk>`)
 
 Example:
 ```java
 final StreamWriteBuf<Point, WriteOk> writer = this.writeClient.streamWrite("test_table");
 final CompletableFuture<WriteOk> ret = writer
-    .write(Util.generatePoints("test_table")) // 写入随机生成的数据，这里只作为示例
-    .write(Util.generatePoints("test_table")) // 可以链式调用
+    .write(Util.generatePoints("test_table"))
+    .write(Util.generatePoints("test_table"))
+    .write(Util.generatePoints("test_table"))
+    .flush() // flush, the background will send the data to the server
     .write(Util.generatePoints("test_table")) //
-    .flush() // flush 一次，后台会将数据发送到 server
-    .write(Util.generatePoints("test_table")) //
-    .flush() // 再一次 flush，整个流式调用可以多次 flush，每次 flush 数据的大小可根据业务场景定夺
-    .completed(); // 调用 completed 会结束这个`流`，server 会返回总体的写入结果
+    .flush() // flush again
+    .completed(); // completed will end the `stream`, and the server will return the overall write result
 ```
 
-### 流式查询 API 说明
+### Stream Query API
 
 ```java
 /**
@@ -101,19 +102,20 @@ void streamSqlQuery(SqlQueryRequest req, Context ctx, Observer<SqlQueryOk> obser
 Iterator<Row> blockingStreamSqlQuery(SqlQueryRequest req, long timeout, TimeUnit unit, Context ctx);
 ```
 
-流式查询有两种 API，一种是基于 Observer 回调，灵活性更高，适合非阻塞的异步场景；
-另一种是返回一个 Iterator，每个 element 即是一行数据(Row)，hasNext 方法有可能被阻塞直到服务端返回数据流或者数据流结束。
+Stream query has two APIs.
+- one is based on `Observer` callback, which is more flexible and suitable for non-blocking asynchronous scenarios
+- the other is to return an `Iterator`, each element is a row of data (Row), the hasNext method may be blocked until the server returns the data stream or the data stream ends.
 
-#### 参数说明
+#### Parameters
 
 | name                            | desc |
-|---------------------------------| --- |
-| `SqlQueryRequest req`           | 查询条件，这一点和普通查询没有任何区别 |
-| `Context ctx`                   | 调用上下文，实现一些特殊需求，ctx 中的内容会写入 gRPC 的 headers metadata |
-| `Observer<SqlQueryOk> observer` | response 回调观察者，可以不断的接收 server 端返回的数据，在 server 端把数据吐完后 onCompleted 会被调用 |
-| `timeout`                       | 调用 `Iterator#hasNext` 的最大等待时间（因为是基于 buffer 的惰性拉取数据，在 buffer 为空时会从 server 现拉取数据） |
+|---------------------------------| -- |
+| `SqlQueryRequest req`           | Query request, which are no different from ordinary queries |
+| `Context ctx`                   | Same as ordinary queries `Context` |
+| `Observer<SqlQueryOk> observer` | The response callback observer can continuously receive the data returned by the server, and `onCompleted` will be called after all the data is sent on the server |
+| `timeout`                       | The maximum waiting time for calling `Iterator#hasNext` (because it is a buffer-based lazy data pull, when the buffer is empty, it will pull data from the server now) |
 
-Observer 的 API 如下：
+Observer API
 ```java
 public interface Observer<V> {
 
