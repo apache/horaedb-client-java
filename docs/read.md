@@ -64,10 +64,10 @@ CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(SqlQueryRequest req, Context
 ```
 
 ### Parameters
-| name                  | desc                                                                                                                                                                                                                                                          |
-|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name                  | desc                                                                                                                                                                                                                                                        |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SqlQueryRequest req` | Query request, including `tables` and `sql` fields, `tables` is a suggested field, if filled in, there will be more efficient routing, if not filled, the sql statement will be automatically parsed for routing (need to introduce the ceresdb-sql module) |
-| `Context ctx`         | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                                                                                                                                           |
+| `Context ctx`         | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                                                                    |
 
 ### Return
 

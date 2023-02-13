@@ -102,7 +102,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 <dependency>
   <groupId>io.ceresdb</groupId>
   <artifactId>ceresdb-all</artifactId>
-  <version>1.0.0.alpha</version>
+  <version>1.0.0-alpha</version>
 </dependency>
 ```
 
@@ -173,7 +173,7 @@ See [write](docs/write.md)
 ## Query data example
 ```java
 final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
-        .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `ssql` to get the table name and do the routing automaticly
+        .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `sql` to get the table name and do the routing automaticly
         .sql("select * from machine_table where ts = %d", t0) //
         .build();
 final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);

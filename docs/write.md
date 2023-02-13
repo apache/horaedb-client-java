@@ -95,7 +95,7 @@ CompletableFuture<Result<WriteOk, Err>> write(WriteRequest req, Context ctx);
 | name             | desc                                                                                                                                                                      |
 |------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `WriteRuest req` | Write request is a written Point collection, where Point is a data point that supports multiple values, allowing data points from different tables to be written together |
-| `Context ctx`    | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                                                                                                           |
+| `Context ctx`    | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                  |
 
 ### Return
 
@@ -124,6 +124,6 @@ final Point point = Point.newPointBuilder(table) // set table
         .addTag("tag2", "tag_v2")
         .addField("field1", Value.withDouble(0.64)) // add point value
         .addField("field2", Value.withString("string_value"))
-        .build() // complete the build
+        .build() // complete the building and check
 ```
 

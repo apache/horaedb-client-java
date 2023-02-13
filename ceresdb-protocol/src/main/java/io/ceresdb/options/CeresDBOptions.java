@@ -177,7 +177,7 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         // In the case of routing table failure or some other retry able error, a retry of the write is attempted.
         private int writeMaxRetries = 1;
         // Write flow control: maximum number of data rows in-flight.
-        private int maxInFlightWriteRows = 8192;
+        private int maxInFlightWritePoints = 8192;
         // Write flow control: limited policy
         private LimitedPolicy writeLimitedPolicy = LimitedPolicy.defaultWriteLimitedPolicy();
         // Query options
@@ -266,11 +266,11 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         /**
          * Write flow control: maximum number of data rows in-flight.
          *
-         * @param maxInFlightWriteRows maximum number of data rows in-flight
+         * @param maxInFlightWritePoints maximum number of data rows in-flight
          * @return this builder
          */
-        public Builder maxInFlightWriteRows(final int maxInFlightWriteRows) {
-            this.maxInFlightWriteRows = maxInFlightWriteRows;
+        public Builder maxInFlightWritePoints(final int maxInFlightWritePoints) {
+            this.maxInFlightWritePoints = maxInFlightWritePoints;
             return this;
         }
 
@@ -376,7 +376,7 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
             opts.writeOptions = new WriteOptions();
             opts.writeOptions.setMaxWriteSize(this.maxWriteSize);
             opts.writeOptions.setMaxRetries(this.writeMaxRetries);
-            opts.writeOptions.setMaxInFlightWritePoints(this.maxInFlightWriteRows);
+            opts.writeOptions.setMaxInFlightWritePoints(this.maxInFlightWritePoints);
             opts.writeOptions.setLimitedPolicy(this.writeLimitedPolicy);
             opts.queryOptions = new QueryOptions();
             opts.queryOptions.setMaxRetries(this.readMaxRetries);

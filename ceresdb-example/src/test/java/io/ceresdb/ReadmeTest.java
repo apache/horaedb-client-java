@@ -88,7 +88,7 @@ public class ReadmeTest {
         Assert.assertEquals(0, writeResult.mapOr(-1, WriteOk::getFailed).intValue());
 
         final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
-                .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `ssql` to get the table name and do the routing automaticly
+                .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `sql` to get the table name and do the routing automaticly
                 .sql("select * from machine_table where ts = %d", timestamp) //
                 .build();
         final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);

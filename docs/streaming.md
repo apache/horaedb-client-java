@@ -16,10 +16,10 @@ StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx
 
 #### Parameters
 
-| name           | desc                                                                                |
-|----------------|-------------------------------------------------------------------------------------|
+| name           | desc                                                                                                                                                                                                                |
+|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `String table` | A table must be specified, and the data that can only be streamed into this table for efficiency. Supporting multiple table data streamed at the same time is not efficient and meaningless, so it is not supported |
-| `Context ctx`  | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                   |
+| `Context ctx`  | Call context, to achieve some special requirements, the content in ctx will be written into the headers metadata of gRPC                                                                                            |
 
 #### Return
 `StreamWriteBuf<Point, WriteOk>`

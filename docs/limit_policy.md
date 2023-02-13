@@ -4,14 +4,14 @@ The limiting parameters see the configuration in `WriteOptions` / `QueryOptions`
 
 `LimitedPolicy` is the processing policy after the flow is limited. It should be noted that if the number of data contained in one write request exceeds the limit, then the request will be allowed. 
 
-| name | description                                                                                                                            |
-| --- |----------------------------------------------------------------------------------------------------------------------------------------|
-| DiscardPolicy | The latest written data is directly discarded when limiting                                                                            |
-| AbortPolicy | Throw a LimitedException directly to the upper layer when limiting                                                                     |
-| BlockingPolicy | Blocking thread while limiting                                                                                                         |
-| BlockingTimeoutPolicy | Blocking thread util timeout，the error message while be reflected in `Result#Err` when timeout occurs, and no exception will be thrown |
+| name                         | description                                                                                                                            |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| DiscardPolicy                | The latest written data is directly discarded when limiting                                                                            |
+| AbortPolicy                  | Throw a LimitedException directly to the upper layer when limiting                                                                     |
+| BlockingPolicy               | Blocking thread while limiting                                                                                                         |
+| BlockingTimeoutPolicy        | Blocking thread util timeout，the error message while be reflected in `Result#Err` when timeout occurs, and no exception will be thrown |
 | AbortOnBlockingTimeoutPolicy | Blocking thread util timeout，and throw a `LimitedException` to the upper when timeout occurs                                           |
-| XXXPolicy | If none of the above meets your needs, please customize it based on `LimitedPolicy`. Happy coding : )                                  |
+| XXXPolicy                    | If none of the above meets your needs, please customize it based on `LimitedPolicy`. Happy coding : )                                  |
 
 Note：default write limit policy is `AbortOnBlockingTimeoutPolicy(3s)`，query is `AbortOnBlockingTimeoutPolicy(10s)`
 
