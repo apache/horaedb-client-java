@@ -14,7 +14,7 @@ import io.ceresdb.common.Copiable;
  *
  */
 public class QueryOptions implements Copiable<QueryOptions> {
-
+    private String       database;
     private RouterClient routerClient;
     private Executor     asyncPool;
 
@@ -23,6 +23,14 @@ public class QueryOptions implements Copiable<QueryOptions> {
     // Query flow limit: maximum number of query requests in-flight.
     private int           maxInFlightQueryRequests = 8;
     private LimitedPolicy limitedPolicy            = LimitedPolicy.defaultQueryLimitedPolicy();
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
 
     public RouterClient getRouterClient() {
         return routerClient;
@@ -67,6 +75,7 @@ public class QueryOptions implements Copiable<QueryOptions> {
     @Override
     public QueryOptions copy() {
         final QueryOptions opts = new QueryOptions();
+        opts.database = this.database;
         opts.routerClient = this.routerClient;
         opts.asyncPool = this.asyncPool;
         opts.maxRetries = this.maxRetries;
@@ -78,6 +87,7 @@ public class QueryOptions implements Copiable<QueryOptions> {
     @Override
     public String toString() {
         return "QueryOptions{" + //
+               ", database=" + database + //
                ", routerClient=" + routerClient + //
                ", asyncPool=" + asyncPool + //
                ", maxRetries=" + maxRetries + //

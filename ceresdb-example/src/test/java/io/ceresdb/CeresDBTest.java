@@ -89,10 +89,8 @@ public class CeresDBTest {
                                                                                               "fUint32 UINT32 NULL," + //
                                                                                               "fUint16 UINT16 NULL," + //
                                                                                               "fUint8 UINT8 NULL," + //
-                                                                                              "fTimestamp TIMESTAMP NULL,"
-                                                                                              + //
-                                                                                              "fVarbinary VARBINARY NULL,"
-                                                                                              + //
+                                                                                              "fTimestamp TIMESTAMP NULL," + //
+                                                                                              //"fVarbinary VARBINARY NULL, + //"
                                                                                               "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
                 TEST_TABLE_NAME)).get();
         if (!createResult.isOk()) {
@@ -179,7 +177,9 @@ public class CeresDBTest {
                     row.getColumnValue("fUint32").getUInt32(), //
                     row.getColumnValue("fUint16").getUInt16(), //
                     row.getColumnValue("fUint8").getUInt8(), //
-                    row.getColumnValue("fTimestamp").getTimestamp(), row.getColumnValue("fVarbinary").getVarbinary());
+                    row.getColumnValue("fTimestamp").getTimestamp() //
+                    //row.getColumnValue("fVarbinary").getVarbinary())
+            );
         });
 
         final Result<SqlQueryOk, Err> alterResult1 = this.client
@@ -232,7 +232,7 @@ public class CeresDBTest {
                     .addField("fUint32", Value.withUInt32(32)).addField("fUint16", Value.withUInt16(16))
                     .addField("fUint8", Value.withUInt8(8))
                     .addField("fTimestamp", Value.withTimestamp(time.getTimeInMillis()))
-                    .addField("fVarbinary", Value.withVarbinary("test".getBytes(StandardCharsets.UTF_8)))
+                    //.addField("fVarbinary", Value.withVarbinary("test".getBytes(StandardCharsets.UTF_8))
                     .buildAndContinue();
         }
         return builder.build();

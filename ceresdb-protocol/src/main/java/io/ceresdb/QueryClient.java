@@ -13,6 +13,7 @@ import io.ceresdb.common.parser.SqlParserFactoryProvider;
 import io.ceresdb.common.util.Strings;
 import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.limit.QueryLimiter;
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
 
     @Override
     public CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
+
         Requires.requireNonNull(req, "Null.request");
         Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
 
@@ -116,6 +119,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
 
     @Override
     public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<SqlQueryOk> observer) {
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
+
         Requires.requireNonNull(req, "Null.request");
         Requires.requireNonNull(observer, "Null.observer");
         Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
@@ -125,6 +130,16 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
         this.routerClient.routeFor(req.getReqCtx(), req.getTables())
                 .thenApply(routes -> routes.values().stream().findAny().orElse(this.routerClient.clusterRoute()))
                 .thenAccept(route -> streamQueryFrom(route.getEndpoint(), req, ctx, observer));
+    }
+
+    private RequestContext attachRequestCtx(RequestContext reqCtx) {
+        if (reqCtx == null) {
+            reqCtx = new RequestContext();
+        }
+        if (Strings.isNullOrEmpty(reqCtx.getDatabase())) {
+            reqCtx.setDatabase(this.opts.getDatabase());
+        }
+        return reqCtx;
     }
 
     private CompletableFuture<Result<SqlQueryOk, Err>> query0(final SqlQueryRequest req, //

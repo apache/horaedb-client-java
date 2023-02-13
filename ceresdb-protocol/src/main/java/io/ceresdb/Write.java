@@ -38,7 +38,7 @@ public interface Write {
     CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx);
 
     /**
-     * @see #streamWrite(String, Context)
+     * @see #streamWrite(RequestContext, String, Context)
      */
     default StreamWriteBuf<Point, WriteOk> streamWrite(final String table) {
         return streamWrite(null, table, Context.newDefault());

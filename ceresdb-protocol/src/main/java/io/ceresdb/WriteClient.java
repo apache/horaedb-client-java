@@ -114,6 +114,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
     @Override
     public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
+
         Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
         Requires.requireNonNull(req.getPoints(), "Null.data");
 
@@ -138,15 +140,18 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     @Override
-    public StreamWriteBuf<Point, WriteOk> streamWrite(RequestContext reqCtx, final String table, final Context ctx) {
-        Requires.requireTrue(Strings.isNotBlank(reqCtx.getDatabase()), "No database selected");
+    public StreamWriteBuf<Point, WriteOk> streamWrite(final RequestContext reqCtx, final String table,
+                                                      final Context ctx) {
+        final RequestContext finalReqCtx = attachRequestCtx(reqCtx);
+
+        Requires.requireTrue(Strings.isNotBlank(finalReqCtx.getDatabase()), "No database selected");
         Requires.requireTrue(Strings.isNotBlank(table), "Blank.table");
 
         final CompletableFuture<WriteOk> respFuture = new CompletableFuture<>();
 
         return this.routerClient.routeFor(reqCtx, Collections.singleton(table))
                 .thenApply(routes -> routes.values().stream().findFirst().orElseGet(() -> Route.invalid(table)))
-                .thenApply(route -> streamWriteTo(route, reqCtx, ctx, Utils.toUnaryObserver(respFuture)))
+                .thenApply(route -> streamWriteTo(route, finalReqCtx, ctx, Utils.toUnaryObserver(respFuture)))
                 .thenApply(reqObserver -> new StreamWriteBuf<Point, WriteOk>() {
 
                     private final List<Point> buf = Spines.newBuf();
@@ -189,6 +194,16 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                         return respFuture;
                     }
                 }).join();
+    }
+
+    private RequestContext attachRequestCtx(RequestContext reqCtx) {
+        if (reqCtx == null) {
+            reqCtx = new RequestContext();
+        }
+        if (Strings.isNullOrEmpty(reqCtx.getDatabase())) {
+            reqCtx.setDatabase(this.opts.getDatabase());
+        }
+        return reqCtx;
     }
 
     private CompletableFuture<Result<WriteOk, Err>> write0(final RequestContext reqCtx, final List<Point> data, //

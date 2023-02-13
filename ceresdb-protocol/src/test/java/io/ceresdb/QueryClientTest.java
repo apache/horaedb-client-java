@@ -77,6 +77,7 @@ public class QueryClientTest {
         final QueryOptions queryOpts = new QueryOptions();
         queryOpts.setAsyncPool(ForkJoinPool.commonPool());
         queryOpts.setRouterClient(this.routerClient);
+        queryOpts.setDatabase("public");
 
         this.queryClient = new QueryClient();
         this.queryClient.init(queryOpts);

@@ -15,6 +15,7 @@ import io.ceresdb.common.Copiable;
  */
 public class WriteOptions implements Copiable<WriteOptions> {
 
+    private String       database;
     private RouterClient routerClient;
     private Executor     asyncPool;
 
@@ -25,6 +26,14 @@ public class WriteOptions implements Copiable<WriteOptions> {
     // Write flow limit: maximum number of data points in-flight.
     private int           maxInFlightWritePoints = 8192;
     private LimitedPolicy limitedPolicy          = LimitedPolicy.defaultWriteLimitedPolicy();
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
 
     public RouterClient getRoutedClient() {
         return routerClient;
@@ -77,6 +86,7 @@ public class WriteOptions implements Copiable<WriteOptions> {
     @Override
     public WriteOptions copy() {
         final WriteOptions opts = new WriteOptions();
+        opts.database = this.database;
         opts.routerClient = this.routerClient;
         opts.asyncPool = this.asyncPool;
         opts.maxRetries = this.maxRetries;
@@ -89,6 +99,7 @@ public class WriteOptions implements Copiable<WriteOptions> {
     @Override
     public String toString() {
         return "WriteOptions{" + //
+               ", database=" + database + //
                ", routerClient=" + routerClient + //
                ", globalAsyncPool=" + asyncPool + //
                ", maxRetries=" + maxRetries + //

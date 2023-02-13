@@ -56,6 +56,7 @@ public class WriteClientTest {
         final WriteOptions writeOpts = new WriteOptions();
         writeOpts.setAsyncPool(ForkJoinPool.commonPool());
         writeOpts.setRoutedClient(this.routerClient);
+        writeOpts.setDatabase("public");
 
         this.writeClient = new WriteClient();
         this.writeClient.init(writeOpts);
@@ -380,6 +381,7 @@ public class WriteClientTest {
         // re-init
         this.writeClient.shutdownGracefully();
         final WriteOptions writeOpts = new WriteOptions();
+        writeOpts.setDatabase("public");
         writeOpts.setAsyncPool(ForkJoinPool.commonPool());
         writeOpts.setRoutedClient(this.routerClient);
         writeOpts.setMaxWriteSize(maxWriteSize);
