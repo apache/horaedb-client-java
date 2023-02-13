@@ -22,7 +22,7 @@ public class ReadmeTest {
     @Test
     public void readmeTest() throws ExecutionException, InterruptedException {
         final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) // CeresDB default grpc port 8831
-                .tenant("public", "sub_test", "test_token") // tenant info
+                .database("public") // use database public
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
                 .writeMaxRetries(1)

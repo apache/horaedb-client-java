@@ -9,7 +9,6 @@ import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouteMode;
 import io.ceresdb.common.Copiable;
 import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.Tenant;
 import io.ceresdb.common.util.Requires;
 import io.ceresdb.rpc.RpcOptions;
 
@@ -19,9 +18,9 @@ import io.ceresdb.rpc.RpcOptions;
  */
 public class CeresDBOptions implements Copiable<CeresDBOptions> {
     private Endpoint      clusterAddress;
+    private String        database;
     private Executor      asyncWritePool;
     private Executor      asyncReadPool;
-    private Tenant        tenant;
     private RpcOptions    rpcOptions;
     private RouterOptions routerOptions;
     private WriteOptions  writeOptions;
@@ -33,6 +32,14 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
 
     public void setClusterAddress(Endpoint clusterAddress) {
         this.clusterAddress = clusterAddress;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     public Executor getAsyncWritePool() {
@@ -49,14 +56,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
 
     public void setAsyncReadPool(Executor asyncReadPool) {
         this.asyncReadPool = asyncReadPool;
-    }
-
-    public Tenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
     }
 
     public RpcOptions getRpcOptions() {
@@ -95,11 +94,9 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
     public CeresDBOptions copy() {
         final CeresDBOptions copy = new CeresDBOptions();
         copy.clusterAddress = this.clusterAddress;
+        copy.database = this.database;
         copy.asyncWritePool = this.asyncWritePool;
         copy.asyncReadPool = this.asyncReadPool;
-        if (this.tenant != null) {
-            copy.tenant = this.tenant.copy();
-        }
         if (this.rpcOptions != null) {
             copy.rpcOptions = this.rpcOptions.copy();
         }
@@ -119,9 +116,9 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
     public String toString() {
         return "CeresDBOptions{" + //
                "clusterAddress=" + clusterAddress + //
+               ", database=" + database + //
                ", asyncWritePool=" + asyncWritePool + //
                ", asyncReadPool=" + asyncReadPool + //
-               ", tenant=" + tenant + //
                ", rpcOptions=" + rpcOptions + //
                ", routerOptions=" + routerOptions + //
                ", writeOptions=" + writeOptions + //
@@ -132,7 +129,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
     public static CeresDBOptions check(final CeresDBOptions opts) {
         Requires.requireNonNull(opts, "CeresDBOptions.opts");
         Requires.requireNonNull(opts.getClusterAddress(), "CeresDBOptions.clusterAddress");
-        Requires.requireNonNull(opts.getTenant(), "CeresDBOptions.tenant");
         Requires.requireNonNull(opts.getRpcOptions(), "CeresDBOptions.rpcOptions");
         Requires.requireNonNull(opts.getRouterOptions(), "CeresDBOptions.RouterOptions");
         Requires.requireNonNull(opts.getRouterOptions().getRouteMode(), "CeresDBOptions.RouterOptions.RouteMode");
@@ -169,11 +165,10 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         private final Endpoint clusterAddress;
         // The routeMode for sdk, only Proxy and Direct support now.
         private RouteMode routeMode;
+        private String    database;
         // Asynchronous thread pool, which is used to handle various asynchronous tasks in the SDK.
         private Executor asyncWritePool;
         private Executor asyncReadPool;
-        // Tenant
-        private Tenant tenant;
         // Rpc options, in general, the default configuration is fine.
         private RpcOptions rpcOptions = RpcOptions.newDefault();
         // Write options
@@ -207,6 +202,16 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         }
 
         /**
+         *
+         * @param database the database name
+         * @return this builder
+         */
+        public Builder database(final String database) {
+            this.database = database;
+            return this;
+        }
+
+        /**
          * Asynchronous thread pool, which is used to handle various asynchronous
          * tasks in the SDK (You are using a purely asynchronous SDK). If you do not
          * set it, there will be a default implementation, which you can reconfigure
@@ -221,34 +226,6 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         public Builder asyncPool(final Executor asyncWritePool, final Executor asyncReadPool) {
             this.asyncWritePool = asyncWritePool;
             this.asyncReadPool = asyncReadPool;
-            return this;
-        }
-
-        /**
-         * @see #tenant(String, String, String)
-         *
-         * @param tenant the tenant name
-         * @param token  don't tell the secret to anyone, heaven knows
-         *               and earth knows, you know and I know.  ＼（＾▽＾）／
-         * @return this builder
-         */
-        public Builder tenant(final String tenant, final String token) {
-            this.tenant = Tenant.of(tenant, null, token);
-            return this;
-        }
-
-        /**
-         * Sets a tenant.
-         *
-         * @param tenant      the tenant name
-         * @param childTenant default subtenant, which is used if you do not
-         *                    re-specify a subtenant each time you make a call.
-         * @param token       don't tell the secret to anyone, heaven knows
-         *                    and earth knows, you know and I know.  ＼（＾▽＾）／
-         * @return this builder
-         */
-        public Builder tenant(final String tenant, final String childTenant, final String token) {
-            this.tenant = Tenant.of(tenant, childTenant, token);
             return this;
         }
 
@@ -385,9 +362,9 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
         public CeresDBOptions build() {
             final CeresDBOptions opts = new CeresDBOptions();
             opts.clusterAddress = this.clusterAddress;
+            opts.database = this.database;
             opts.asyncWritePool = asyncWritePool;
             opts.asyncReadPool = asyncReadPool;
-            opts.tenant = this.tenant;
             opts.rpcOptions = this.rpcOptions;
             opts.routerOptions = new RouterOptions();
             opts.routerOptions.setClusterAddress(this.clusterAddress);

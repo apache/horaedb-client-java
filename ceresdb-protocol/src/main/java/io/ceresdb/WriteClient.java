@@ -3,7 +3,6 @@
  */
 package io.ceresdb;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.limit.WriteLimiter;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
@@ -114,10 +114,12 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
     @Override
     public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
+        Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
         Requires.requireNonNull(req.getPoints(), "Null.data");
+
         final long startCall = Clock.defaultClock().getTick();
         return this.writeLimiter.acquireAndDo(req.getPoints(),
-                () -> write0(req.getPoints(), ctx, 0).whenCompleteAsync((r, e) -> {
+                () -> write0(req.getReqCtx(), req.getPoints(), ctx, 0).whenCompleteAsync((r, e) -> {
                     InnerMetrics.writeQps().mark();
                     if (r != null) {
                         if (Utils.isRwLogging()) {
@@ -136,14 +138,15 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     @Override
-    public StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx) {
+    public StreamWriteBuf<Point, WriteOk> streamWrite(RequestContext reqCtx, final String table, final Context ctx) {
+        Requires.requireTrue(Strings.isNotBlank(reqCtx.getDatabase()), "No database selected");
         Requires.requireTrue(Strings.isNotBlank(table), "Blank.table");
 
         final CompletableFuture<WriteOk> respFuture = new CompletableFuture<>();
 
-        return this.routerClient.routeFor(Collections.singleton(table))
+        return this.routerClient.routeFor(reqCtx, Collections.singleton(table))
                 .thenApply(routes -> routes.values().stream().findFirst().orElseGet(() -> Route.invalid(table)))
-                .thenApply(route -> streamWriteTo(route, ctx, Utils.toUnaryObserver(respFuture)))
+                .thenApply(route -> streamWriteTo(route, reqCtx, ctx, Utils.toUnaryObserver(respFuture)))
                 .thenApply(reqObserver -> new StreamWriteBuf<Point, WriteOk>() {
 
                     private final List<Point> buf = Spines.newBuf();
@@ -188,7 +191,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                 }).join();
     }
 
-    private CompletableFuture<Result<WriteOk, Err>> write0(final List<Point> data, //
+    private CompletableFuture<Result<WriteOk, Err>> write0(final RequestContext reqCtx, final List<Point> data, //
                                                            final Context ctx, //
                                                            final int retries) {
         InnerMetrics.writeByRetries(retries).mark();
@@ -200,11 +203,11 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
         InnerMetrics.metricsNumPerWrite().update(tables.size());
 
         // 1. Get routes
-        return this.routerClient.routeFor(tables)
+        return this.routerClient.routeFor(reqCtx, tables)
                 // 2. Split data by route info and write to DB
                 .thenComposeAsync(routes -> Utils.splitDataByRoute(data, routes).entrySet().stream()
                         // Write to database
-                        .map(e -> writeTo(e.getKey(), e.getValue(), ctx.copy(), retries))
+                        .map(e -> writeTo(e.getKey(), reqCtx, e.getValue(), ctx.copy(), retries))
                         // Reduce and combine write result
                         .reduce((f1, f2) -> f1.thenCombineAsync(f2, Utils::combineResult, this.asyncPool))
                         .orElse(Utils.completedCf(WriteOk.emptyOk().mapToResult())), this.asyncPool)
@@ -241,11 +244,13 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                             .reduce(Err::combine);
 
                     // Async refresh route info
-                    final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient.routeRefreshFor(toRefresh)
+                    final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient
+                            .routeRefreshFor(reqCtx, toRefresh)
                             // Even for some data that does not require a refresh of the routing table,
                             // we still wait until the routing table is flushed successfully before
                             // retrying it, in order to give the server a break.
-                            .thenComposeAsync(routes -> write0(pointsToRetry, ctx, retries + 1), this.asyncPool);
+                            .thenComposeAsync(routes -> write0(reqCtx, pointsToRetry, ctx, retries + 1),
+                                    this.asyncPool);
 
                     return noRetryErr.isPresent() ?
                             rwf.thenApplyAsync(ret -> Utils.combineResult(noRetryErr.get().mapToResult(), ret),
@@ -256,6 +261,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     private CompletableFuture<Result<WriteOk, Err>> writeTo(final Endpoint endpoint, //
+                                                            final RequestContext reqCtx, //
                                                             final List<Point> data, //
                                                             final Context ctx, //
                                                             final int retries) {
@@ -263,13 +269,13 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
         final int rowCount = data.size();
         final int maxWriteSize = this.opts.getMaxWriteSize();
         if (rowCount <= maxWriteSize) {
-            return writeTo0(endpoint, data, ctx, retries);
+            return writeTo0(endpoint, reqCtx, data, ctx, retries);
         }
 
         final Stream.Builder<CompletableFuture<Result<WriteOk, Err>>> fs = Stream.builder();
 
         for (List<Point> part : Lists.partition(data, maxWriteSize)) {
-            fs.add(writeTo0(endpoint, part, ctx.copy(), retries));
+            fs.add(writeTo0(endpoint, reqCtx, part, ctx.copy(), retries));
         }
 
         return fs.build() //
@@ -278,11 +284,12 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     private CompletableFuture<Result<WriteOk, Err>> writeTo0(final Endpoint endpoint, //
+                                                             final RequestContext reqCtx, //
                                                              final List<Point> data, //
                                                              final Context ctx, //
                                                              final int retries) {
         final CompletableFuture<Storage.WriteResponse> wrf = this.routerClient.invoke(endpoint, //
-                toWriteRequestObj(data.stream()), //
+                toWriteRequestObj(reqCtx, data.stream()), //
                 ctx.with("retries", retries) // server can use this in metrics
         );
 
@@ -290,6 +297,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     private Observer<Stream<Point>> streamWriteTo(final Route route, //
+                                                  final RequestContext reqCtx, //
                                                   final Context ctx, //
                                                   final Observer<WriteOk> respObserver) {
         final Observer<Storage.WriteRequest> rpcObs = this.routerClient.invokeClientStreaming(route.getEndpoint(), //
@@ -332,7 +340,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                             String.format("Invalid table %s, only can write %s.", point.getTable(), this.table));
                 });
 
-                rpcObs.onNext(toWriteRequestObj(data));
+                rpcObs.onNext(toWriteRequestObj(reqCtx, data));
             }
 
             @Override
@@ -417,7 +425,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     }
 
     @VisibleForTest
-    public Storage.WriteRequest toWriteRequestObj(final Stream<Point> data) {
+    public Storage.WriteRequest toWriteRequestObj(final RequestContext reqCtx, final Stream<Point> data) {
         final Storage.WriteRequest.Builder writeRequestBuilder = Storage.WriteRequest.newBuilder();
         final Map<String, WriteTuple3> tuple3s = new HashMap<>();
 
@@ -462,6 +470,10 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
             });
             seriesEntryBuilder.addFieldGroups(fgBui.build());
         });
+
+        Storage.RequestContext.Builder ctxBuilder = Storage.RequestContext.newBuilder();
+        ctxBuilder.setDatabase(reqCtx.getDatabase());
+        writeRequestBuilder.setContext(ctxBuilder.build());
 
         tuple3s.values().forEach(tp3 -> writeRequestBuilder.addTableRequests(tp3.build()));
 

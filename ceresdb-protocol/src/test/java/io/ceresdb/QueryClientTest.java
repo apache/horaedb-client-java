@@ -95,7 +95,7 @@ public class QueryClientTest {
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.any())) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(new HashMap<>()));
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));
@@ -125,7 +125,8 @@ public class QueryClientTest {
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(Collections.singletonList("query_test_table")))) //
+        Mockito.when(
+                this.routerClient.routeFor(Mockito.any(), Mockito.eq(Collections.singletonList("query_test_table")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -6260265905617276356L;
 
@@ -163,7 +164,8 @@ public class QueryClientTest {
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(Collections.singletonList("query_test_table")))) //
+        Mockito.when(
+                this.routerClient.routeFor(Mockito.any(), Mockito.eq(Collections.singletonList("query_test_table")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 4517371149948738282L;
 
@@ -171,7 +173,7 @@ public class QueryClientTest {
                         put("query_test_table", Route.of("query_test_table", ep));
                     }
                 }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any(), Mockito.any()))
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 2347114952231996366L;
 
@@ -229,7 +231,7 @@ public class QueryClientTest {
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.any())) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(new HashMap<>()));
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));
@@ -256,7 +258,7 @@ public class QueryClientTest {
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.any())) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(new HashMap<>()));
         Mockito.when(this.routerClient.clusterRoute()) //
                 .thenReturn(Route.of(ep));

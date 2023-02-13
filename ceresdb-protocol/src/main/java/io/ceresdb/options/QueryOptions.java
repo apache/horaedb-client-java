@@ -78,11 +78,11 @@ public class QueryOptions implements Copiable<QueryOptions> {
     @Override
     public String toString() {
         return "QueryOptions{" + //
-               "routerClient=" + routerClient + //
-               "asyncPool=" + asyncPool + //
-               "maxRetries=" + maxRetries + //
-               "maxInFlightQueryRequests=" + maxInFlightQueryRequests + //
-               "limitedPolicy=" + limitedPolicy + //
+               ", routerClient=" + routerClient + //
+               ", asyncPool=" + asyncPool + //
+               ", maxRetries=" + maxRetries + //
+               ", maxInFlightQueryRequests=" + maxInFlightQueryRequests + //
+               ", limitedPolicy=" + limitedPolicy + //
                '}';
     }
 }

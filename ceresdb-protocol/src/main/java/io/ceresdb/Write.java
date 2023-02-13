@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.models.WriteRequest;
@@ -40,7 +41,11 @@ public interface Write {
      * @see #streamWrite(String, Context)
      */
     default StreamWriteBuf<Point, WriteOk> streamWrite(final String table) {
-        return streamWrite(table, Context.newDefault());
+        return streamWrite(null, table, Context.newDefault());
+    }
+
+    default StreamWriteBuf<Point, WriteOk> streamWrite(final RequestContext reqCtx, final String table) {
+        return streamWrite(reqCtx, table, Context.newDefault());
     }
 
     /**
@@ -50,5 +55,5 @@ public interface Write {
      * @param ctx    the invoked context
      * @return a write request observer for streaming-write
      */
-    StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx);
+    StreamWriteBuf<Point, WriteOk> streamWrite(RequestContext reqCtx, final String table, final Context ctx);
 }

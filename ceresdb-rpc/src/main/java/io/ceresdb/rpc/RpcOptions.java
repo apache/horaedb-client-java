@@ -6,7 +6,6 @@ package io.ceresdb.rpc;
 import java.util.concurrent.TimeUnit;
 
 import io.ceresdb.common.Copiable;
-import io.ceresdb.common.Tenant;
 import io.ceresdb.common.util.Cpus;
 
 /**
@@ -91,8 +90,6 @@ public class RpcOptions implements Copiable<RpcOptions> {
     private boolean blockOnLimit = false;
 
     private boolean logOnLimitChange = true;
-
-    private Tenant tenant;
 
     public int getDefaultRpcTimeout() {
         return defaultRpcTimeout;
@@ -222,14 +219,6 @@ public class RpcOptions implements Copiable<RpcOptions> {
         this.logOnLimitChange = logOnLimitChange;
     }
 
-    public Tenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
-    }
-
     @Override
     public RpcOptions copy() {
         final RpcOptions opts = new RpcOptions();
@@ -249,9 +238,6 @@ public class RpcOptions implements Copiable<RpcOptions> {
         opts.smoothing = this.smoothing;
         opts.blockOnLimit = this.blockOnLimit;
         opts.logOnLimitChange = this.logOnLimitChange;
-        if (this.tenant != null) {
-            opts.tenant = this.tenant.copy();
-        }
         return opts;
     }
 
@@ -274,7 +260,6 @@ public class RpcOptions implements Copiable<RpcOptions> {
                ", smoothing=" + smoothing + //
                ", blockOnLimit=" + blockOnLimit + //
                ", logOnLimitChange=" + logOnLimitChange + //
-               ", tenant=" + tenant + //
                '}';
     }
 

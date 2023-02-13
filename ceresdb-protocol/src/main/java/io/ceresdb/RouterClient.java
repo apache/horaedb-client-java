@@ -13,12 +13,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,6 @@ import io.ceresdb.common.util.Cpus;
 import io.ceresdb.common.util.MetricsUtil;
 import io.ceresdb.common.util.Requires;
 import io.ceresdb.common.util.SharedScheduledPool;
-import io.ceresdb.common.util.Spines;
 import io.ceresdb.common.util.TopKSelector;
 import io.ceresdb.errors.RouteTableException;
 import io.ceresdb.options.RouterOptions;
@@ -60,9 +58,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
     private static final float CLEAN_THRESHOLD         = 0.1f;
     private static final int   MAX_CONTINUOUS_GC_TIMES = 3;
 
-    private static final int  ITEM_COUNT_EACH_REFRESH   = 512;
-    private static final long BLOCKING_ROUTE_TIMEOUT_MS = 3000;
-
     private static final SharedScheduledPool CLEANER_POOL   = Utils.getSharedScheduledPool("route_cache_cleaner", 1);
     private static final SharedScheduledPool REFRESHER_POOL = Utils.getSharedScheduledPool("route_cache_refresher",
             Math.min(4, Cpus.cpus()));
@@ -82,7 +77,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         final Histogram gcTimes;
         final Histogram gcItems;
         final Timer     gcTimer;
-        final Timer     refreshTimer;
 
         private InnerMetrics(final Endpoint name) {
             final String nameSuffix = name.toString();
@@ -91,7 +85,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             this.gcTimes = MetricsUtil.histogram("route_for_metrics_gc_times", nameSuffix);
             this.gcItems = MetricsUtil.histogram("route_for_metrics_gc_items", nameSuffix);
             this.gcTimer = MetricsUtil.timer("route_for_metrics_gc_timer", nameSuffix);
-            this.refreshTimer = MetricsUtil.timer("route_for_metrics_refresh_timer", nameSuffix);
         }
 
         Histogram refreshedSize() {
@@ -113,10 +106,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         Timer gcTimer() {
             return this.gcTimer;
         }
-
-        Timer refreshTimer() {
-            return this.refreshTimer;
-        }
     }
 
     @Override
@@ -135,15 +124,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             this.cleaner.scheduleWithFixedDelay(this::gc, Utils.randomInitialDelay(300), gcPeriod, TimeUnit.SECONDS);
 
             LOG.info("Route table cache cleaner has been started.");
-        }
-
-        final long refreshPeriod = this.opts.getRefreshPeriodSeconds();
-        if (refreshPeriod > 0) {
-            this.refresher = REFRESHER_POOL.getObject();
-            this.refresher.scheduleWithFixedDelay(this::refresh, Utils.randomInitialDelay(180), refreshPeriod,
-                    TimeUnit.SECONDS);
-
-            LOG.info("Route table cache refresher has been started.");
         }
 
         return true;
@@ -174,7 +154,8 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         return Route.of(this.opts.getClusterAddress());
     }
 
-    public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> tables) {
+    public CompletableFuture<Map<String, Route>> routeFor(final RequestContext reqCtx,
+                                                          final Collection<String> tables) {
         if (tables == null || tables.isEmpty()) {
             return Utils.completedCf(Collections.emptyMap());
         }
@@ -195,7 +176,7 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
             return Utils.completedCf(local);
         }
 
-        return routeRefreshFor(misses) // refresh from remote
+        return routeRefreshFor(reqCtx, misses) // refresh from remote
                 .thenApply(remote -> { // then merge result
                     final Map<String, Route> ret;
                     if (remote.size() > local.size()) {
@@ -214,28 +195,20 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
                 });
     }
 
-    public CompletableFuture<Map<String, Route>> routeRefreshFor(final Collection<String> tables) {
+    public CompletableFuture<Map<String, Route>> routeRefreshFor(final RequestContext reqCtx,
+                                                                 final Collection<String> tables) {
         final long startCall = Clock.defaultClock().getTick();
-        return this.router.routeFor(tables).whenComplete((remote, err) -> {
+        return this.router.routeFor(reqCtx, tables).whenComplete((remote, err) -> {
             if (err == null) {
                 this.routeCache.putAll(remote);
                 this.metrics.refreshedSize().update(remote.size());
                 this.metrics.cachedSize().update(this.routeCache.size());
-                this.metrics.refreshTimer().update(Clock.defaultClock().duration(startCall), TimeUnit.MILLISECONDS);
 
                 LOG.info("Route refreshed: {}, cached_size={}.", tables, this.routeCache.size());
             } else {
                 LOG.warn("Route refresh failed: {}.", tables, err);
             }
         });
-    }
-
-    private void blockingRouteRefreshFor(final Collection<String> tables) {
-        try {
-            routeRefreshFor(tables).get(BLOCKING_ROUTE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        } catch (final InterruptedException | ExecutionException | TimeoutException e) {
-            LOG.error("Fail to blocking refresh route.", e);
-        }
     }
 
     public void clearRouteCacheBy(final Collection<String> tables) {
@@ -249,28 +222,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         final int size = this.routeCache.size();
         this.routeCache.clear();
         return size;
-    }
-
-    public void refresh() {
-        final Collection<String> cachedKeys = this.routeCache.keySet();
-
-        if (cachedKeys.size() <= ITEM_COUNT_EACH_REFRESH) {
-            blockingRouteRefreshFor(cachedKeys);
-            return;
-        }
-
-        final Collection<String> keysToRefresh = Spines.newBuf(ITEM_COUNT_EACH_REFRESH);
-        for (final String table : cachedKeys) {
-            keysToRefresh.add(table);
-            if (keysToRefresh.size() >= ITEM_COUNT_EACH_REFRESH) {
-                blockingRouteRefreshFor(keysToRefresh);
-                keysToRefresh.clear();
-            }
-        }
-
-        if (!keysToRefresh.isEmpty()) {
-            blockingRouteRefreshFor(keysToRefresh);
-        }
     }
 
     public void gc() {
@@ -412,12 +363,15 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
         }
 
         @Override
-        public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> tables) {
+        public CompletableFuture<Map<String, Route>> routeFor(final RequestContext reqCtx,
+                                                              final Collection<String> tables) {
             if (tables == null || tables.isEmpty()) {
                 return Utils.completedCf(Collections.emptyMap());
             }
 
-            final Storage.RouteRequest req = Storage.RouteRequest.newBuilder().addAllTables(tables).build();
+            final Storage.RouteRequest req = Storage.RouteRequest.newBuilder()
+                    .setContext(Storage.RequestContext.newBuilder().setDatabase(reqCtx.getDatabase()).build())
+                    .addAllTables(tables).build();
             final Context ctx = Context.of("call_priority", "100"); // Mysterious trick!!! ＼（＾▽＾）／
             final CompletableFuture<Storage.RouteResponse> f = invokeRpc(req, ctx);
 

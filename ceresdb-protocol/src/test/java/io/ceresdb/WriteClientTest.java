@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.ceresdb.models.Point;
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteRequest;
 import io.ceresdb.proto.internal.Common;
@@ -89,7 +90,7 @@ public class WriteClientTest {
                 .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.any())) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 4694599978937545735L;
 
@@ -131,7 +132,7 @@ public class WriteClientTest {
                 .thenReturn(Utils.completedCf(errResp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep4), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table1", //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.eq(TestUtil.asSet("write_client_test_table1", //
                 "write_client_test_table2", "write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -8646902388192715970L;
@@ -142,7 +143,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any(), Mockito.any()))
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -3271323053870289591L;
 
@@ -150,7 +151,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep4));
                     }
                 }));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.eq(TestUtil.asSet("write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 4340010451723257789L;
 
@@ -187,8 +188,9 @@ public class WriteClientTest {
                 .thenReturn(Utils.completedCf(resp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(errResp));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(
-                TestUtil.asSet("write_client_test_table1", "write_client_test_table2", "write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(),
+                Mockito.eq(TestUtil.asSet("write_client_test_table1", "write_client_test_table2",
+                        "write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -7535390185627686991L;
 
@@ -198,7 +200,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any(), Mockito.any()))
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -3191375160670801662L;
 
@@ -206,7 +208,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.eq(TestUtil.asSet("write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 1341458669202248824L;
 
@@ -246,8 +248,9 @@ public class WriteClientTest {
                 .thenReturn(Utils.completedCf(errResp));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(errResp));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(
-                TestUtil.asSet("write_client_test_table1", "write_client_test_table2", "write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(),
+                Mockito.eq(TestUtil.asSet("write_client_test_table1", "write_client_test_table2",
+                        "write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -5936788008084035345L;
 
@@ -257,7 +260,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any(), Mockito.any()))
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -4748944007591733357L;
 
@@ -266,8 +269,8 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient
-                .routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table2", "write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(),
+                Mockito.eq(TestUtil.asSet("write_client_test_table2", "write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -1811964578845864624L;
 
@@ -276,8 +279,8 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient
-                .routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table3", "write_client_test_table2")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(),
+                Mockito.eq(TestUtil.asSet("write_client_test_table3", "write_client_test_table2")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 3940955382371644111L;
 
@@ -320,8 +323,9 @@ public class WriteClientTest {
                 .thenReturn(Utils.completedCf(errResp1));
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep3), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(errResp2));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(
-                TestUtil.asSet("write_client_test_table1", "write_client_test_table2", "write_client_test_table3")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(),
+                Mockito.eq(TestUtil.asSet("write_client_test_table1", "write_client_test_table2",
+                        "write_client_test_table3")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 1040769477529210661L;
 
@@ -331,7 +335,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any()))
+        Mockito.when(this.routerClient.routeRefreshFor(Mockito.any(), Mockito.any()))
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -6892083230027668740L;
 
@@ -340,7 +344,7 @@ public class WriteClientTest {
                         put("write_client_test_table3", Route.of("write_client_test_table3", ep3));
                     }
                 }));
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(TestUtil.asSet("write_client_test_table2")))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.eq(TestUtil.asSet("write_client_test_table2")))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = -9174308983134252825L;
 
@@ -402,7 +406,7 @@ public class WriteClientTest {
                 .build();
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(resp));
-        Mockito.when(this.routerClient.routeFor(Mockito.any())) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.any())) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
                     private static final long serialVersionUID = 4694599978937545735L;
 
@@ -431,7 +435,7 @@ public class WriteClientTest {
     public void streamWriteTest() {
         final String testTable = "stream_table_test";
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
-        Mockito.when(this.routerClient.routeFor(Mockito.eq(Collections.singleton(testTable)))) //
+        Mockito.when(this.routerClient.routeFor(Mockito.any(), Mockito.eq(Collections.singleton(testTable)))) //
                 .thenReturn(Utils.completedCf(new HashMap<String, Route>() {
 
                     private static final long serialVersionUID = 8473563130528272901L;
@@ -518,7 +522,10 @@ public class WriteClientTest {
                 .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
                 .buildAndContinue().build();
 
-        final Storage.WriteRequest writeReq = this.writeClient.toWriteRequestObj(
+        RequestContext reqCtx = new RequestContext();
+        reqCtx.setDatabase("public");
+
+        final Storage.WriteRequest writeReq = this.writeClient.toWriteRequestObj(reqCtx,
                 Stream.of(table1, table2, table3).flatMap(List::stream).collect(Collectors.toList()).stream());
 
         Assert.assertNotNull(writeReq);

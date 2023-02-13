@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.util.Utils;
 
 /**
@@ -20,7 +21,8 @@ import io.ceresdb.util.Utils;
 public class ProxyRouterClient extends RouterClient {
 
     @Override
-    public CompletableFuture<Map<String, Route>> routeFor(final Collection<String> metrics) {
+    public CompletableFuture<Map<String, Route>> routeFor(final RequestContext reqCtx,
+                                                          final Collection<String> metrics) {
         if (metrics == null || metrics.isEmpty()) {
             return Utils.completedCf(Collections.emptyMap());
         }

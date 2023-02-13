@@ -6,10 +6,24 @@ package io.ceresdb.models;
 import java.util.List;
 
 public class WriteRequest {
-    private List<Point> points;
+    private RequestContext reqCtx;
+    private List<Point>    points;
 
     public WriteRequest(List<Point> points) {
         this.points = points;
+    }
+
+    public WriteRequest(RequestContext reqCtx, List<Point> points) {
+        this.reqCtx = reqCtx;
+        this.points = points;
+    }
+
+    public RequestContext getReqCtx() {
+        return reqCtx;
+    }
+
+    public void setReqCtx(RequestContext reqCtx) {
+        this.reqCtx = reqCtx;
     }
 
     public List<Point> getPoints() {

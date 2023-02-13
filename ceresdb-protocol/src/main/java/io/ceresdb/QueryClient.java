@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import io.ceresdb.common.parser.SqlParser;
 import io.ceresdb.common.parser.SqlParserFactoryProvider;
+import io.ceresdb.common.util.Strings;
 import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.limit.QueryLimiter;
 import io.ceresdb.proto.internal.Storage;
@@ -92,6 +93,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     @Override
     public CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
         Requires.requireNonNull(req, "Null.request");
+        Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
+
         final long startCall = Clock.defaultClock().getTick();
         setMetricsIfAbsent(req);
         return this.queryLimiter.acquireAndDo(req, () -> query0(req, ctx, 0).whenCompleteAsync((r, e) -> {
@@ -115,10 +118,11 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<SqlQueryOk> observer) {
         Requires.requireNonNull(req, "Null.request");
         Requires.requireNonNull(observer, "Null.observer");
+        Requires.requireTrue(Strings.isNotBlank(req.getReqCtx().getDatabase()), "No database selected");
 
         setMetricsIfAbsent(req);
 
-        this.routerClient.routeFor(req.getTables())
+        this.routerClient.routeFor(req.getReqCtx(), req.getTables())
                 .thenApply(routes -> routes.values().stream().findAny().orElse(this.routerClient.clusterRoute()))
                 .thenAccept(route -> streamQueryFrom(route.getEndpoint(), req, ctx, observer));
     }
@@ -128,7 +132,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                                               final int retries) {
         InnerMetrics.readByRetries(retries).mark();
 
-        return this.routerClient.routeFor(req.getTables()) //
+        return this.routerClient.routeFor(req.getReqCtx(), req.getTables()) //
                 .thenApplyAsync(routes -> routes.values() //
                         .stream() //
                         .findAny() // everyone is OK
@@ -158,7 +162,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                     }
 
                     // Async to refresh route info
-                    return this.routerClient.routeRefreshFor(toRefresh)
+                    return this.routerClient.routeRefreshFor(req.getReqCtx(), toRefresh)
                             .thenComposeAsync(routes -> query0(req, ctx, retries + 1), this.asyncPool);
                 }, this.asyncPool);
     }
@@ -190,6 +194,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                                                  final Context ctx, //
                                                                  final int retries) {
         final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
+                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();
@@ -209,6 +214,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                  final Context ctx, //
                                  final Observer<SqlQueryOk> observer) {
         final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
+                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();

@@ -22,8 +22,10 @@ import io.ceresdb.common.Lifecycle;
 import io.ceresdb.common.signal.SignalHandlersLoader;
 import io.ceresdb.common.util.MetricExecutor;
 import io.ceresdb.common.util.MetricsUtil;
+import io.ceresdb.common.util.Strings;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
+import io.ceresdb.models.RequestContext;
 import io.ceresdb.models.SqlQueryOk;
 import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
@@ -139,24 +141,28 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     @Override
     public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
         ensureInitialized();
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
         return this.writeClient.write(req, attachCtx(ctx));
     }
 
     @Override
-    public StreamWriteBuf<Point, WriteOk> streamWrite(final String table, final Context ctx) {
+    public StreamWriteBuf<Point, WriteOk> streamWrite(RequestContext reqCtx, final String table, final Context ctx) {
         ensureInitialized();
-        return this.writeClient.streamWrite(table, attachCtx(ctx));
+        reqCtx = attachRequestCtx(reqCtx);
+        return this.writeClient.streamWrite(reqCtx, table, attachCtx(ctx));
     }
 
     @Override
     public CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
         ensureInitialized();
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
         return this.queryClient.sqlQuery(req, attachCtx(ctx));
     }
 
     @Override
     public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<SqlQueryOk> observer) {
         ensureInitialized();
+        req.setReqCtx(attachRequestCtx(req.getReqCtx()));
         this.queryClient.streamSqlQuery(req, attachCtx(ctx), observer);
     }
 
@@ -185,8 +191,8 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
                 .println(version()) //
                 .print("clusterAddress=") //
                 .println(this.opts.getClusterAddress()) //
-                .print("tenant=") //
-                .println(this.opts.getTenant().getTenant()) //
+                .print("database=") //
+                .println(this.opts.getDatabase()) //
                 .print("userAsyncWritePool=") //
                 .println(this.opts.getAsyncWritePool()) //
                 .print("userAsyncReadPool=") //
@@ -214,7 +220,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     public String toString() {
         return "CeresDBClient{" + //
                "id=" + id + //
-               "version=" + version() + //
+               ", version=" + version() + //
                ", started=" + started + //
                ", opts=" + opts + //
                ", writeClient=" + writeClient + //
@@ -227,6 +233,16 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return pool == null ? null : new MetricExecutor(pool, name);
     }
 
+    private RequestContext attachRequestCtx(RequestContext reqCtx) {
+        if (reqCtx == null) {
+            reqCtx = new RequestContext();
+        }
+        if (Strings.isNullOrEmpty(reqCtx.getDatabase())) {
+            reqCtx.setDatabase(this.opts.getDatabase());
+        }
+        return reqCtx;
+    }
+
     private Context attachCtx(final Context ctx) {
         final Context c = ctx == null ? Context.newDefault() : ctx;
         return c.with(ID_KEY, id()).with(VERSION_KEY, version());
@@ -234,7 +250,6 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
 
     private static RpcClient initRpcClient(final CeresDBOptions opts) {
         final RpcOptions rpcOpts = opts.getRpcOptions();
-        rpcOpts.setTenant(opts.getTenant());
         final RpcClient rpcClient = RpcFactoryProvider.getRpcFactory().createRpcClient();
         if (!rpcClient.init(rpcOpts)) {
             throw new IllegalStateException("Fail to start RPC client");

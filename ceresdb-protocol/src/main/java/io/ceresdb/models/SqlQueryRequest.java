@@ -17,10 +17,11 @@ import io.ceresdb.common.util.Strings;
  */
 public class SqlQueryRequest {
 
-    private List<String> tables = Collections.emptyList();
-    private String       sql;
+    private RequestContext reqCtx;
+    private List<String>   tables = Collections.emptyList();
+    private String         sql;
 
-    public SqlQueryRequest() {
+    protected SqlQueryRequest() {
     }
 
     public SqlQueryRequest(String fmtSql, Object... args) {
@@ -30,6 +31,14 @@ public class SqlQueryRequest {
     public SqlQueryRequest(List<String> tables, String fmtSql, Object... args) {
         this.tables = tables;
         this.sql = this.getSql(fmtSql, args);
+    }
+
+    public RequestContext getReqCtx() {
+        return reqCtx;
+    }
+
+    public void setReqCtx(RequestContext reqCtx) {
+        this.reqCtx = reqCtx;
     }
 
     public List<String> getTables() {

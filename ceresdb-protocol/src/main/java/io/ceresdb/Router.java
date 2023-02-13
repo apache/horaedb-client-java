@@ -5,6 +5,8 @@ package io.ceresdb;
 
 import java.util.concurrent.CompletableFuture;
 
+import io.ceresdb.models.RequestContext;
+
 /**
  * A RPC router for CeresDB.
  *
@@ -17,5 +19,5 @@ public interface Router<Req, Resp> {
      * @param request request
      * @return a endpoint for the call
      */
-    CompletableFuture<Resp> routeFor(final Req request);
+    CompletableFuture<Resp> routeFor(final RequestContext reqCtx, final Req request);
 }

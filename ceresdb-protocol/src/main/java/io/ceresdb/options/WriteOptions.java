@@ -89,7 +89,7 @@ public class WriteOptions implements Copiable<WriteOptions> {
     @Override
     public String toString() {
         return "WriteOptions{" + //
-               "routerClient=" + routerClient + //
+               ", routerClient=" + routerClient + //
                ", globalAsyncPool=" + asyncPool + //
                ", maxRetries=" + maxRetries + //
                ", maxWriteSize=" + maxWriteSize + //
