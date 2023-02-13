@@ -125,23 +125,5 @@ final Point point = Point.newPointBuilder(table) // set table
         .addField("field1", Value.withDouble(0.64)) // add point value
         .addField("field2", Value.withString("string_value"))
         .build() // complete the build
-
-// also you can build multi points with one table
-final List<Point> points = Point.newTablePointsBuilder(table) // set table
-        .addPoint() // add first point
-            .setTimestamp(time) // set first point timestamp
-            .addTag("tag1", "tag_v1") // add first point tag
-            .addTag("tag2", "tag_v2") 
-            .addField("field1", Value.withDouble(0.64)) // add first point value
-            .addField("field2", Value.withString("string_value"))
-            .buildAndContinue() // complete the build of first point
-        .addPoint() // add second point
-            .setTimestamp(time+10)
-            .addTag("tag1", "tag_v1")
-            .addTag("tag2", "tag_v2")
-            .addField("field1", Value.withDouble(1.28))
-            .addField("field2", Value.withString("string_value 2"))
-            .buildAndContinue() // complete the build of second point
-        .build() // No need to add new point, return the collection of point
 ```
 

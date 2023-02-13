@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -89,8 +90,9 @@ public class CeresDBTest {
                                                                                               "fUint32 UINT32 NULL," + //
                                                                                               "fUint16 UINT16 NULL," + //
                                                                                               "fUint8 UINT8 NULL," + //
-                                                                                              "fTimestamp TIMESTAMP NULL," + //
-                                                                                              //"fVarbinary VARBINARY NULL, + //"
+                                                                                              "fTimestamp TIMESTAMP NULL,"
+                                                                                              + //
+                                                                                                                             //"fVarbinary VARBINARY NULL, + //"
                                                                                               "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
                 TEST_TABLE_NAME)).get();
         if (!createResult.isOk()) {
@@ -178,7 +180,7 @@ public class CeresDBTest {
                     row.getColumnValue("fUint16").getUInt16(), //
                     row.getColumnValue("fUint8").getUInt8(), //
                     row.getColumnValue("fTimestamp").getTimestamp() //
-                    //row.getColumnValue("fVarbinary").getVarbinary())
+            //row.getColumnValue("fVarbinary").getVarbinary())
             );
         });
 
@@ -221,21 +223,22 @@ public class CeresDBTest {
     private List<Point> makePoints(final Calendar time, final int count) {
         final long timestamp = time.getTimeInMillis();
 
-        Point.TablePointsBuilder builder = Point.newTablePointsBuilder(TEST_TABLE_NAME);
+        List<Point> points = new ArrayList<>(count);
         for (long ts = (timestamp - count); ts < timestamp; ts++) {
-            builder.addPoint().setTimestamp(ts).addTag("tString", Value.withString("first_c1"))
-                    .addTag("tInt64", Value.withInt64(12)).addField("fString", Value.withString("string value"))
-                    .addField("fBool", Value.withBoolean(true)).addField("fDouble", Value.withDouble(0.64))
-                    .addField("fFloat", Value.withFloat(0.32f)).addField("fInt64", Value.withInt64(-64))
-                    .addField("fInt32", Value.withInt32(-32)).addField("fInt16", Value.withInt16(-16))
-                    .addField("fInt8", Value.withInt8(-8)).addField("fUint64", Value.withUInt64(64))
-                    .addField("fUint32", Value.withUInt32(32)).addField("fUint16", Value.withUInt16(16))
-                    .addField("fUint8", Value.withUInt8(8))
+            Point point = Point.newPointBuilder(TEST_TABLE_NAME).setTimestamp(ts)
+                    .addTag("tString", Value.withString("first_c1")).addTag("tInt64", Value.withInt64(12))
+                    .addField("fString", Value.withString("string value")).addField("fBool", Value.withBoolean(true))
+                    .addField("fDouble", Value.withDouble(0.64)).addField("fFloat", Value.withFloat(0.32f))
+                    .addField("fInt64", Value.withInt64(-64)).addField("fInt32", Value.withInt32(-32))
+                    .addField("fInt16", Value.withInt16(-16)).addField("fInt8", Value.withInt8(-8))
+                    .addField("fUint64", Value.withUInt64(64)).addField("fUint32", Value.withUInt32(32))
+                    .addField("fUint16", Value.withUInt16(16)).addField("fUint8", Value.withUInt8(8))
                     .addField("fTimestamp", Value.withTimestamp(time.getTimeInMillis()))
                     //.addField("fVarbinary", Value.withVarbinary("test".getBytes(StandardCharsets.UTF_8))
-                    .buildAndContinue();
+                    .build();
+            points.add(point);
         }
-        return builder.build();
+        return points;
     }
 
     @Ignore

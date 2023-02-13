@@ -11,6 +11,9 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -50,31 +53,29 @@ public class ReadmeTest {
             throw new IllegalStateException("Fail to create table");
         }
 
-        final long t0 = System.currentTimeMillis();
-        final long t1 = t0 + 1000;
-        final List<Point> pointList = Point.newTablePointsBuilder("machine_table")
-                .addPoint() // first point
-                    .setTimestamp(t0)
+        final long timestamp = System.currentTimeMillis();
+        Point point1 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp)
                     .addTag("city", "Singapore")
                     .addTag("ip", "10.0.0.1")
                     .addField("cpu", Value.withDouble(0.23))
                     .addField("mem", Value.withDouble(0.55))
-                    .buildAndContinue()
-                .addPoint() // second point
-                    .setTimestamp(t1)
+                    .build();
+        Point point2 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp+1000)
                     .addTag("city", "Singapore")
                     .addTag("ip", "10.0.0.1")
                     .addField("cpu", Value.withDouble(0.25))
                     .addField("mem", Value.withDouble(0.56))
-                    .buildAndContinue()
-                .addPoint()// third point
-                    .setTimestamp(t1)
+                    .build();
+        Point point3 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp+1000)
                     .addTag("city", "Shanghai")
                     .addTag("ip", "10.0.0.2")
                     .addField("cpu", Value.withDouble(0.21))
                     .addField("mem", Value.withDouble(0.52))
-                    .buildAndContinue()
-                .build();
+                    .build();
+        List<Point> pointList = Arrays.asList(point1, point2, point3);
 
         final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(pointList));
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
@@ -88,7 +89,7 @@ public class ReadmeTest {
 
         final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
                 .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `ssql` to get the table name and do the routing automaticly
-                .sql("select * from machine_table where ts = %d", t0) //
+                .sql("select * from machine_table where ts = %d", timestamp) //
                 .build();
         final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
@@ -101,7 +102,7 @@ public class ReadmeTest {
 
         // get rows as list
         final List<Row> rows = queryOk.getRowList();
-        Assert.assertEquals(t0, rows.get(0).getColumnValue("ts").getTimestamp());
+        Assert.assertEquals(timestamp, rows.get(0).getColumnValue("ts").getTimestamp());
         Assert.assertEquals("Singapore", rows.get(0).getColumnValue("city").getString());
         Assert.assertEquals("10.0.0.1", rows.get(0).getColumnValue("ip").getString());
         Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getDouble(), 0.0000001);
@@ -116,16 +117,14 @@ public class ReadmeTest {
         long t = start;
         final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
         for (int i = 0; i < 1000; i++) {
-            final List<Point> streamData = Point.newTablePointsBuilder("machine_table")
-                    .addPoint()
+            final Point streamData = Point.newPointBuilder("machine_table")
                         .setTimestamp(t)
                         .addTag("city", "Beijing")
                         .addTag("ip", "10.0.0.3")
                         .addField("cpu", Value.withDouble(0.42))
                         .addField("mem", Value.withDouble(0.67))
-                        .buildAndContinue()
                     .build();
-            writeBuf.writeAndFlush(streamData);
+            writeBuf.writeAndFlush(Collections.singletonList(streamData));
             t = t+1;
         }
         final CompletableFuture<WriteOk> writeOk = writeBuf.completed();

@@ -20,16 +20,20 @@ public class TestUtil {
 
     public static List<Point> newTablePoints(final String table) {
         final long time = Clock.defaultClock().getTick() - 1;
-        return Point.newTablePointsBuilder(table) //
-                .addPoint().setTimestamp(time).addTag("tag1", Value.withString("tag_v1")) //
+
+        List<Point> data = new ArrayList<>();
+        data.add(Point.newPointBuilder(table) //
+                .setTimestamp(time).addTag("tag1", Value.withString("tag_v1")) //
                 .addTag("tag2", Value.withString("tag_v2")) //
                 .addField("field1", Value.withDouble(0.1)) //
                 .addField("field2", Value.withString("string_value")) //
-                .buildAndContinue().addPoint().setTimestamp(time + 1).addTag("tag1", Value.withString("tag_v1")) //
+                .build());
+        data.add(Point.newPointBuilder(table).setTimestamp(time + 1).addTag("tag1", Value.withString("tag_v1")) //
                 .addTag("tag2", Value.withString("tag_v2")) //
                 .addField("field1", Value.withDouble(0.2)) //
                 .addField("field2", Value.withString("string_value_2")) //
-                .buildAndContinue().build();
+                .build());
+        return data;
     }
 
     public static List<Point> newMultiTablePoints(final String... tables) {

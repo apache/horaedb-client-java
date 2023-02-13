@@ -148,38 +148,12 @@ if (!createResult.isOk()) {
 
 ## How to build write data
 ```java
-// build single point
 final Point point = Point.newPointBuilder("machine_table")
         .setTimestamp(t0)
         .addTag("city", "Singapore")
         .addTag("ip", "10.0.0.1")
         .addField("cpu", Value.withDouble(0.23))
         .addField("mem", Value.withDouble(0.55))
-        .build();
-
-// The data of the same table can be quickly constructed with a tableBuilder
-final List<Point> pointList = Point.newTablePointsBuilder("machine_table") 
-        .addPoint() // add first point
-            .setTimestamp(t0)
-            .addTag("city", "Singapore")
-            .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withDouble(0.23))
-            .addField("mem", Value.withDouble(0.55))
-            .buildAndContinue()
-        .addPoint()
-            .setTimestamp(t1)
-            .addTag("city", "Singapore")
-            .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withDouble(0.25))
-            .addField("mem", Value.withDouble(0.56))
-            .buildAndContinue()
-        .addPoint()
-            .setTimestamp(t1)
-            .addTag("city", "Shanghai")
-            .addTag("ip", "10.0.0.2")
-            .addField("cpu", Value.withDouble(0.21))
-            .addField("mem", Value.withDouble(0.52))
-            .buildAndContinue()
         .build();
 ```
 

@@ -3,6 +3,7 @@
  */
 package io.ceresdb;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -494,35 +495,37 @@ public class WriteClientTest {
 
     @Test
     public void rowsToWriteProtoTest() {
-        final List<Point> table1 = Point.newTablePointsBuilder("table1") //
-                .addPoint().setTimestamp(Clock.defaultClock().getTick()).addTag("t1_tag1", Value.withString("v1")) //
+        List<Point> table1 = new ArrayList<>();
+        table1.add(Point.newPointBuilder("table1") //
+                .setTimestamp(Clock.defaultClock().getTick()).addTag("t1_tag1", Value.withString("v1")) //
                 .addTag("t1_tag2", Value.withString("v2")) //
                 .addTag("t1_tag3", Value.withString("v3")) //
                 .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
-                .addField("t1_field3", Value.withStringOrNull(null)).buildAndContinue().addPoint()
-                .setTimestamp(Clock.defaultClock().getTick() + 10).addTag("t1_tag1", Value.withString("v1")) //
+                .addField("t1_field3", Value.withStringOrNull(null)).build());
+        table1.add(Point.newPointBuilder("table1") //
+                .setTimestamp(Clock.defaultClock().getTick()).addTag("t1_tag1", Value.withString("v1")) //
                 .addTag("t1_tag2", Value.withString("v2")) //
                 .addTag("t1_tag3", Value.withString("v3")) //
                 .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
-                .addField("t1_field3", Value.withStringOrNull("surprise!!!")).buildAndContinue().build();
+                .addField("t1_field3", Value.withStringOrNull("surprise!!!")).build());
 
-        final List<Point> table2 = Point.newTablePointsBuilder("table2") //
-                .addPoint().setTimestamp(Clock.defaultClock().getTick()).addTag("t2_tag1", Value.withString("v1")) //
+        List<Point> table2 = new ArrayList<>();
+        table2.add(Point.newPointBuilder("table2") //
+                .setTimestamp(Clock.defaultClock().getTick()).addTag("t2_tag1", Value.withString("v1")) //
                 .addTag("t2_tag2", Value.withString("v2")) //
                 .addTag("t2_tag3", Value.withString("v3")) //
-                .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he"))
-                .buildAndContinue().addPoint().setTimestamp(Clock.defaultClock().getTick() + 10)
+                .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he")).build());
+        table2.add(Point.newPointBuilder("table2").setTimestamp(Clock.defaultClock().getTick() + 10)
                 .addTag("t2_tag1", Value.withString("v1")) //
                 .addTag("t2_tag2", Value.withString("v2")) //
                 .addTag("t2_tag3", Value.withString("v3")) //
                 .addField("t2_field1", Value.withDouble(0.1)).addField("t2_field2", Value.withString("he"))
-                .addField("t2_field3", Value.withStringOrNull("surprise!!!")).buildAndContinue().build();
+                .addField("t2_field3", Value.withStringOrNull("surprise!!!")).build());
 
-        final List<Point> table3 = Point.newTablePointsBuilder("table1").addPoint()
+        final List<Point> table3 = Collections.singletonList(Point.newPointBuilder("table1")
                 .setTimestamp(System.currentTimeMillis()).addTag("t1_tag1", Value.withString("vv1")) //
                 .addTag("t1_tag2", Value.withString("vv2")) //
-                .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he"))
-                .buildAndContinue().build();
+                .addField("t1_field1", Value.withDouble(0.1)).addField("t1_field2", Value.withString("he")).build());
 
         RequestContext reqCtx = new RequestContext();
         reqCtx.setDatabase("public");

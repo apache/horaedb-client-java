@@ -21,18 +21,6 @@ public class PointTest {
         Assert.assertEquals(123, point.getFields().get("f1").getUInt8());
     }
 
-    @Test
-    public void TablePointsBuilderTest() {
-        List<Point> tablePoints = Point.newTablePointsBuilder("test_table").addPoint()
-                .setTimestamp(Clock.defaultClock().getTick()).addTag("tag1", "t1").addTag("tag2", "t2")
-                .addField("f1", Value.withUInt8(123)).buildAndContinue().addPoint().addTag("tag1", "t12")
-                .addTag("tag2", "t23").addField("f1", Value.withUInt8(1234)).buildAndContinue().build();
-        Assert.assertEquals(2, tablePoints.size());
-        Assert.assertEquals("t1", tablePoints.get(0).getTags().get("tag1").getString());
-        Assert.assertEquals("t2", tablePoints.get(0).getTags().get("tag2").getString());
-        Assert.assertEquals(123, tablePoints.get(0).getFields().get("f1").getUInt8());
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void keywordInTagsTest() {
         Point.newPointBuilder("test_table").setTimestamp(Clock.defaultClock().getTick())

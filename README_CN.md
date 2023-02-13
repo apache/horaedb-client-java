@@ -145,38 +145,12 @@ if (!createResult.isOk()) {
 
 ## 构建写入数据
 ```java
-// 构建单个Point
 final Point point = Point.newPointBuilder("machine_table")
         .setTimestamp(t0)
         .addTag("city", "Singapore")
         .addTag("ip", "10.0.0.1")
         .addField("cpu", Value.withDouble(0.23))
         .addField("mem", Value.withDouble(0.55))
-        .build();
-
-// 同一个表的数据可以一个tableBuilder快速构建
-final List<Point> pointList = Point.newTablePointsBuilder("machine_table") 
-        .addPoint() // 第一个点
-            .setTimestamp(t0)
-            .addTag("city", "Singapore")
-            .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withDouble(0.23))
-            .addField("mem", Value.withDouble(0.55))
-            .buildAndContinue()
-        .addPoint() // 第二个点
-            .setTimestamp(t1)
-            .addTag("city", "Singapore")
-            .addTag("ip", "10.0.0.1")
-            .addField("cpu", Value.withDouble(0.25))
-            .addField("mem", Value.withDouble(0.56))
-            .buildAndContinue()
-        .addPoint() // 第三个点
-            .setTimestamp(t1)
-            .addTag("city", "Shanghai")
-            .addTag("ip", "10.0.0.2")
-            .addField("cpu", Value.withDouble(0.21))
-            .addField("mem", Value.withDouble(0.52))
-            .buildAndContinue()
         .build();
 ```
 

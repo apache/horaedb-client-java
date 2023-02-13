@@ -4,8 +4,6 @@
 package io.ceresdb.models;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -45,43 +43,14 @@ public class Point {
         return fields;
     }
 
-    public static TablePointsBuilder newTablePointsBuilder(String table) {
-        return new TablePointsBuilder(table);
-    }
-
     public static PointBuilder newPointBuilder(String table) {
         return new PointBuilder(table);
     }
 
-    public static class TablePointsBuilder {
-        private final String  table;
-        protected List<Point> points;
-
-        public TablePointsBuilder(String table) {
-            this.table = table;
-            this.points = new LinkedList<>();
-        }
-
-        public PointBuilder addPoint() {
-            return new PointBuilder(this, this.table);
-        }
-
-        public List<Point> build() {
-            this.points.forEach(PointBuilder::check);
-            return this.points;
-        }
-    }
-
     public static class PointBuilder {
-        private TablePointsBuilder root;
-        private Point              point;
+        private Point point;
 
-        public PointBuilder(String table) {
-            this.point = new Point(table);
-        }
-
-        protected PointBuilder(TablePointsBuilder root, String table) {
-            this.root = root;
+        protected PointBuilder(String table) {
             this.point = new Point(table);
         }
 
@@ -108,11 +77,6 @@ public class Point {
         public Point build() {
             check(this.point);
             return point;
-        }
-
-        public TablePointsBuilder buildAndContinue() {
-            this.root.points.add(this.point);
-            return this.root;
         }
 
         private static void check(final Point point) throws IllegalArgumentException {
