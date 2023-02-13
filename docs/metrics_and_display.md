@@ -20,28 +20,27 @@ Information will be output to the specified directory，by default, 2 files will
 | req_serialized_bytes_${rpc_method}                 | The serialized size statistics of each RPC request, separate for each method                                             |
 | resp_serialized_bytes_${rpc_method}                | The serialized size statistics of each RPC response, separate for each method                                            |
 | req_rt_${rpc_method}_                              | Request RT, method                                                                                                       |
-| req_rt_${rpc_method}_${address}                    | Rquest RT, method + server                                                                                               |
+| req_rt_${rpc_method}_${address}                    | Request RT, method + server                                                                                              |
 | req_failed_${rpc_method}                           | Request failed, method                                                                                                   |
 | req_failed_${rpc_method}_${address}                | Request failed, method + server                                                                                          |
 | thread_pool.${thread_pool_name}                    | Time of thread pool execution tasks                                                                                      |
 | scheduled_thread_pool.${schedule_thread_pool_name} | Time of thread schedule pool execution tasks                                                                             |
 | split_num_per_write                                | Each batch of writes will be divided into multiple requests by router, and this indicator counts the splitting of writes |
-| route_for_metrics_refreshed_size_${address}        | The count of metrics requested for the router from the server each time                                                  |
-| route_for_metrics_cached_size_${address}           | The count of metrics in the locally cached router                                                                        |
-| route_for_metrics_gc_times_${address}              | The count of cycles required for each GC of the router                                                                   |
-| route_for_metrics_gc_items_${address}              | The count of items released by each GC of the router                                                                     |
-| route_for_metrics_gc_timer_${address}              | The time of GC time                                                                                                      |
-| route_for_metrics_refresh_timer_${address}         | The time of remote refresh                                                                                               |
-| write_rows_success_num                             | The count of successfully written point                                                                                  |
-| write_rows_failed_num                              | The count of failed written points                                                                                       |
+| route_for_tables_refreshed_size_${address}         | The count of tables requested for the router from the server each time                                                   |
+| route_for_tables_cached_size_${address}            | The count of tables in the locally cached router                                                                         |
+| route_for_tables_gc_times_${address}               | The count of cycles required for each GC of the router                                                                   |
+| route_for_tables_gc_items_${address}               | The count of items released by each GC of the router                                                                     |
+| route_for_tables_gc_timer_${address}               | The time of GC time                                                                                                      |
+| write_points_success_num                           | The count of successfully written point                                                                                  |
+| write_points_failed_num                            | The count of failed written points                                                                                       |
 | write_failed                                       | The count of failed write requests                                                                                       |
 | write_qps                                          | Write QPS                                                                                                                |
-| metrics_num_per_write                              | The count of metrics for each write request                                                                              |
+| points_num_per_write                               | The count of points for each write request                                                                               |
 | async_write_pool.time                              | The async pool time of executing asynchronous write tasks in the SDK is very important and requires special attention    |
 | async_read_pool.time                               | Same as `async_write_pool.time` for reading                                                                              |
 | connection_counter                                 | The count of connections established between the SDK and the server                                                      |
 | connection_failures                                | The count of failed connections established between the SDK and the server                                               |
-| read_row_count                                     | The count of point per query                                                                                             |
+| read_rows_count                                    | The count of rows per query                                                                                              |
 | read_failed                                        | The count of failed queried requests                                                                                     |
 | read_qps                                           | Query QPS                                                                                                                |
 | write_by_retries_${n}                              | The QPS of the nth retry write, n == 0 means it is the first write (not retry), n > 3 will be counted as n == 3          |
@@ -72,7 +71,7 @@ rpc_limiter_call_id_grpc_call_status_success
              count = 3160
 
 -- CeresDB -- Histograms ------------------------------------------------------------------
-metrics_num_per_write
+points_num_per_write
              count = 1585
                min = 1
                max = 1
@@ -144,7 +143,7 @@ resp_serialized_bytes_storage.StorageService/Write
               98% <= 8.00
               99% <= 8.00
             99.9% <= 8.00
-route_for_metrics_cached_size_127.0.0.1:8831
+route_for_tables_cached_size_127.0.0.1:8831
              count = 1
                min = 1
                max = 1
@@ -156,7 +155,7 @@ route_for_metrics_cached_size_127.0.0.1:8831
               98% <= 1.00
               99% <= 1.00
             99.9% <= 1.00
-route_for_metrics_gc_items_127.0.0.1:8831
+route_for_tables_gc_items_127.0.0.1:8831
              count = 0
                min = 0
                max = 0
@@ -168,7 +167,7 @@ route_for_metrics_gc_items_127.0.0.1:8831
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-route_for_metrics_gc_times_127.0.0.1:8831
+route_for_tables_gc_times_127.0.0.1:8831
              count = 0
                min = 0
                max = 0
@@ -180,7 +179,7 @@ route_for_metrics_gc_times_127.0.0.1:8831
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-route_for_metrics_refreshed_size_127.0.0.1:8831
+route_for_tables_refreshed_size_127.0.0.1:8831
              count = 1
                min = 1
                max = 1
@@ -252,7 +251,7 @@ write_limiter_acquire_available_permits
               98% <= 7168.00
               99% <= 7168.00
             99.9% <= 7168.00
-write_rows_failed_num
+write_points_failed_num
              count = 1580
                min = 0
                max = 0
@@ -264,7 +263,7 @@ write_rows_failed_num
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-write_rows_success_num
+write_points_success_num
              count = 1580
                min = 1024
                max = 1024
@@ -436,7 +435,7 @@ req_rt_storage.StorageService/Write_public_127.0.0.1:8831
               98% <= 229.00 milliseconds
               99% <= 385.00 milliseconds
             99.9% <= 546.00 milliseconds
-route_for_metrics_gc_timer_127.0.0.1:8831
+route_for_tables_gc_timer_127.0.0.1:8831
              count = 0
          mean rate = 0.00 calls/second
      1-minute rate = 0.00 calls/second
@@ -452,22 +451,6 @@ route_for_metrics_gc_timer_127.0.0.1:8831
               98% <= 0.00 milliseconds
               99% <= 0.00 milliseconds
             99.9% <= 0.00 milliseconds
-route_for_metrics_refresh_timer_127.0.0.1:8831
-             count = 1
-         mean rate = 0.02 calls/second
-     1-minute rate = 0.07 calls/second
-     5-minute rate = 0.16 calls/second
-    15-minute rate = 0.19 calls/second
-               min = 322.00 milliseconds
-               max = 322.00 milliseconds
-              mean = 322.00 milliseconds
-            stddev = 0.00 milliseconds
-            median = 322.00 milliseconds
-              75% <= 322.00 milliseconds
-              95% <= 322.00 milliseconds
-              98% <= 322.00 milliseconds
-              99% <= 322.00 milliseconds
-            99.9% <= 322.00 milliseconds
 rpc_limiter_acquire_time_storage.StorageService/Write
              count = 3170
          mean rate = 48.96 calls/second

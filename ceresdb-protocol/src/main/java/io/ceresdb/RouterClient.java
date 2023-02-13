@@ -80,11 +80,11 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
         private InnerMetrics(final Endpoint name) {
             final String nameSuffix = name.toString();
-            this.refreshedSize = MetricsUtil.histogram("route_for_metrics_refreshed_size", nameSuffix);
-            this.cachedSize = MetricsUtil.histogram("route_for_metrics_cached_size", nameSuffix);
-            this.gcTimes = MetricsUtil.histogram("route_for_metrics_gc_times", nameSuffix);
-            this.gcItems = MetricsUtil.histogram("route_for_metrics_gc_items", nameSuffix);
-            this.gcTimer = MetricsUtil.timer("route_for_metrics_gc_timer", nameSuffix);
+            this.refreshedSize = MetricsUtil.histogram("route_for_tables_refreshed_size", nameSuffix);
+            this.cachedSize = MetricsUtil.histogram("route_for_tables_cached_size", nameSuffix);
+            this.gcTimes = MetricsUtil.histogram("route_for_tables_gc_times", nameSuffix);
+            this.gcItems = MetricsUtil.histogram("route_for_tables_gc_items", nameSuffix);
+            this.gcTimer = MetricsUtil.timer("route_for_tables_gc_timer", nameSuffix);
         }
 
         Histogram refreshedSize() {

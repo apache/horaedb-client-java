@@ -53,12 +53,12 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
     private QueryLimiter queryLimiter;
 
     static final class InnerMetrics {
-        static final Histogram READ_ROW_COUNT = MetricsUtil.histogram("read_row_count");
-        static final Meter     READ_FAILED    = MetricsUtil.meter("read_failed");
-        static final Meter     READ_QPS       = MetricsUtil.meter("read_qps");
+        static final Histogram READ_ROWS_COUNT = MetricsUtil.histogram("read_rows_count");
+        static final Meter     READ_FAILED     = MetricsUtil.meter("read_failed");
+        static final Meter     READ_QPS        = MetricsUtil.meter("read_qps");
 
-        static Histogram readRowCount() {
-            return READ_ROW_COUNT;
+        static Histogram readRowsCount() {
+            return READ_ROWS_COUNT;
         }
 
         static Meter readFailed() {
@@ -104,7 +104,7 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
             InnerMetrics.readQps().mark();
             if (r != null) {
                 final int rowCount = r.mapOr(0, SqlQueryOk::getRowCount);
-                InnerMetrics.readRowCount().update(rowCount);
+                InnerMetrics.readRowsCount().update(rowCount);
                 if (Utils.isRwLogging()) {
                     LOG.info("Read from {}, duration={} ms, rowCount={}.", Utils.DB_NAME,
                             Clock.defaultClock().duration(startCall), rowCount);

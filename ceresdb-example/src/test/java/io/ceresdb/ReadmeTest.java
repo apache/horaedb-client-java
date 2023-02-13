@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -136,5 +135,4 @@ public class ReadmeTest {
         Assert.assertTrue(streamQueryResult.isOk());
         Assert.assertEquals(1000, streamQueryResult.getOk().getRowCount());
     }
-
 }

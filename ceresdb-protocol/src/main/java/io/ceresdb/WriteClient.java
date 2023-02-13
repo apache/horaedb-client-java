@@ -64,22 +64,22 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
     private WriteLimiter writeLimiter;
 
     static final class InnerMetrics {
-        static final Histogram WRITE_ROWS_SUCCESS    = MetricsUtil.histogram("write_rows_success_num");
-        static final Histogram WRITE_ROWS_FAILED     = MetricsUtil.histogram("write_rows_failed_num");
-        static final Histogram METRICS_NUM_PER_WRITE = MetricsUtil.histogram("metrics_num_per_write");
-        static final Meter     WRITE_FAILED          = MetricsUtil.meter("write_failed");
-        static final Meter     WRITE_QPS             = MetricsUtil.meter("write_qps");
+        static final Histogram WRITE_POINTS_SUCCESS = MetricsUtil.histogram("write_points_success_num");
+        static final Histogram WRITE_POINTS_FAILED  = MetricsUtil.histogram("write_points_failed_num");
+        static final Histogram POINTS_NUM_PER_WRITE = MetricsUtil.histogram("points_num_per_write");
+        static final Meter     WRITE_FAILED         = MetricsUtil.meter("write_failed");
+        static final Meter     WRITE_QPS            = MetricsUtil.meter("write_qps");
 
-        static Histogram writeRowsSuccess() {
-            return WRITE_ROWS_SUCCESS;
+        static Histogram writePointsSuccess() {
+            return WRITE_POINTS_SUCCESS;
         }
 
-        static Histogram writeRowsFailed() {
-            return WRITE_ROWS_FAILED;
+        static Histogram writePointsFailed() {
+            return WRITE_POINTS_FAILED;
         }
 
-        static Histogram metricsNumPerWrite() {
-            return METRICS_NUM_PER_WRITE;
+        static Histogram pointsNumPerWrite() {
+            return POINTS_NUM_PER_WRITE;
         }
 
         static Meter writeFailed() {
@@ -130,8 +130,8 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                         }
                         if (r.isOk()) {
                             final WriteOk ok = r.getOk();
-                            InnerMetrics.writeRowsSuccess().update(ok.getSuccess());
-                            InnerMetrics.writeRowsFailed().update(ok.getFailed());
+                            InnerMetrics.writePointsSuccess().update(ok.getSuccess());
+                            InnerMetrics.writePointsFailed().update(ok.getFailed());
                             return;
                         }
                     }
@@ -215,7 +215,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                 .map(Point::getTable) //
                 .collect(Collectors.toSet());
 
-        InnerMetrics.metricsNumPerWrite().update(tables.size());
+        InnerMetrics.pointsNumPerWrite().update(tables.size());
 
         // 1. Get routes
         return this.routerClient.routeFor(reqCtx, tables)

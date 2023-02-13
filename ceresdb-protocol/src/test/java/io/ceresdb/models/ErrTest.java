@@ -31,7 +31,7 @@ public class ErrTest {
         final WriteOk subOK2 = WriteOk.ok(3, 0, tables2);
         err = err.combine(subOK2);
         Assert.assertEquals(5, err.getSubOk().getSuccess());
-        Assert.assertEquals(Arrays.asList("test_table", "test_table2"), err.getSubOk().getTables());
+        Assert.assertEquals(new HashSet<>(Arrays.asList("test_table", "test_table2")), err.getSubOk().getTables());
     }
 
     @Test
