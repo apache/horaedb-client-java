@@ -1,34 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb.options;
 
 import java.util.concurrent.Executor;
 
-import io.ceresdb.LimitedPolicy;
+import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouterClient;
 import io.ceresdb.common.Copiable;
 
 /**
  * Query options.
  *
- * @author jiachun.fjc
  */
 public class QueryOptions implements Copiable<QueryOptions> {
-
+    private String       database;
     private RouterClient routerClient;
     private Executor     asyncPool;
 
@@ -37,6 +23,14 @@ public class QueryOptions implements Copiable<QueryOptions> {
     // Query flow limit: maximum number of query requests in-flight.
     private int           maxInFlightQueryRequests = 8;
     private LimitedPolicy limitedPolicy            = LimitedPolicy.defaultQueryLimitedPolicy();
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
 
     public RouterClient getRouterClient() {
         return routerClient;
@@ -81,6 +75,7 @@ public class QueryOptions implements Copiable<QueryOptions> {
     @Override
     public QueryOptions copy() {
         final QueryOptions opts = new QueryOptions();
+        opts.database = this.database;
         opts.routerClient = this.routerClient;
         opts.asyncPool = this.asyncPool;
         opts.maxRetries = this.maxRetries;
@@ -92,11 +87,12 @@ public class QueryOptions implements Copiable<QueryOptions> {
     @Override
     public String toString() {
         return "QueryOptions{" + //
-               "routerClient=" + routerClient + //
-               "asyncPool=" + asyncPool + //
-               "maxRetries=" + maxRetries + //
-               "maxInFlightQueryRequests=" + maxInFlightQueryRequests + //
-               "limitedPolicy=" + limitedPolicy + //
+               ", database=" + database + //
+               ", routerClient=" + routerClient + //
+               ", asyncPool=" + asyncPool + //
+               ", maxRetries=" + maxRetries + //
+               ", maxInFlightQueryRequests=" + maxInFlightQueryRequests + //
+               ", limitedPolicy=" + limitedPolicy + //
                '}';
     }
 }

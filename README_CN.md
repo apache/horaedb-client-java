@@ -99,27 +99,23 @@ CeresDBClient 是 CeresDB 的高性能 Java 版客户端。CeresDB 是定位为�
 <dependency>
   <groupId>io.ceresdb</groupId>
   <artifactId>ceresdb-all</artifactId>
-  <version>0.1.0-RC</version>
+  <version>1.0.0-alpha</version>
 </dependency>
 ```
 
 ## 初始化 CeresDB Client
 ```java
 // CeresDB options
-final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) //
-        .tenant("test", "sub_test", "test_token") // tenant info
-        // maximum retry times when write fails
-        // (only some error codes will be retried, such as the routing table failure)
-        .writeMaxRetries(1)
-        // maximum retry times when read fails
-        // (only some error codes will be retried, such as the routing table failure)
-        .readMaxRetries(1)
+final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // 默认 gprc 端口号，DIRECT 模式
+        .database("public") // Client所使用的database，可被RequestContext的database覆盖
+        .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
+        .readMaxRetries(1)  // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
         .build();
 
 final CeresDBClient client = new CeresDBClient();
-        if (!client.init(this.opts)) {
+if (!client.init(opts)) {
         throw new IllegalStateException("Fail to start CeresDBClient");
-        }
+}
 ```
 配置详情见 [configuration](docs/configuration.md)
 
@@ -131,118 +127,88 @@ CeresDB 是一个 Schema-less 的时序数据引擎，你可以不必创建 sche
 下面的建表语句（使用 SDK 的 SQL API）包含了 CeresDB 支持的所有字段类型：
 
 ```java
-final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // 默认 gprc 端口号
-        .managementAddress("127.0.0.1", 5440) // 注意，直接使用 sql 需要连接 CeresDB 的 http 端口
-        .tenant("public", "sub_test", "test_token") // 租户信息
-        .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
-        .readMaxRetries(1) // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
-        .build();
+String createTableSql = "CREATE TABLE IF NOT EXISTS machine_table(" +                                                                                              "ts TIMESTAMP NOT NULL," + //
+        "ts TIMESTAMP NOT NULL," +
+        "city STRING TAG NOT NULL," +
+        "ip STRING TAG NOT NULL," +
+        "cpu DOUBLE NULL," +
+        "mem DOUBLE NULL," +
+        "TIMESTAMP KEY(ts)" + // 建表时必须指定时间戳序列
+        ") ENGINE=Analytic";
 
-SqlResult result = client.management().executeSql("CREATE TABLE MY_FIRST_TABL(" +
-    "ts TIMESTAMP NOT NULL," +
-    "c1 STRING TAG NOT NULL," +
-    "c2 STRING TAG NOT NULL," +
-    "c3 DOUBLE NULL," +
-    "c4 STRING NULL," +
-    "c5 INT64 NULL," +
-    "c6 FLOAT NULL," +
-    "c7 INT32 NULL," +
-    "c8 INT16 NULL," +
-    "c9 INT8 NULL," +
-    "c10 BOOLEAN NULL,"
-    "c11 UINT64 NULL,"
-    "c12 UINT32 NULL,"
-    "c13 UINT16 NULL,"
-    "c14 UINT8 NULL,"
-    "c15 TIMESTAMP NULL,"
-    "c16 VARBINARY NULL,"
-    "TIMESTAMP KEY(ts)) ENGINE=Analytic"
-);
+Result<SqlQueryOk, Err> createResult = client.sqlQuery(new SqlQueryRequest(createTableSql)).get();
+if (!createResult.isOk()) {
+        throw new IllegalStateException("Fail to create table");
+}
 ```
 详情见 [table](docs/table.md)
 
+## 构建写入数据
+```java
+final Point point = Point.newPointBuilder("machine_table")
+        .setTimestamp(t0)
+        .addTag("city", "Singapore")
+        .addTag("ip", "10.0.0.1")
+        .addField("cpu", Value.withDouble(0.23))
+        .addField("mem", Value.withDouble(0.55))
+        .build();
+```
 
 ## 写入 Example
 ```java
-
-final long t0 = System.currentTimeMillis();
-final long t1 = t0 + 1000;
-final long t2 = t1 + 1000;
-final Rows data = Series.newBuilder("machine_metric")
-    .tag("city", "Singapore")
-    .tag("ip", "127.0.0.1")
-    .toRowsBuilder()
-    // 下面针对 cpu、mem 两列，一次写入了三行数据（3 个时间戳），CeresDB 鼓励这种实践，SDK 可以通过高效的压缩来减少网络传输，并且对 server 端写入非常友好
-    .field(t0, "cpu", FieldValue.withDouble(0.23)) // 第 1 行第 1 列
-    .field(t0, "mem", FieldValue.withDouble(0.55)) // 第 1 行第 2 列
-    .field(t1, "cpu", FieldValue.withDouble(0.25)) // 第 2 行第 1 列
-    .field(t1, "mem", FieldValue.withDouble(0.56)) // 第 2 行第 2 列
-    .field(t2, "cpu", FieldValue.withDouble(0.21)) // 第 3 行第 1 列
-    .field(t2, "mem", FieldValue.withDouble(0.52)) // 第 3 行第 2 列
-    .build();
-
-final CompletableFuture<Result<WriteOk, Err>> wf = client.write(data);
+final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(pointList));
 // 这里用 `future.get` 只是方便演示，推荐借助 CompletableFuture 强大的 API 实现异步编程
-final Result<WriteOk, Err> wr = wf.get();
+final Result<WriteOk, Err> writeResult = wf.get();
 
-Assert.assertTrue(wr.isOk());
-Assert.assertEquals(3, wr.getOk().getSuccess());
+Assert.assertTrue(writeResult.isOk());
+Assert.assertEquals(3, writeResult.getOk().getSuccess());
 // `Result` 类参考了 Rust 语言，提供了丰富的 mapXXX、andThen 类 function 方便对结果值进行转换，提高编程效率，欢迎参考 API 文档使用
-Assert.assertEquals(3, wr.mapOr(0, WriteOk::getSuccess).intValue());
-Assert.assertEquals(0, wr.getOk().getFailed());
-Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
-
+Assert.assertEquals(3, writeResult.mapOr(0, WriteOk::getSuccess).intValue());
+Assert.assertEquals(0, writeResult.mapOr(-1, WriteOk::getFailed).intValue());
 ```
 详情见 [write](docs/write.md)
 
 ## 查询 Example
 ```java
-final QueryRequest queryRequest = QueryRequest.newBuilder()
-        .forMetrics("machine_metric") // 表名可选填，不填的话 SQL Parser 会自动解析 ql 涉及到的表名并完成自动路由
-        .ql("select timestamp, cpu, mem from machine_metric") //
+final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
+        .forTables("machine_table") // 这里表名是可选的，如果未提供，SDK将自动解析SQL填充表名并自动路由
+        .sql("select * from machine_table where ts = %d", t0) //
         .build();
-final CompletableFuture<Result<QueryOk, Err>> qf = client.query(queryRequest);
+final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);
 // 这里用 `future.get` 只是方便演示，推荐借助 CompletableFuture 强大的 API 实现异步编程
-final Result<QueryOk, Err> qr = qf.get();
+final Result<SqlQueryOk, Err> queryResult = qf.get();
 
-Assert.assertTrue(qr.isOk());
+Assert.assertTrue(queryResult.isOk());
 
-final QueryOk queryOk = qr.getOk();
+final SqlQueryOk queryOk = queryResult.getOk();
+Assert.assertEquals(1, queryOk.getRowCount());
 
-final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList())
-final Stream<User> users = queryOk.map(bytes -> parseUser(bytes));
+// 直接获取结果数组
+final List<Row> rows = queryOk.getRowList();
 
+// 获取结果流
+final Stream<Row> rowStream = queryOk.stream();
+rowStream.forEach(row -> System.out.println(row.toString()));
 ```
 详情见 [read](docs/read.md)
 
 ## 流式读写 Example
 CeresDB 支持流式读写，适用于大规模数据读写。
 ```java
-final Calendar time = Calendar.getInstance();
-final StreamWriteBuf<Rows, WriteOk> writeBuf = client.streamWrite("machine_metric");
-        for (int i = 0; i < 1000; i++) {
-        time.add(Calendar.MILLISECOND, 1);
-        Collection<Rows> rows = new ArrayList<>();
-        final long t0 = System.currentTimeMillis();
-        final long t1 = t0 + 1000;
-        final long t2 = t1 + 1000;
-        final Rows data = Series.newBuilder("machine_metric").tag("city", "Singapore").tag("ip", "127.0.0.1")
-        .toRowsBuilder()
-        .field(t0, "cpu", FieldValue.withDouble(0.23)) 
-        .field(t0, "mem", FieldValue.withDouble(0.55)) 
-        .field(t1, "cpu", FieldValue.withDouble(0.25))
-        .field(t1, "mem", FieldValue.withDouble(0.56))
-        .field(t2, "cpu", FieldValue.withDouble(0.21))
-        .field(t2, "mem", FieldValue.withDouble(0.52))
+final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
+for (int i = 0; i < 1000; i++) {
+    final Point point = Point.newPointBuilder("machine_table")
+        .setTimestamp(timestamp)
+        .addTag("city", "Beijing")
+        .addTag("ip", "10.0.0.3")
+        .addField("cpu", Value.withDouble(0.42))
+        .addField("mem", Value.withDouble(0.67))
         .build();
-        rows.add(data);
-        writeBuf.writeAndFlush(data);
-        }
-final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
-        Assert.assertEquals(1000, writeOk.join().getSuccess());
+        writeBuf.writeAndFlush(Arrays.asList(point));
+        timestamp = timestamp+1;
+}
 
-final QueryRequest req = QueryRequest.newBuilder().ql("select * from %s", "machine_metric").build();
-final Iterator<Record> it = client.blockingStreamQuery(req, 3, TimeUnit.SECONDS);
+final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
 ```
 详情见 [streaming](docs/streaming.md)
 

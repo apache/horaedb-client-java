@@ -1,18 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb;
 
@@ -24,10 +11,9 @@ import io.ceresdb.common.util.Clock;
 /**
  * Route info for metric.
  *
- * @author jiachun.fjc
  */
 public class Route {
-    private String           metric;
+    private String           table;
     private Endpoint         endpoint;
     private Object           ext;
     private final AtomicLong lastHit = new AtomicLong(Clock.defaultClock().getTick());
@@ -46,18 +32,18 @@ public class Route {
 
     public static Route of(final String metric, final Endpoint endpoint, final Object ext) {
         final Route r = new Route();
-        r.metric = metric;
+        r.table = metric;
         r.endpoint = endpoint;
         r.ext = ext;
         return r;
     }
 
-    public String getMetric() {
-        return metric;
+    public String getTable() {
+        return table;
     }
 
-    public void setMetric(String metric) {
-        this.metric = metric;
+    public void setTable(String table) {
+        this.table = table;
     }
 
     public Endpoint getEndpoint() {
@@ -90,7 +76,7 @@ public class Route {
     @Override
     public String toString() {
         return "Route{" + //
-               "metric='" + metric + '\'' + //
+               "table='" + table + '\'' + //
                ", endpoint=" + endpoint + //
                ", ext=" + ext + //
                ", lastHit=" + lastHit.get() + //

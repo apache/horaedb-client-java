@@ -1,18 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb;
 
@@ -25,20 +12,20 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.ceresdb.errors.LimitedException;
+import io.ceresdb.limit.LimitedPolicy;
+import io.ceresdb.limit.QueryLimiter;
 import io.ceresdb.models.Err;
-import io.ceresdb.models.QueryOk;
-import io.ceresdb.models.QueryRequest;
+import io.ceresdb.models.SqlQueryOk;
+import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
+import io.ceresdb.util.Utils;
 
-/**
- * @author jiachun.fjc
- */
 public class QueryLimiterTest {
 
     @Test(expected = LimitedException.class)
     public void abortQueryLimitTest() throws ExecutionException, InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.AbortPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forTables("test").sql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -49,12 +36,12 @@ public class QueryLimiterTest {
     @Test
     public void discardWriteLimitTest() throws ExecutionException, InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.DiscardPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forTables("test").sql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
 
-        final Result<QueryOk, Err> ret = limiter.acquireAndDo(req, this::emptyOk).get();
+        final Result<SqlQueryOk, Err> ret = limiter.acquireAndDo(req, this::emptyOk).get();
 
         Assert.assertFalse(ret.isOk());
         Assert.assertEquals(Result.FLOW_CONTROL, ret.getErr().getCode());
@@ -65,7 +52,7 @@ public class QueryLimiterTest {
     @Test
     public void blockingWriteLimitTest() throws InterruptedException {
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1, new LimitedPolicy.BlockingPolicy());
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forTables("test").sql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -95,13 +82,13 @@ public class QueryLimiterTest {
         final int timeoutSecs = 2;
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1,
                 new LimitedPolicy.BlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forTables("test").sql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
 
         final long start = System.nanoTime();
-        final Result<QueryOk, Err> ret = limiter.acquireAndDo(req, this::emptyOk).get();
+        final Result<SqlQueryOk, Err> ret = limiter.acquireAndDo(req, this::emptyOk).get();
         Assert.assertEquals(timeoutSecs, TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start), 0.3);
 
         Assert.assertFalse(ret.isOk());
@@ -115,7 +102,7 @@ public class QueryLimiterTest {
         final int timeoutSecs = 2;
         final QueryLimiter limiter = new QueryClient.DefaultQueryLimiter(1,
                 new LimitedPolicy.AbortOnBlockingTimeoutPolicy(timeoutSecs, TimeUnit.SECONDS));
-        final QueryRequest req = QueryRequest.newBuilder().forMetrics("test").ql("select * from test").build();
+        final SqlQueryRequest req = SqlQueryRequest.newBuilder().forTables("test").sql("select * from test").build();
 
         // consume the permits
         limiter.acquireAndDo(req, CompletableFuture::new);
@@ -128,7 +115,7 @@ public class QueryLimiterTest {
         }
     }
 
-    private CompletableFuture<Result<QueryOk, Err>> emptyOk() {
-        return Utils.completedCf(Result.ok(QueryOk.emptyOk()));
+    private CompletableFuture<Result<SqlQueryOk, Err>> emptyOk() {
+        return Utils.completedCf(Result.ok(SqlQueryOk.emptyOk()));
     }
 }

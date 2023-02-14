@@ -1,18 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb.util;
 
@@ -23,37 +10,38 @@ import java.util.List;
 import java.util.Set;
 
 import io.ceresdb.common.util.Clock;
-import io.ceresdb.models.FieldValue;
+import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
-import io.ceresdb.models.Rows;
-import io.ceresdb.models.Series;
+import io.ceresdb.models.Value;
 import io.ceresdb.proto.internal.Common;
 import io.ceresdb.proto.internal.Storage;
 
-/**
- * @author jiachun.fjc
- */
 public class TestUtil {
 
-    public static Rows newRow(final String metric) {
+    public static List<Point> newTablePoints(final String table) {
         final long time = Clock.defaultClock().getTick() - 1;
-        return Series.newBuilder(metric) //
-                .tag("tag1", "tag_v1") //
-                .tag("tag2", "tag_v2") //
-                .toRowsBuilder() //
-                .field(time, "field1", FieldValue.withDouble(0.1)) //
-                .field(time, "field2", FieldValue.withString("string_value")) //
-                .field(time + 1, "field1", FieldValue.withDouble(0.2)) //
-                .field(time + 1, "field2", FieldValue.withString("string_value_2")) //
-                .build();
+
+        List<Point> data = new ArrayList<>();
+        data.add(Point.newPointBuilder(table) //
+                .setTimestamp(time).addTag("tag1", Value.withString("tag_v1")) //
+                .addTag("tag2", Value.withString("tag_v2")) //
+                .addField("field1", Value.withDouble(0.1)) //
+                .addField("field2", Value.withString("string_value")) //
+                .build());
+        data.add(Point.newPointBuilder(table).setTimestamp(time + 1).addTag("tag1", Value.withString("tag_v1")) //
+                .addTag("tag2", Value.withString("tag_v2")) //
+                .addField("field1", Value.withDouble(0.2)) //
+                .addField("field2", Value.withString("string_value_2")) //
+                .build());
+        return data;
     }
 
-    public static List<Rows> newListOfRows(final String... metrics) {
-        final List<Rows> rowsList = new ArrayList<>();
-        for (final String metric : metrics) {
-            rowsList.add(newRow(metric));
+    public static List<Point> newMultiTablePoints(final String... tables) {
+        final List<Point> pointsList = new ArrayList<>();
+        for (final String table : tables) {
+            pointsList.addAll(newTablePoints(table));
         }
-        return rowsList;
+        return pointsList;
     }
 
     public static Storage.WriteResponse newSuccessWriteResp(final int success) {

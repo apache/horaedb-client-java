@@ -1,18 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb.rpc;
 
@@ -52,8 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import io.ceresdb.common.Endpoint;
 import io.ceresdb.common.OptKeys;
-import io.ceresdb.common.Tenant;
-import io.ceresdb.common.util.AuthUtil;
 import io.ceresdb.common.util.Clock;
 import io.ceresdb.common.util.Cpus;
 import io.ceresdb.common.util.ExecutorServiceHelper;
@@ -70,7 +55,6 @@ import io.ceresdb.rpc.errors.ConnectFailException;
 import io.ceresdb.rpc.errors.InvokeTimeoutException;
 import io.ceresdb.rpc.errors.OnlyErrorMessage;
 import io.ceresdb.rpc.errors.RemotingException;
-import io.ceresdb.rpc.interceptors.AuthHeadersInterceptor;
 import io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor;
 import io.ceresdb.rpc.interceptors.ContextToHeadersInterceptor;
 import io.ceresdb.rpc.interceptors.MetricInterceptor;
@@ -85,7 +69,6 @@ import com.netflix.concurrency.limits.MetricRegistry;
 /**
  * Grpc client implementation.
  *
- * @author jiachun.fjc
  */
 public class GrpcClient implements RpcClient {
 
@@ -122,8 +105,6 @@ public class GrpcClient implements RpcClient {
     private final List<ConnectionObserver>     connectionObservers = new CopyOnWriteArrayList<>();
     private final MarshallerRegistry           marshallerRegistry;
 
-    private String          tenant             = "none";
-    private String          defaultChildTenant = "none";
     private RpcOptions      opts;
     private ExecutorService asyncPool;
     private boolean         useSharedAsyncPool;
@@ -238,13 +219,12 @@ public class GrpcClient implements RpcClient {
                 .withDeadlineAfter(timeout, TimeUnit.MILLISECONDS) //
                 .withExecutor(getObserverExecutor(observer));
 
-        final String childTenant = addChildTenantIntoCtx(ctx);
         final String methodName = method.getFullMethodName();
         final String address = endpoint.toString();
         final long startCall = Clock.defaultClock().getTick();
 
         final Channel ch = getCheckedChannel(endpoint, (err) -> {
-            attachErrMsg(err, UNARY_CALL, methodName, childTenant, address, startCall, -1, ctx);
+            attachErrMsg(err, UNARY_CALL, methodName, address, startCall, -1, ctx);
             observer.onError(err);
         });
 
@@ -266,7 +246,7 @@ public class GrpcClient implements RpcClient {
 
             @Override
             public void onError(final Throwable err) {
-                attachErrMsg(err, UNARY_CALL, methodName, childTenant, target, startCall, onReceived(true), ctx);
+                attachErrMsg(err, UNARY_CALL, methodName, target, startCall, onReceived(true), ctx);
                 observer.onError(err);
             }
 
@@ -277,14 +257,13 @@ public class GrpcClient implements RpcClient {
 
             private long onReceived(final boolean onError) {
                 final long duration = Clock.defaultClock().duration(startCall);
-                final String mthAndTnt = MetricsUtil.named(methodName, tenant);
 
-                MetricsUtil.timer(REQ_RT, mthAndTnt).update(duration, TimeUnit.MILLISECONDS);
-                MetricsUtil.timer(REQ_RT, mthAndTnt, address).update(duration, TimeUnit.MILLISECONDS);
+                MetricsUtil.timer(REQ_RT, method).update(duration, TimeUnit.MILLISECONDS);
+                MetricsUtil.timer(REQ_RT, method, address).update(duration, TimeUnit.MILLISECONDS);
 
                 if (onError) {
-                    MetricsUtil.meter(REQ_FAILED, mthAndTnt).mark();
-                    MetricsUtil.meter(REQ_FAILED, mthAndTnt, address).mark();
+                    MetricsUtil.meter(REQ_FAILED, method).mark();
+                    MetricsUtil.meter(REQ_FAILED, method, address).mark();
                 }
 
                 return duration;
@@ -303,13 +282,12 @@ public class GrpcClient implements RpcClient {
                 MethodDescriptor.MethodType.SERVER_STREAMING);
         final CallOptions callOpts = CallOptions.DEFAULT.withExecutor(getObserverExecutor(observer));
 
-        final String childTenant = addChildTenantIntoCtx(ctx);
         final String methodName = method.getFullMethodName();
         final String address = endpoint.toString();
         final long startCall = Clock.defaultClock().getTick();
 
         final Channel ch = getCheckedChannel(endpoint, (err) -> {
-            attachErrMsg(err, SERVER_STREAMING_CALL, methodName, childTenant, address, startCall, -1, ctx);
+            attachErrMsg(err, SERVER_STREAMING_CALL, methodName, address, startCall, -1, ctx);
             observer.onError(err);
         });
 
@@ -330,7 +308,7 @@ public class GrpcClient implements RpcClient {
 
                     @Override
                     public void onError(final Throwable err) {
-                        attachErrMsg(err, SERVER_STREAMING_CALL, methodName, childTenant, target, startCall, -1, ctx);
+                        attachErrMsg(err, SERVER_STREAMING_CALL, methodName, target, startCall, -1, ctx);
                         observer.onError(err);
                     }
 
@@ -352,14 +330,13 @@ public class GrpcClient implements RpcClient {
                 MethodDescriptor.MethodType.CLIENT_STREAMING);
         final CallOptions callOpts = CallOptions.DEFAULT.withExecutor(getObserverExecutor(respObserver));
 
-        final String childTenant = addChildTenantIntoCtx(ctx);
         final String methodName = method.getFullMethodName();
         final String address = endpoint.toString();
         final long startCall = Clock.defaultClock().getTick();
 
         final RefCell<Throwable> refErr = new RefCell<>();
         final Channel ch = getCheckedChannel(endpoint, (err) -> {
-            attachErrMsg(err, CLIENT_STREAMING_CALL, methodName, childTenant, address, startCall, -1, ctx);
+            attachErrMsg(err, CLIENT_STREAMING_CALL, methodName, address, startCall, -1, ctx);
             refErr.set(err);
         });
 
@@ -381,7 +358,7 @@ public class GrpcClient implements RpcClient {
 
                     @Override
                     public void onError(final Throwable err) {
-                        attachErrMsg(err, CLIENT_STREAMING_CALL, methodName, childTenant, target, startCall, -1, ctx);
+                        attachErrMsg(err, CLIENT_STREAMING_CALL, methodName, target, startCall, -1, ctx);
                         respObserver.onError(err);
                     }
 
@@ -419,22 +396,14 @@ public class GrpcClient implements RpcClient {
         // the last one
         addInterceptor(new MetricInterceptor());
 
-        // the third
+        // the second
         final RpcOptions.LimitKind kind = this.opts.getLimitKind();
         if (kind != null && kind != RpcOptions.LimitKind.None) {
             addInterceptor(createRequestLimitInterceptor(kind));
         }
 
-        // the second
-        addInterceptor(new ContextToHeadersInterceptor());
-
         // the first
-        final Tenant tenant = this.opts.getTenant();
-        if (tenant != null) {
-            this.tenant = tenant.getTenant();
-            this.defaultChildTenant = tenant.getChildTenant();
-            addInterceptor(new AuthHeadersInterceptor(tenant));
-        }
+        addInterceptor(new ContextToHeadersInterceptor());
     }
 
     private ClientRequestLimitInterceptor createRequestLimitInterceptor(final RpcOptions.LimitKind kind) {
@@ -491,7 +460,6 @@ public class GrpcClient implements RpcClient {
     private void attachErrMsg(final Throwable err, //
                               final String callType, //
                               final String method, //
-                              final String childTenant, //
                               final String target, //
                               final long startCall, //
                               final long duration, //
@@ -502,10 +470,6 @@ public class GrpcClient implements RpcClient {
                 .append(" got an error,") //
                 .append(" method=") //
                 .append(method) //
-                .append(", tenant=") //
-                .append(this.tenant) //
-                .append(", childTenant=") //
-                .append(childTenant != null ? childTenant : this.defaultChildTenant) //
                 .append(", target=") //
                 .append(target) //
                 .append(", startCall=") //
@@ -526,14 +490,6 @@ public class GrpcClient implements RpcClient {
 
     private Executor getObserverExecutor(final Observer<?> observer) {
         return observer.executor() != null ? observer.executor() : this.asyncPool;
-    }
-
-    private String addChildTenantIntoCtx(final Context ctx) {
-        final String childTenant = ctx.remove(AuthUtil.HEAD_ACCESS_CHILD_TENANT);
-        // null value means clear previous
-        AuthHeadersInterceptor.setCurrentChildTenant(childTenant);
-        ContextToHeadersInterceptor.setCurrentCtx(ctx);
-        return childTenant;
     }
 
     private void closeAllChannels() {

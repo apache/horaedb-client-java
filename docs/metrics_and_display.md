@@ -1,60 +1,59 @@
-## 如何获取 metrics 和 display 数据？
-在程序运行时，可以利用 Linux 平台的 SIGUSR2 信号输出节点的状态信息（display）以及 metric 数据
+## How to get metrics and display data?
+When the program is running, the SIGUSR2 signal of the Linux platform can be used to output the status information (display) and metric data of the node
 
-### 执行方式:
+### How to use
 `kill -s SIGUSR2 pid`
 
-相关信息会输出到指定目录，默认在程序工作目录（cwd: lsof -p $pid | grep cwd）生成 2 个文件
-- CeresDB_client_metrics.log 为前缀的文件，记录了当前 client 节点的所有 metrics 信息
-- CeresDB_client_display.log 为前缀的文件，记录的当前 client 节点重要的内存状态信息
+Information will be output to the specified directory，by default, 2 files will be generated in the program working directory (cwd: lsof -p $pid | grep cwd)
+- The file prefixed with CeresDB_client_metrics.log records all the metrics information of the current client node
+- The file prefixed with CeresDB_client_display.log records important memory status information of the current client node
 
-### Metrics 输出到日志
-- 默认每 10 分钟会输出 metrics 到日志中
+### Metrics output to log
+- Metrics will be output to the log every 10 minutes by default
 
-### Metrics 列表（不断更新中）
-|name|description|
-| ---- | ---- |
-| req_bytes | RPC request 总的 bytes 统计 |
-| resp_bytes | RPC response 总的 bytes 统计 |
-| req_qps_${rpc_method} | RPC request 的 QPS 统计，每个 RPC method 单独统计 |
-| req_serialized_bytes_${rpc_method} | 每个 RPC request 的序列化后的大小统计，RPC method 统计粒度 |
-| resp_serialized_bytes_${rpc_method} | 每个 RPC response 的序列化后的大小统计，RPC method 统计粒度 |
-| req_rt_${rpc_method}_${tenant}| 请求 RT，方法 + 租户粒度 |
-| req_rt_${rpc_method}_${tenant}_${address} | 请求 RT，方法 + 租户 + Server 地址粒度 |
-| req_failed_${rpc_method}_${tenant}| 请求失败统计，方法 + 租户粒度 |
-| req_failed_${rpc_method}_${tenant}_${address} | 请求失败统计，方法 + 租户 + Server 地址粒度 |
-| thread_pool.${thread_pool_name} | 线程池执行任务耗时统计 |
-| scheduled_thread_pool.${schedule_thread_pool_name} | Schedule 线程池执行任务耗时统计 |
-| split_num_per_write | 根据路由表，每批写入会被分割成多个请求，这个指标统计的是写入被分割的情况 |
-| route_for_metrics_refreshed_size_${address} | 每次向 server 请求路由表的 metric 数量 |
-| route_for_metrics_cached_size_${address} | 本地缓存的路由表的 metric 数量 |
-| route_for_metrics_gc_times_${address} | 路由表每次 GC 需要循环次数的统计 |
-| route_for_metrics_gc_items_${address} | 路由表每次 GC 释放掉的 items 数量统计 |
-| route_for_metrics_gc_timer_${address} | 路由表 GC 时间统计 |
-| route_for_metrics_refresh_timer_${address} | 路由表远程刷新时间统计 |
-| write_rows_success_num | 写入成功的数据条数统计 |
-| write_rows_failed_num | 写入失败的数据条数统计 |
-| write_failed | 写入失败的次数统计 |
-| write_qps | 写入请求 QPS |
-| metrics_num_per_write | 每个写入请求的 metrics 数量统计 |
-| async_write_pool.time | SDK 中执行异步写入任务的 async pool 耗时统计，这个很重要，需要特别关注 |
-| async_read_pool.time | SDK 中执行异步读取任务的 async pool 耗时统计，这个很重要，需要特别关注 |
-| connection_counter | SDK 与 server 建立的连接个数 |
-| connection_failures | SDK 与 server 失败连接的统计 |
-| read_row_count | 每次查询数据条数的统计 |
-| read_failed | 查询失败的次数统计 |
-| read_qps | 查询 QPS |
-| write_by_retries_${n} | 第 n 次重试写入的 qps，n == 0 表示是第一次写入（非重试），n > 3 将视为 n == 3 来统计 |
-| read_by_retries_${n} | 第 n 次重试查询的 qps，n == 0 表示是第一次查询（非重试），n > 3 将视为 n == 3 来统计 |
-| write_limiter_acquire_wait_time | 被写入限流器 block 的时间统计 |
-| write_limiter_acquire_available_permits | 写入限流器 available_permits 统计 |
-| query_limiter_acquire_wait_time | 被查询限流器 block 的时间统计 |
-| query_limiter_acquire_available_permits | 查询限流器 available_permits 统计 |
-| direct_executor_timer_${name} | direct executor 任务执行耗时统计 |
-| serializing_executor_single_task_timer_${name} | serializing executor 单个任务执行耗时统计 |
-| serializing_executor_drain_timer_${name} | serializing executor 排干全部任务耗时统计 |
-| serializing_executor_drain_num_${name} | serializing executor 每次排干任务数量 histogram 统计 |
-| rpc_limiter_${name} | 基于 TCP Vegas 算法的 rpc 限流器相关统计指标 |
+### Metrics description （updating）
+| name                                               | description                                                                                                              |
+|----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| req_bytes                                          | RPC request total bytes statistics                                                                                       |
+| resp_bytes                                         | RPC response total bytes statistics                                                                                      |
+| req_qps_${rpc_method}                              | QPS statistics of RPC request, separate for each RPC method                                                              |
+| req_serialized_bytes_${rpc_method}                 | The serialized size statistics of each RPC request, separate for each method                                             |
+| resp_serialized_bytes_${rpc_method}                | The serialized size statistics of each RPC response, separate for each method                                            |
+| req_rt_${rpc_method}_                              | Request RT, method                                                                                                       |
+| req_rt_${rpc_method}_${address}                    | Request RT, method + server                                                                                              |
+| req_failed_${rpc_method}                           | Request failed, method                                                                                                   |
+| req_failed_${rpc_method}_${address}                | Request failed, method + server                                                                                          |
+| thread_pool.${thread_pool_name}                    | Time of thread pool execution tasks                                                                                      |
+| scheduled_thread_pool.${schedule_thread_pool_name} | Time of thread schedule pool execution tasks                                                                             |
+| split_num_per_write                                | Each batch of writes will be divided into multiple requests by router, and this indicator counts the splitting of writes |
+| route_for_tables_refreshed_size_${address}         | The count of tables requested for the router from the server each time                                                   |
+| route_for_tables_cached_size_${address}            | The count of tables in the locally cached router                                                                         |
+| route_for_tables_gc_times_${address}               | The count of cycles required for each GC of the router                                                                   |
+| route_for_tables_gc_items_${address}               | The count of items released by each GC of the router                                                                     |
+| route_for_tables_gc_timer_${address}               | The time of GC time                                                                                                      |
+| write_points_success_num                           | The count of successfully written point                                                                                  |
+| write_points_failed_num                            | The count of failed written points                                                                                       |
+| write_failed                                       | The count of failed write requests                                                                                       |
+| write_qps                                          | Write QPS                                                                                                                |
+| points_num_per_write                               | The count of points for each write request                                                                               |
+| async_write_pool.time                              | The async pool time of executing asynchronous write tasks in the SDK is very important and requires special attention    |
+| async_read_pool.time                               | Same as `async_write_pool.time` for reading                                                                              |
+| connection_counter                                 | The count of connections established between the SDK and the server                                                      |
+| connection_failures                                | The count of failed connections established between the SDK and the server                                               |
+| read_rows_count                                    | The count of rows per query                                                                                              |
+| read_failed                                        | The count of failed queried requests                                                                                     |
+| read_qps                                           | Query QPS                                                                                                                |
+| write_by_retries_${n}                              | The QPS of the nth retry write, n == 0 means it is the first write (not retry), n > 3 will be counted as n == 3          |
+| read_by_retries_${n}                               | Same as `write_by_retries_${n}` for reading                                                                              |
+| write_limiter_acquire_wait_time                    | Time written to the current limiter block                                                                                |
+| write_limiter_acquire_available_permits            | Write limiter available_permits                                                                                          |
+| query_limiter_acquire_wait_time                    | The time of the queried limiter block                                                                                    |
+| query_limiter_acquire_available_permits            | Query limiter available_permits statistics                                                                               |
+| direct_executor_timer_${name}                      | The task execution time of direct executor                                                                               |
+| serializing_executor_single_task_timer_${name}     | The task exeution time for serializing executor                                                                          |
+| serializing_executor_drain_timer_${name}           | Drain all task time statistics                                                                                           |
+| serializing_executor_drain_num_${name}             | Serializing executor histogram statistics on the number of tasks drained each time                                       |
+| rpc_limiter_${name}                                | The rpc metrics on TCP Vegas limiter                                                                                     |
 
 ### Metrics demo:
 ```
@@ -72,7 +71,7 @@ rpc_limiter_call_id_grpc_call_status_success
              count = 3160
 
 -- CeresDB -- Histograms ------------------------------------------------------------------
-metrics_num_per_write
+points_num_per_write
              count = 1585
                min = 1
                max = 1
@@ -144,7 +143,7 @@ resp_serialized_bytes_storage.StorageService/Write
               98% <= 8.00
               99% <= 8.00
             99.9% <= 8.00
-route_for_metrics_cached_size_127.0.0.1:8831
+route_for_tables_cached_size_127.0.0.1:8831
              count = 1
                min = 1
                max = 1
@@ -156,7 +155,7 @@ route_for_metrics_cached_size_127.0.0.1:8831
               98% <= 1.00
               99% <= 1.00
             99.9% <= 1.00
-route_for_metrics_gc_items_127.0.0.1:8831
+route_for_tables_gc_items_127.0.0.1:8831
              count = 0
                min = 0
                max = 0
@@ -168,7 +167,7 @@ route_for_metrics_gc_items_127.0.0.1:8831
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-route_for_metrics_gc_times_127.0.0.1:8831
+route_for_tables_gc_times_127.0.0.1:8831
              count = 0
                min = 0
                max = 0
@@ -180,7 +179,7 @@ route_for_metrics_gc_times_127.0.0.1:8831
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-route_for_metrics_refreshed_size_127.0.0.1:8831
+route_for_tables_refreshed_size_127.0.0.1:8831
              count = 1
                min = 1
                max = 1
@@ -252,7 +251,7 @@ write_limiter_acquire_available_permits
               98% <= 7168.00
               99% <= 7168.00
             99.9% <= 7168.00
-write_rows_failed_num
+write_points_failed_num
              count = 1580
                min = 0
                max = 0
@@ -264,7 +263,7 @@ write_rows_failed_num
               98% <= 0.00
               99% <= 0.00
             99.9% <= 0.00
-write_rows_success_num
+write_points_success_num
              count = 1580
                min = 1024
                max = 1024
@@ -436,7 +435,7 @@ req_rt_storage.StorageService/Write_public_127.0.0.1:8831
               98% <= 229.00 milliseconds
               99% <= 385.00 milliseconds
             99.9% <= 546.00 milliseconds
-route_for_metrics_gc_timer_127.0.0.1:8831
+route_for_tables_gc_timer_127.0.0.1:8831
              count = 0
          mean rate = 0.00 calls/second
      1-minute rate = 0.00 calls/second
@@ -452,22 +451,6 @@ route_for_metrics_gc_timer_127.0.0.1:8831
               98% <= 0.00 milliseconds
               99% <= 0.00 milliseconds
             99.9% <= 0.00 milliseconds
-route_for_metrics_refresh_timer_127.0.0.1:8831
-             count = 1
-         mean rate = 0.02 calls/second
-     1-minute rate = 0.07 calls/second
-     5-minute rate = 0.16 calls/second
-    15-minute rate = 0.19 calls/second
-               min = 322.00 milliseconds
-               max = 322.00 milliseconds
-              mean = 322.00 milliseconds
-            stddev = 0.00 milliseconds
-            median = 322.00 milliseconds
-              75% <= 322.00 milliseconds
-              95% <= 322.00 milliseconds
-              98% <= 322.00 milliseconds
-              99% <= 322.00 milliseconds
-            99.9% <= 322.00 milliseconds
 rpc_limiter_acquire_time_storage.StorageService/Write
              count = 3170
          mean rate = 48.96 calls/second
@@ -589,7 +572,7 @@ write_limiter_acquire_wait_time
 id=1
 version=1.0.0.Final
 clusterAddress=127.0.0.1:8831
-tenant=public
+database=public
 userAsyncWritePool=null
 userAsyncReadPool=null
 
@@ -599,10 +582,10 @@ routeCache.size=1
 
 --- GrpcClient ---
 started=true
-opts=RpcOptions{defaultRpcTimeout=10000, rpcThreadPoolSize=0, rpcThreadPoolQueueSize=16, maxInboundMessageSize=67108864, flowControlWindow=67108864, idleTimeoutSeconds=300, keepAliveTimeSeconds=3, keepAliveTimeoutSeconds=3, keepAliveWithoutCalls=true, openVegasLimiter=true, vegasInitialLimit=50, blockOnLimit=false, tenant=Tenant{tenant='public', childTenant='sub_test', token='test_token'}}
+opts=RpcOptions{defaultRpcTimeout=10000, rpcThreadPoolSize=0, rpcThreadPoolQueueSize=16, maxInboundMessageSize=67108864, flowControlWindow=67108864, idleTimeoutSeconds=300, keepAliveTimeSeconds=3, keepAliveTimeoutSeconds=3, keepAliveWithoutCalls=true, openVegasLimiter=true, vegasInitialLimit=50, blockOnLimit=false}
 connectionObservers=[io.ceresdb.CeresDBClient$RpcConnectionObserver@465f5824]
 asyncPool=DirectExecutor{name='grpc_executor'}
-interceptors=[io.ceresdb.rpc.interceptors.MetricInterceptor@62b47ad1, io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor@77533e32, io.ceresdb.rpc.interceptors.ContextToHeadersInterceptor@1a52427d, io.ceresdb.rpc.interceptors.AuthHeadersInterceptor@2670a76b]
+interceptors=[io.ceresdb.rpc.interceptors.MetricInterceptor@62b47ad1, io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor@77533e32, io.ceresdb.rpc.interceptors.ContextToHeadersInterceptor@1a52427d]
 managedChannelPool={127.0.0.1:8831=ManagedChannelOrphanWrapper{delegate=ManagedChannelImpl{logId=1, target=127.0.0.1:8831}}}
 transientFailures={}
 
@@ -614,10 +597,4 @@ asyncPool=SerializingExecutor{name='write_client'}
 --- QueryClient ---
 maxRetries=1
 asyncPool=SerializingExecutor{name='query_client'}
-
---- HttpManagementClient ---
-started=true
-tenant=public
-
-
 ```

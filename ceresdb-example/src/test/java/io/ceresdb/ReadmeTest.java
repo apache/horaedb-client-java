@@ -1,43 +1,30 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
 package io.ceresdb;
 
 import io.ceresdb.models.*;
 import io.ceresdb.options.CeresDBOptions;
+import io.ceresdb.util.StreamWriteBuf;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-/**
- * @author kesheng
- */
 public class ReadmeTest {
 
     @Ignore
     @Test
     public void readmeTest() throws ExecutionException, InterruptedException {
-        final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831) // CeresDB default grpc port 8831
-                .managementAddress("127.0.0.1", 5000) // CeresDB default http port 3307
-                .tenant("public", "sub_test", "test_token") // tenant info
+        final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) // CeresDB default grpc port 8831
+                .database("public") // use database public
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
                 .writeMaxRetries(1)
@@ -51,51 +38,101 @@ public class ReadmeTest {
         }
 
         // Create table manually, creating table schema ahead of data ingestion is not required
-        String createTableSql = "CREATE TABLE MY_FIRST_TABLE(" + "ts TIMESTAMP NOT NULL," + "c1 STRING TAG NOT NULL,"
-                                + "c2 STRING TAG NOT NULL," + "c3 DOUBLE NULL," + "c4 STRING NULL," + "c5 INT64 NULL,"
-                                + "c6 FLOAT NULL," + "c7 INT32 NULL," + "c8 INT16 NULL," + "c9 INT8 NULL,"
-                                + "c10 BOOLEAN NULL," + "c11 UINT64 NULL," + "c12 UINT32 NULL," + "c13 UINT16 NULL,"
-                                + "c14 UINT8 NULL," + "c15 TIMESTAMP NULL," + "c16 VARBINARY NULL,"
-                                + "TIMESTAMP KEY(ts)" + ") ENGINE=Analytic";
-        SqlResult result = client.management().executeSql(createTableSql);
+        String createTableSql = "CREATE TABLE IF NOT EXISTS machine_table(" +                                                                                              "ts TIMESTAMP NOT NULL," + //
+                "ts TIMESTAMP NOT NULL," +
+                "city STRING TAG NOT NULL," +
+                "ip STRING TAG NOT NULL," +
+                "cpu DOUBLE NULL," +
+                "mem DOUBLE NULL," +
+                "TIMESTAMP KEY(ts)" + // timestamp column must be specified
+                ") ENGINE=Analytic";
 
-        final long t0 = System.currentTimeMillis();
-        final long t1 = t0 + 1000;
-        final long t2 = t1 + 1000;
-        final Rows data = Series.newBuilder("machine_metric").tag("city", "Singapore").tag("ip", "127.0.0.1")
-                .toRowsBuilder()
-                // codes below organizes 3 lines data (3 timestamps) for the `cpu` and `mem` column, this will just transport once through network. CeresDB encourage practices like this, because the SDK could use efficient compression algorithm to reduce network traffic and also be friendly to the sever side.
-                .field(t0, "cpu", FieldValue.withDouble(0.23)) // first row, first column
-                .field(t0, "mem", FieldValue.withDouble(0.55)) // first row, second column
-                .field(t1, "cpu", FieldValue.withDouble(0.25)) // second row, first column
-                .field(t1, "mem", FieldValue.withDouble(0.56)) // second row, second column
-                .field(t2, "cpu", FieldValue.withDouble(0.21)) // third row, first column
-                .field(t2, "mem", FieldValue.withDouble(0.52)) // third row, second column
-                .build();
+        Result<SqlQueryOk, Err> createResult = client.sqlQuery(new SqlQueryRequest(createTableSql)).get();
+        if (!createResult.isOk()) {
+            throw new IllegalStateException("Fail to create table");
+        }
 
-        final CompletableFuture<Result<WriteOk, Err>> wf = client.write(data);
+        final long timestamp = System.currentTimeMillis();
+        Point point1 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp)
+                    .addTag("city", "Singapore")
+                    .addTag("ip", "10.0.0.1")
+                    .addField("cpu", Value.withDouble(0.23))
+                    .addField("mem", Value.withDouble(0.55))
+                    .build();
+        Point point2 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp+1000)
+                    .addTag("city", "Singapore")
+                    .addTag("ip", "10.0.0.1")
+                    .addField("cpu", Value.withDouble(0.25))
+                    .addField("mem", Value.withDouble(0.56))
+                    .build();
+        Point point3 = Point.newPointBuilder("machine_table")
+                    .setTimestamp(timestamp+1000)
+                    .addTag("city", "Shanghai")
+                    .addTag("ip", "10.0.0.2")
+                    .addField("cpu", Value.withDouble(0.21))
+                    .addField("mem", Value.withDouble(0.52))
+                    .build();
+        List<Point> pointList = Arrays.asList(point1, point2, point3);
+
+        final CompletableFuture<Result<WriteOk, Err>> wf = client.write(new WriteRequest(pointList));
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
-        final Result<WriteOk, Err> wr = wf.get();
-
-        Assert.assertTrue(wr.isOk());
-        Assert.assertEquals(3, wr.getOk().getSuccess());
+        final Result<WriteOk, Err> writeResult = wf.get();
+        Assert.assertTrue(writeResult.isOk());
+        Assert.assertEquals(3, writeResult.getOk().getSuccess());
         // `Result` class referenced the Rust language practice, provides rich functions (such as mapXXX, andThen) transforming the result value to improve programming efficiency. You can refer to the API docs for detail usage.
-        Assert.assertEquals(3, wr.mapOr(0, WriteOk::getSuccess).intValue());
-        Assert.assertEquals(0, wr.getOk().getFailed());
-        Assert.assertEquals(0, wr.mapOr(-1, WriteOk::getFailed).intValue());
+        Assert.assertEquals(3, writeResult.mapOr(0, WriteOk::getSuccess).intValue());
+        Assert.assertEquals(0, writeResult.getOk().getFailed());
+        Assert.assertEquals(0, writeResult.mapOr(-1, WriteOk::getFailed).intValue());
 
-        final QueryRequest queryRequest = QueryRequest.newBuilder().forMetrics("machine_metric") // table name is optional. If not provided, SQL parser will parse the `ql` to get the table name and do the routing automaticly
-                .ql("select timestamp, cpu, mem from machine_metric") //
+        final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
+                .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `sql` to get the table name and do the routing automaticly
+                .sql("select * from machine_table where ts = %d", timestamp) //
                 .build();
-        final CompletableFuture<Result<QueryOk, Err>> qf = client.query(queryRequest);
+        final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
-        final Result<QueryOk, Err> qr = qf.get();
+        final Result<SqlQueryOk, Err> queryResult = qf.get();
 
-        Assert.assertTrue(qr.isOk());
+        Assert.assertTrue(queryResult.isOk());
 
-        final QueryOk queryOk = qr.getOk();
+        final SqlQueryOk queryOk = queryResult.getOk();
+        Assert.assertEquals(1, queryOk.getRowCount());
 
-        final List<Record> records = queryOk.mapToRecord().collect(Collectors.toList());
+        // get rows as list
+        final List<Row> rows = queryOk.getRowList();
+        Assert.assertEquals(timestamp, rows.get(0).getColumnValue("ts").getTimestamp());
+        Assert.assertEquals("Singapore", rows.get(0).getColumnValue("city").getString());
+        Assert.assertEquals("10.0.0.1", rows.get(0).getColumnValue("ip").getString());
+        Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getDouble(), 0.0000001);
+        Assert.assertEquals(0.55, rows.get(0).getColumnValue("mem").getDouble(), 0.0000001);
+
+        // get rows as stream
+        final Stream<Row> rowStream = queryOk.stream();
+        rowStream.forEach(row -> System.out.println(row.toString()));
+
+        // write with Stream
+        long start = System.currentTimeMillis();
+        long t = start;
+        final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
+        for (int i = 0; i < 1000; i++) {
+            final Point streamData = Point.newPointBuilder("machine_table")
+                        .setTimestamp(t)
+                        .addTag("city", "Beijing")
+                        .addTag("ip", "10.0.0.3")
+                        .addField("cpu", Value.withDouble(0.42))
+                        .addField("mem", Value.withDouble(0.67))
+                    .build();
+            writeBuf.writeAndFlush(Collections.singletonList(streamData));
+            t = t+1;
+        }
+        final CompletableFuture<WriteOk> writeOk = writeBuf.completed();
+        Assert.assertEquals(1000, writeOk.join().getSuccess());
+
+        final SqlQueryRequest streamQuerySql = SqlQueryRequest.newBuilder()
+                .sql("select * from %s where city = '%s' and ts >= %d and ts < %d", "machine_table", "Beijing", start, t).build();
+        final Result<SqlQueryOk, Err> streamQueryResult = client.sqlQuery(streamQuerySql).get();
+        Assert.assertTrue(streamQueryResult.isOk());
+        Assert.assertEquals(1000, streamQueryResult.getOk().getRowCount());
     }
-
 }
