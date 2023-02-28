@@ -184,6 +184,9 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
                         ret = remote;
                     } else {
                         local.putAll(remote);
+                        for (String miss : misses) {
+                            local.putIfAbsent(miss, Route.of(miss, opts.getClusterAddress()));
+                        }
                         ret = local;
                     }
                     return ret;
@@ -197,7 +200,6 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
     public CompletableFuture<Map<String, Route>> routeRefreshFor(final RequestContext reqCtx,
                                                                  final Collection<String> tables) {
-        final long startCall = Clock.defaultClock().getTick();
         return this.router.routeFor(reqCtx, tables).whenComplete((remote, err) -> {
             if (err == null) {
                 this.routeCache.putAll(remote);
