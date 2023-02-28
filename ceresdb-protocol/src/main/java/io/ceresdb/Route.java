@@ -15,7 +15,6 @@ import io.ceresdb.common.util.Clock;
 public class Route {
     private String           table;
     private Endpoint         endpoint;
-    private Object           ext;
     private final AtomicLong lastHit = new AtomicLong(Clock.defaultClock().getTick());
 
     public static Route invalid(final String table) {
@@ -23,18 +22,13 @@ public class Route {
     }
 
     public static Route of(final Endpoint endpoint) {
-        return of(null, endpoint, null);
+        return of(null, endpoint);
     }
 
     public static Route of(final String table, final Endpoint endpoint) {
-        return of(table, endpoint, null);
-    }
-
-    public static Route of(final String table, final Endpoint endpoint, final Object ext) {
         final Route r = new Route();
         r.table = table;
         r.endpoint = endpoint;
-        r.ext = ext;
         return r;
     }
 
@@ -54,14 +48,6 @@ public class Route {
         this.endpoint = endpoint;
     }
 
-    public Object getExt() {
-        return ext;
-    }
-
-    public void setExt(Object ext) {
-        this.ext = ext;
-    }
-
     public long getLastHit() {
         return lastHit.get();
     }
@@ -78,7 +64,6 @@ public class Route {
         return "Route{" + //
                "table='" + table + '\'' + //
                ", endpoint=" + endpoint + //
-               ", ext=" + ext + //
                ", lastHit=" + lastHit.get() + //
                '}';
     }
