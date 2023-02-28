@@ -87,7 +87,7 @@ CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(SqlQueryRequest req, Context
 - When processing the results returned by the query, the user can directly obtain `List<Row>`, or process it through stream.
 - Row is a collection of Value, which is a very simple data structure
 - Note: When Value gets the java primitive value, you need to pass in the type method that matches the table creation, otherwise an error will be reported
-- Example to use `Row`: `row.getColumnValue("cpu_util").getDouble()
+- Example to use `Row`: `row.getColumn("cpu_util").value().getDouble()
   `
 
 `Err`
