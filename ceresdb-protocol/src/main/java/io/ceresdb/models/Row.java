@@ -21,7 +21,7 @@ public class Row {
 
     public Column getColumn(String name) {
         int columnIdx = getColumnIdx(name);
-        if (columnIdx > 0) {
+        if (columnIdx > -1) {
             return Column.of(name, values[columnIdx]);
         }
         return null;

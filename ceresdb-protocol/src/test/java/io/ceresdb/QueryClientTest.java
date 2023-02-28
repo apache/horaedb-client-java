@@ -115,7 +115,7 @@ public class QueryClientTest {
         final Stream<String> strs = queryOk.map(Row::toString);
 
         Assert.assertEquals(
-                Collections.singletonList("f1:Value{type=Int32,value=123}|t1:Value{type=String,value=tvtest}"),
+                Collections.singletonList("t1:Value{type=String,value=tvtest}|f1:Value{type=Int32,value=123}"),
                 strs.collect(Collectors.toList()));
     }
 
@@ -150,7 +150,7 @@ public class QueryClientTest {
         final Stream<String> strs = queryOk.map(Row::toString);
 
         Assert.assertEquals(
-                Collections.singletonList("f1:Value{type=Int32,value=123}|t1:Value{type=String,value=tvtest}"),
+                Collections.singletonList("t1:Value{type=String,value=tvtest}|f1:Value{type=Int32,value=123}"),
                 strs.collect(Collectors.toList()));
     }
 
