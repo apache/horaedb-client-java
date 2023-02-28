@@ -209,20 +209,20 @@ public class QueryClientTest {
     private void checkFullTypeRow(final Row row) {
         Assert.assertEquals(14, row.getColumnCount());
 
-        Assert.assertEquals("test", row.getColumnValue("fString").getString());
-        Assert.assertEquals(Boolean.TRUE, row.getColumnValue("fBool").getBoolean());
-        Assert.assertEquals(0.64, row.getColumnValue("fDouble").getDouble(), 0.000001);
-        Assert.assertEquals(0.32f, row.getColumnValue("fFloat").getFloat(), 0.000001);
-        Assert.assertEquals(-64, row.getColumnValue("fInt64").getInt64());
-        Assert.assertEquals(-32, row.getColumnValue("fInt32").getInt32());
-        Assert.assertEquals(-16, row.getColumnValue("fInt16").getInt16());
-        Assert.assertEquals(-8, row.getColumnValue("fInt8").getInt8());
-        Assert.assertEquals(64, row.getColumnValue("fUint64").getUInt64());
-        Assert.assertEquals(32, row.getColumnValue("fUint32").getUInt32());
-        Assert.assertEquals(16, row.getColumnValue("fUint16").getUInt16());
-        Assert.assertEquals(8, row.getColumnValue("fUint8").getUInt8());
-        Assert.assertEquals(1675345488158L, row.getColumnValue("fTimestamp").getTimestamp());
-        Assert.assertArrayEquals(new byte[] { 1, 2, 3 }, row.getColumnValue("fVarbinary").getVarbinary());
+        Assert.assertEquals("test", row.getColumn("fString").value().getString());
+        Assert.assertEquals(Boolean.TRUE, row.getColumn("fBool").value().getBoolean());
+        Assert.assertEquals(0.64, row.getColumn("fDouble").value().getDouble(), 0.000001);
+        Assert.assertEquals(0.32f, row.getColumn("fFloat").value().getFloat(), 0.000001);
+        Assert.assertEquals(-64, row.getColumn("fInt64").value().getInt64());
+        Assert.assertEquals(-32, row.getColumn("fInt32").value().getInt32());
+        Assert.assertEquals(-16, row.getColumn("fInt16").value().getInt16());
+        Assert.assertEquals(-8, row.getColumn("fInt8").value().getInt8());
+        Assert.assertEquals(64, row.getColumn("fUint64").value().getUInt64());
+        Assert.assertEquals(32, row.getColumn("fUint32").value().getUInt32());
+        Assert.assertEquals(16, row.getColumn("fUint16").value().getUInt16());
+        Assert.assertEquals(8, row.getColumn("fUint8").value().getUInt8());
+        Assert.assertEquals(1675345488158L, row.getColumn("fTimestamp").value().getTimestamp());
+        Assert.assertArrayEquals(new byte[] { 1, 2, 3 }, row.getColumn("fVarbinary").value().getVarbinary());
     }
 
     @Test
@@ -249,8 +249,8 @@ public class QueryClientTest {
         final SqlQueryOk queryOk = r.getOk();
 
         Row row = queryOk.stream().findFirst().get();
-        Assert.assertEquals("tvtest", row.getColumnValue("t1").getString());
-        Assert.assertTrue(row.getColumnValue("f1").isNull());
+        Assert.assertEquals("tvtest", row.getColumn("t1").value().getString());
+        Assert.assertTrue(row.getColumn("f1").value().isNull());
     }
 
     private Result<SqlQueryOk, Err> queryByArrow() throws IOException, ExecutionException, InterruptedException {

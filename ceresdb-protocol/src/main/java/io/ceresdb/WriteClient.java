@@ -456,7 +456,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
             tagDict.toOrdered().forEach((tagK) -> {
                 Value tagV = point.getTags().get(tagK);
                 if (!Value.isNull(tagV)) {
-                    seriesKeyBuffer.append(tagV.getValue().toString());
+                    seriesKeyBuffer.append(tagV.getAnyValue().toString());
                 }
             });
             Storage.WriteSeriesEntry.Builder seriesEntryBuilder = tp3.getSeriesBuilders()
