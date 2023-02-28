@@ -159,7 +159,7 @@ public class CeresDBTest {
 
         ok.stream().forEach(row -> {
             LOG.info(
-                    "Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
+                    "======> Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
                      + //
             "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}, fVarbinary={}", //
                     row.getColumn("ts").getValue().getTimestamp(), //
