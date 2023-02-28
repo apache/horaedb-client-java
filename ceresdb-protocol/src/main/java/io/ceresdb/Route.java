@@ -9,7 +9,7 @@ import io.ceresdb.common.Endpoint;
 import io.ceresdb.common.util.Clock;
 
 /**
- * Route info for metric.
+ * Route info for table.
  *
  */
 public class Route {
@@ -18,21 +18,21 @@ public class Route {
     private Object           ext;
     private final AtomicLong lastHit = new AtomicLong(Clock.defaultClock().getTick());
 
-    public static Route invalid(final String metric) {
-        throw new IllegalStateException("Unexpected, invalid route for metric: " + metric);
+    public static Route invalid(final String table) {
+        throw new IllegalStateException("Unexpected, invalid route for table: " + table);
     }
 
     public static Route of(final Endpoint endpoint) {
         return of(null, endpoint, null);
     }
 
-    public static Route of(final String metric, final Endpoint endpoint) {
-        return of(metric, endpoint, null);
+    public static Route of(final String table, final Endpoint endpoint) {
+        return of(table, endpoint, null);
     }
 
-    public static Route of(final String metric, final Endpoint endpoint, final Object ext) {
+    public static Route of(final String table, final Endpoint endpoint, final Object ext) {
         final Route r = new Route();
-        r.table = metric;
+        r.table = table;
         r.endpoint = endpoint;
         r.ext = ext;
         return r;

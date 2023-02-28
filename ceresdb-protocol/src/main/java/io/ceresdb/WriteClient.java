@@ -149,7 +149,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
 
         final CompletableFuture<WriteOk> respFuture = new CompletableFuture<>();
 
-        return this.routerClient.routeFor(reqCtx, Collections.singleton(table))
+        return this.routerClient.routeFor(finalReqCtx, Collections.singleton(table))
                 .thenApply(routes -> routes.values().stream().findFirst().orElseGet(() -> Route.invalid(table)))
                 .thenApply(route -> streamWriteTo(route, finalReqCtx, ctx, Utils.toUnaryObserver(respFuture)))
                 .thenApply(reqObserver -> new StreamWriteBuf<Point, WriteOk>() {
