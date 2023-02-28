@@ -162,22 +162,22 @@ public class CeresDBTest {
                     "Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
                      + //
             "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}, fVarbinary={}", //
-                    row.getColumnValue("ts").getTimestamp(), //
-                    row.getColumnValue("tString").getString(), //
-                    row.getColumnValue("tInt64").getInt64(), //
-                    row.getColumnValue("fString").getString(), //
-                    row.getColumnValue("fBool").getBoolean(), //
-                    row.getColumnValue("fDouble").getDouble(), //
-                    row.getColumnValue("fFloat").getFloat(), //
-                    row.getColumnValue("fInt64").getInt64(), //
-                    row.getColumnValue("fInt32").getInt32(), //
-                    row.getColumnValue("fInt16").getInt16(), //
-                    row.getColumnValue("fInt8").getInt8(), //
-                    row.getColumnValue("fUint64").getUInt64(), //
-                    row.getColumnValue("fUint32").getUInt32(), //
-                    row.getColumnValue("fUint16").getUInt16(), //
-                    row.getColumnValue("fUint8").getUInt8(), //
-                    row.getColumnValue("fTimestamp").getTimestamp() //
+                    row.getColumn("ts").getValue().getTimestamp(), //
+                    row.getColumn("tString").getValue().getString(), //
+                    row.getColumn("tInt64").getValue().getInt64(), //
+                    row.getColumn("fString").getValue().getString(), //
+                    row.getColumn("fBool").getValue().getBoolean(), //
+                    row.getColumn("fDouble").getValue().getDouble(), //
+                    row.getColumn("fFloat").getValue().getFloat(), //
+                    row.getColumn("fInt64").getValue().getInt64(), //
+                    row.getColumn("fInt32").getValue().getInt32(), //
+                    row.getColumn("fInt16").getValue().getInt16(), //
+                    row.getColumn("fInt8").getValue().getInt8(), //
+                    row.getColumn("fUint64").getValue().getUInt64(), //
+                    row.getColumn("fUint32").getValue().getUInt32(), //
+                    row.getColumn("fUint16").getValue().getUInt16(), //
+                    row.getColumn("fUint8").getValue().getUInt8(), //
+                    row.getColumn("fTimestamp").getValue().getTimestamp() //
             //row.getColumnValue("fVarbinary").getVarbinary())
             );
         });
@@ -303,7 +303,7 @@ public class CeresDBTest {
 
         int i = 0;
         while (it.hasNext()) {
-            LOG.info("The {} row, timestamp={}", ++i, it.next().getColumnValue("ts"));
+            LOG.info("The {} row, timestamp={}", ++i, it.next().getColumn("ts"));
         }
 
         Assert.assertEquals(1000, i);

@@ -72,7 +72,7 @@ public class Value {
         return type;
     }
 
-    public Object getValue() {
+    public Object getObject() {
         return value;
     }
 

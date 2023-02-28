@@ -21,7 +21,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.ceresdb.Route;
 import io.ceresdb.common.Display;
@@ -468,20 +467,23 @@ public final class Utils {
     }
 
     private static List<Row> parseArrowRecord(Schema schema, VectorSchemaRoot root) {
-        List<Row> rows = Stream.generate(Row::new).limit(root.getRowCount()).collect(Collectors.toList());
+        List<Row.RowBuilder> builders = Collections.nCopies(root.getRowCount(),
+                Row.newRowBuilder(schema.getFields().size()));
 
+        String[] fields = new String[schema.getFields().size()];
         for (int fieldIdx = 0; fieldIdx < schema.getFields().size(); fieldIdx++) {
             Field field = schema.getFields().get(fieldIdx);
-            FieldVector vector = root.getVector(fieldIdx);
+            fields[fieldIdx] = field.getName();
 
+            FieldVector vector = root.getVector(fieldIdx);
             switch (Types.getMinorTypeForArrowType(field.getType())) {
                 case VARCHAR:
                     VarCharVector varCharVector = (VarCharVector) vector;
                     for (int rowIdx = 0; rowIdx < varCharVector.getValueCount(); rowIdx++) {
                         if (varCharVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withStringOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withStringOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
+                            builders.get(rowIdx).setValue(fieldIdx,
                                     Value.withString(new String(varCharVector.get(rowIdx))));
                         }
                     }
@@ -490,10 +492,9 @@ public final class Utils {
                     BitVector bitVector = (BitVector) vector;
                     for (int rowIdx = 0; rowIdx < bitVector.getValueCount(); rowIdx++) {
                         if (bitVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withBooleanOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withBooleanOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
-                                    Value.withBoolean(bitVector.get(rowIdx) > 0));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withBoolean(bitVector.get(rowIdx) > 0));
                         }
                     }
                     break;
@@ -501,10 +502,9 @@ public final class Utils {
                     Float8Vector float8Vector = (Float8Vector) vector;
                     for (int rowIdx = 0; rowIdx < float8Vector.getValueCount(); rowIdx++) {
                         if (float8Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withDoubleOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withDoubleOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
-                                    Value.withDouble(float8Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withDouble(float8Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -512,9 +512,9 @@ public final class Utils {
                     Float4Vector float4Vector = (Float4Vector) vector;
                     for (int rowIdx = 0; rowIdx < float4Vector.getValueCount(); rowIdx++) {
                         if (float4Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloatOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withFloatOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withFloat(float4Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withFloat(float4Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -522,9 +522,9 @@ public final class Utils {
                     BigIntVector bigIntVector = (BigIntVector) vector;
                     for (int rowIdx = 0; rowIdx < bigIntVector.getValueCount(); rowIdx++) {
                         if (bigIntVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt64OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt64OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt64(bigIntVector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt64(bigIntVector.get(rowIdx)));
                         }
                     }
                     break;
@@ -532,9 +532,9 @@ public final class Utils {
                     IntVector intVector = (IntVector) vector;
                     for (int rowIdx = 0; rowIdx < intVector.getValueCount(); rowIdx++) {
                         if (intVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt32OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt32OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt32(intVector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt32(intVector.get(rowIdx)));
                         }
                     }
                     break;
@@ -542,10 +542,9 @@ public final class Utils {
                     SmallIntVector smallIntVector = (SmallIntVector) vector;
                     for (int rowIdx = 0; rowIdx < smallIntVector.getValueCount(); rowIdx++) {
                         if (smallIntVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt16OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt16OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
-                                    Value.withInt16(smallIntVector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt16(smallIntVector.get(rowIdx)));
                         }
                     }
                     break;
@@ -553,9 +552,9 @@ public final class Utils {
                     TinyIntVector tinyIntVector = (TinyIntVector) vector;
                     for (int rowIdx = 0; rowIdx < tinyIntVector.getValueCount(); rowIdx++) {
                         if (tinyIntVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt8OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt8OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withInt8(tinyIntVector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withInt8(tinyIntVector.get(rowIdx)));
                         }
                     }
                     break;
@@ -563,9 +562,9 @@ public final class Utils {
                     UInt8Vector uInt8Vector = (UInt8Vector) vector;
                     for (int rowIdx = 0; rowIdx < uInt8Vector.getValueCount(); rowIdx++) {
                         if (uInt8Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt64OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt64OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt64(uInt8Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt64(uInt8Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -573,9 +572,9 @@ public final class Utils {
                     UInt4Vector uInt4Vector = (UInt4Vector) vector;
                     for (int rowIdx = 0; rowIdx < uInt4Vector.getValueCount(); rowIdx++) {
                         if (uInt4Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt32OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt32OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt32(uInt4Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt32(uInt4Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -583,9 +582,9 @@ public final class Utils {
                     UInt2Vector uInt2Vector = (UInt2Vector) vector;
                     for (int rowIdx = 0; rowIdx < uInt2Vector.getValueCount(); rowIdx++) {
                         if (uInt2Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt16OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt16OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt16(uInt2Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt16(uInt2Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -593,9 +592,9 @@ public final class Utils {
                     UInt1Vector uInt1Vector = (UInt1Vector) vector;
                     for (int rowIdx = 0; rowIdx < uInt1Vector.getValueCount(); rowIdx++) {
                         if (uInt1Vector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt8OrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt8OrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withUInt8(uInt1Vector.get(rowIdx)));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withUInt8(uInt1Vector.get(rowIdx)));
                         }
                     }
                     break;
@@ -603,9 +602,9 @@ public final class Utils {
                     TimeStampMilliVector timeStampMilliVector = (TimeStampMilliVector) vector;
                     for (int rowIdx = 0; rowIdx < timeStampMilliVector.getValueCount(); rowIdx++) {
                         if (timeStampMilliVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withTimestampOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withTimestampOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
+                            builders.get(rowIdx).setValue(fieldIdx,
                                     Value.withTimestamp(timeStampMilliVector.get(rowIdx)));
                         }
                     }
@@ -614,9 +613,9 @@ public final class Utils {
                     VarBinaryVector varBinaryVector = (VarBinaryVector) vector;
                     for (int rowIdx = 0; rowIdx < varBinaryVector.getValueCount(); rowIdx++) {
                         if (varBinaryVector.isNull(rowIdx)) {
-                            rows.get(rowIdx).setColumnValue(field.getName(), Value.withVarbinaryOrNull(null));
+                            builders.get(rowIdx).setValue(fieldIdx, Value.withVarbinaryOrNull(null));
                         } else {
-                            rows.get(rowIdx).setColumnValue(field.getName(),
+                            builders.get(rowIdx).setValue(fieldIdx,
                                     Value.withVarbinaryOrNull(varBinaryVector.get(rowIdx)));
                         }
                     }
@@ -626,7 +625,9 @@ public final class Utils {
 
             }
         }
-        return rows;
+
+        builders.stream().forEach(builder -> builder.setFields(fields));
+        return builders.stream().map(builder -> builder.build()).collect(Collectors.toList());
     }
 
     private Utils() {

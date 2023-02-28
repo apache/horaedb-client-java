@@ -101,11 +101,11 @@ public class ReadmeTest {
 
         // get rows as list
         final List<Row> rows = queryOk.getRowList();
-        Assert.assertEquals(timestamp, rows.get(0).getColumnValue("ts").getTimestamp());
-        Assert.assertEquals("Singapore", rows.get(0).getColumnValue("city").getString());
-        Assert.assertEquals("10.0.0.1", rows.get(0).getColumnValue("ip").getString());
-        Assert.assertEquals(0.23, rows.get(0).getColumnValue("cpu").getDouble(), 0.0000001);
-        Assert.assertEquals(0.55, rows.get(0).getColumnValue("mem").getDouble(), 0.0000001);
+        Assert.assertEquals(timestamp, rows.get(0).getColumn("ts").getValue().getTimestamp());
+        Assert.assertEquals("Singapore", rows.get(0).getColumn("city").getValue().getString());
+        Assert.assertEquals("10.0.0.1", rows.get(0).getColumn("ip").getValue().getString());
+        Assert.assertEquals(0.23, rows.get(0).getColumn("cpu").getValue().getDouble(), 0.0000001);
+        Assert.assertEquals(0.55, rows.get(0).getColumn("mem").getValue().getDouble(), 0.0000001);
 
         // get rows as stream
         final Stream<Row> rowStream = queryOk.stream();
