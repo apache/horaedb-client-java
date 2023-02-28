@@ -26,12 +26,12 @@ public class RowTest {
         Assert.assertEquals(row.getColumnCount(), 5);
         Assert.assertTrue(row.hasColumn("tagA"));
         Assert.assertFalse(row.hasColumn("notExist"));
-        Assert.assertEquals(row.getColumn("tagA").value().getString(), "bar");
+        Assert.assertEquals(row.getColumn("tagA").getValue().getString(), "bar");
         Assert.assertNull(row.getColumn("notExist"));
 
         List<Row.Column> columns = row.getColumns();
         Assert.assertEquals(columns.size(), 5);
-        Assert.assertEquals(columns.get(1).value().getString(), "bar");
-        Assert.assertEquals(columns.get(4).value().getInt64(), 123);
+        Assert.assertEquals(columns.get(1).getValue().getString(), "bar");
+        Assert.assertEquals(columns.get(4).getValue().getInt64(), 123);
     }
 }

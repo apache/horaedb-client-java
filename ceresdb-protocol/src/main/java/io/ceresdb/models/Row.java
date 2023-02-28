@@ -76,11 +76,11 @@ public class Row {
         private String name;
         private Value  value;
 
-        public String name() {
+        public String getName() {
             return name;
         }
 
-        public Value value() {
+        public Value getValue() {
             return value;
         }
 

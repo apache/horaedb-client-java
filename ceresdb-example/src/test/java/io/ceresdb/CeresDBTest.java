@@ -162,22 +162,22 @@ public class CeresDBTest {
                     "Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
                      + //
             "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}, fVarbinary={}", //
-                    row.getColumn("ts").value().getTimestamp(), //
-                    row.getColumn("tString").value().getString(), //
-                    row.getColumn("tInt64").value().getInt64(), //
-                    row.getColumn("fString").value().getString(), //
-                    row.getColumn("fBool").value().getBoolean(), //
-                    row.getColumn("fDouble").value().getDouble(), //
-                    row.getColumn("fFloat").value().getFloat(), //
-                    row.getColumn("fInt64").value().getInt64(), //
-                    row.getColumn("fInt32").value().getInt32(), //
-                    row.getColumn("fInt16").value().getInt16(), //
-                    row.getColumn("fInt8").value().getInt8(), //
-                    row.getColumn("fUint64").value().getUInt64(), //
-                    row.getColumn("fUint32").value().getUInt32(), //
-                    row.getColumn("fUint16").value().getUInt16(), //
-                    row.getColumn("fUint8").value().getUInt8(), //
-                    row.getColumn("fTimestamp").value().getTimestamp() //
+                    row.getColumn("ts").getValue().getTimestamp(), //
+                    row.getColumn("tString").getValue().getString(), //
+                    row.getColumn("tInt64").getValue().getInt64(), //
+                    row.getColumn("fString").getValue().getString(), //
+                    row.getColumn("fBool").getValue().getBoolean(), //
+                    row.getColumn("fDouble").getValue().getDouble(), //
+                    row.getColumn("fFloat").getValue().getFloat(), //
+                    row.getColumn("fInt64").getValue().getInt64(), //
+                    row.getColumn("fInt32").getValue().getInt32(), //
+                    row.getColumn("fInt16").getValue().getInt16(), //
+                    row.getColumn("fInt8").getValue().getInt8(), //
+                    row.getColumn("fUint64").getValue().getUInt64(), //
+                    row.getColumn("fUint32").getValue().getUInt32(), //
+                    row.getColumn("fUint16").getValue().getUInt16(), //
+                    row.getColumn("fUint8").getValue().getUInt8(), //
+                    row.getColumn("fTimestamp").getValue().getTimestamp() //
             //row.getColumnValue("fVarbinary").getVarbinary())
             );
         });
