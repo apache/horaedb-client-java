@@ -16,9 +16,18 @@ X.Y.Z
 | alpha | 内测版本，一般只供内部测试用，bug 可能较多 |
 | beta  | 公开测试版 |
 | RC    | Release Candidate，发行候选版本，理论上不再加入新的功能，主要修复 bug |
-| Final | 最终版本 |
 
 ---
+## 1.0.0 [2023-02-28]
+- Features
+  - 更新 proto 版本到 v1.0.0 [45](https://github.com/CeresDB/ceresdb-client-java/pull/45)
+  - 增加API `List<Column> Row.getColumns()` [44](https://github.com/CeresDB/ceresdb-client-java/pull/44)
+- Fixes
+  - 修复 `NPE for table error while creating table` [43](https://github.com/CeresDB/ceresdb-client-java/pull/43)
+- Breaking Changes
+  - 变更方法 `Value Row.getColumnValue(string)` 为 `Column Row.getColumn(string)`
+  - 变更方法 `Object Value.getValue()` 为 `Object Value.getObject()`
+
 ## 1.0.0.alpha [2023-02-08]
 - Features
   - [Ceresdb](https://github.com/CeresDB/ceresdb/tree/main) 稳定API的Java客户端版本，允许读写和管理数据表。
