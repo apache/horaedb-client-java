@@ -81,7 +81,6 @@ public class Point {
 
         private static void check(final Point point) throws IllegalArgumentException {
             Requires.requireNonNull(point.fields, "Null.fields");
-            Requires.requireTrue(!point.fields.isEmpty(), "Empty.fields");
             Utils.checkKeywords(point.tags.keySet().stream().iterator());
             Utils.checkKeywords(point.fields.keySet().stream().iterator());
         }
