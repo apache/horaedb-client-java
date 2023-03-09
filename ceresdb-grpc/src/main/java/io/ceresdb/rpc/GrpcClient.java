@@ -258,8 +258,8 @@ public class GrpcClient implements RpcClient {
             private long onReceived(final boolean onError) {
                 final long duration = Clock.defaultClock().duration(startCall);
 
-                MetricsUtil.timer(REQ_RT, method).update(duration, TimeUnit.MILLISECONDS);
-                MetricsUtil.timer(REQ_RT, method, address).update(duration, TimeUnit.MILLISECONDS);
+                MetricsUtil.timer(REQ_RT, method.getFullMethodName()).update(duration, TimeUnit.MILLISECONDS);
+                MetricsUtil.timer(REQ_RT, method.getFullMethodName(), address).update(duration, TimeUnit.MILLISECONDS);
 
                 if (onError) {
                     MetricsUtil.meter(REQ_FAILED, method).mark();
