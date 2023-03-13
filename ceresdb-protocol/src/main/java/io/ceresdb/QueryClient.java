@@ -160,24 +160,26 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                     }
 
                     final Err err = r.getErr();
-                    LOG.warn("Failed to read from {}, retries={}, err={}.", Utils.DB_NAME, retries, err);
-                    if (retries > this.opts.getMaxRetries()) {
-                        LOG.error("Retried {} times still failed.", retries);
-                        return Utils.completedCf(r);
-                    }
+                    LOG.warn("Failed to read from {}, err={}.", Utils.DB_NAME, err);
 
                     // Should refresh route table
                     final Set<String> toRefresh = err.stream() //
                             .filter(Utils::shouldRefreshRouteTable) //
                             .flatMap(e -> e.getFailedTables().stream()) //
                             .collect(Collectors.toSet());
+                    this.routerClient.clearRouteCacheBy(toRefresh);
 
-                    if (toRefresh.isEmpty()) {
+                    // Should not retry
+                    if (Utils.shouldNotRetry(err)) {
                         return Utils.completedCf(r);
                     }
 
                     // Async to refresh route info
-                    return this.routerClient.routeRefreshFor(req.getReqCtx(), toRefresh)
+                    if (retries > this.opts.getMaxRetries()) {
+                        LOG.error("Retried {} times still failed.", retries);
+                        return Utils.completedCf(r);
+                    }
+                    return this.routerClient.routeFor(req.getReqCtx(), toRefresh)
                             .thenComposeAsync(routes -> query0(req, ctx, retries + 1), this.asyncPool);
                 }, this.asyncPool);
     }

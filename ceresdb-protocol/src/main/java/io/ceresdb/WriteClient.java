@@ -234,11 +234,7 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                     }
 
                     final Err err = r.getErr();
-                    LOG.warn("Failed to write to {}, retries={}, err={}.", Utils.DB_NAME, retries, err);
-                    if (retries + 1 > this.opts.getMaxRetries()) {
-                        LOG.error("Retried {} times still failed.", retries);
-                        return Utils.completedCf(r);
-                    }
+                    LOG.warn("Failed to write to {}, err={}.", Utils.DB_NAME, err);
 
                     // Should refresh route table
                     final Set<String> toRefresh = err.stream() //
@@ -246,27 +242,33 @@ public class WriteClient implements Write, Lifecycle<WriteOptions>, Display {
                             .flatMap(e -> e.getFailedWrites().stream()) //
                             .map(Point::getTable) //
                             .collect(Collectors.toSet());
+                    this.routerClient.clearRouteCacheBy(toRefresh);
 
                     // Should retry
                     final List<Point> pointsToRetry = err.stream() //
                             .filter(Utils::shouldRetry) //
                             .flatMap(e -> e.getFailedWrites().stream()) //
                             .collect(Collectors.toList());
+                    if (pointsToRetry.isEmpty()) {
+                        return Utils.completedCf(r);
+                    }
 
-                    // Should not retry
-                    final Optional<Err> noRetryErr = err.stream() //
-                            .filter(Utils::shouldNotRetry) //
-                            .reduce(Err::combine);
+                    if (retries + 1 > this.opts.getMaxRetries()) {
+                        LOG.error("Retried {} times still failed.", retries);
+                        return Utils.completedCf(r);
+                    }
 
-                    // Async refresh route info
-                    final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient
-                            .routeRefreshFor(reqCtx, toRefresh)
+                    final CompletableFuture<Result<WriteOk, Err>> rwf = this.routerClient.routeFor(reqCtx, toRefresh)
                             // Even for some data that does not require a refresh of the routing table,
                             // we still wait until the routing table is flushed successfully before
                             // retrying it, in order to give the server a break.
                             .thenComposeAsync(routes -> write0(reqCtx, pointsToRetry, ctx, retries + 1),
                                     this.asyncPool);
 
+                    // Should not retry
+                    final Optional<Err> noRetryErr = err.stream() //
+                            .filter(Utils::shouldNotRetry) //
+                            .reduce(Err::combine);
                     return noRetryErr.isPresent() ?
                             rwf.thenApplyAsync(ret -> Utils.combineResult(noRetryErr.get().mapToResult(), ret),
                                     this.asyncPool) :

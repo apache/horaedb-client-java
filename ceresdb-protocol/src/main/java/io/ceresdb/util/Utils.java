@@ -331,15 +331,11 @@ public final class Utils {
     }
 
     public static boolean shouldRetry(final Err err) {
-        if (err == null) {
-            return false;
-        }
-        final int errCode = err.getCode();
-        return errCode == Result.INVALID_ROUTE || errCode == Result.SHOULD_RETRY;
+        return false;
     }
 
     public static boolean shouldRefreshRouteTable(final Err err) {
-        return err.getCode() == Result.INVALID_ROUTE;
+        return err != null;
     }
 
     public static <V> Observer<V> toUnaryObserver(final CompletableFuture<V> future) {

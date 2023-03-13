@@ -13,10 +13,9 @@ import io.ceresdb.common.util.Requires;
  */
 public final class Result<Ok, Err> {
 
-    public static final int SUCCESS       = 200;
-    public static final int INVALID_ROUTE = 302;
-    public static final int SHOULD_RETRY  = 310;
-    public static final int FLOW_CONTROL  = 503;
+    public static final int SUCCESS      = 200;
+    public static final int BAD_REQUEST  = 400;
+    public static final int FLOW_CONTROL = 503;
 
     private final Ok  ok;
     private final Err err;
