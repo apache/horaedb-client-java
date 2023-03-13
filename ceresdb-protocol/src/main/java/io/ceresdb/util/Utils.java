@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -467,8 +468,11 @@ public final class Utils {
     }
 
     private static List<Row> parseArrowRecord(Schema schema, VectorSchemaRoot root) {
-        List<Row.RowBuilder> builders = Collections.nCopies(root.getRowCount(),
-                Row.newRowBuilder(schema.getFields().size()));
+        // init row builders
+        List<Row.RowBuilder> builders = new ArrayList<>(root.getRowCount());
+        for (int i = 0; i < root.getRowCount(); i++) {
+            builders.add(Row.newRowBuilder(schema.getFields().size()));
+        }
 
         String[] fields = new String[schema.getFields().size()];
         for (int fieldIdx = 0; fieldIdx < schema.getFields().size(); fieldIdx++) {

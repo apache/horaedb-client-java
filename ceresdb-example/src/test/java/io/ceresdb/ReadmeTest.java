@@ -88,7 +88,7 @@ public class ReadmeTest {
 
         final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
                 .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `sql` to get the table name and do the routing automaticly
-                .sql("select * from machine_table where ts = %d", timestamp) //
+                .sql("select * from machine_table where ts >= %d", timestamp) //
                 .build();
         final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
@@ -97,7 +97,7 @@ public class ReadmeTest {
         Assert.assertTrue(queryResult.isOk());
 
         final SqlQueryOk queryOk = queryResult.getOk();
-        Assert.assertEquals(1, queryOk.getRowCount());
+        Assert.assertEquals(3, queryOk.getRowCount());
 
         // get rows as list
         final List<Row> rows = queryOk.getRowList();
