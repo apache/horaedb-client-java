@@ -18,6 +18,12 @@ X.Y.Z
 | RC    | Release Candidate，发行候选版本，理论上不再加入新的功能，主要修复 bug |
 
 ---
+## 1.0.1 [2023-03-14]
+- Fixes
+  - 修复 `Metric req_rt导致的内存泄漏问题` [51](https://github.com/CeresDB/ceresdb-client-java/pull/51)
+  - 修复 `查询数据返回多个结果时重复的问题` [52](https://github.com/CeresDB/ceresdb-client-java/pull/52)
+  - 修复 `脏route缓存未被清理的问题` [53](https://github.com/CeresDB/ceresdb-client-java/pull/53)
+
 ## 1.0.0 [2023-02-28]
 - Features
   - 更新 proto 版本到 v1.0.0 [45](https://github.com/CeresDB/ceresdb-client-java/pull/45)

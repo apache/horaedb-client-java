@@ -18,6 +18,12 @@ The label below（modifier）：
 | RC    | Release candidate, release candidate, theoretically no new features will be added, mainly bug fixes |
 
 ---
+## 1.0.1 [2023-03-14]
+- Fixes
+  - Fix `Memory leak caused by metric req_rt` [51](https://github.com/CeresDB/ceresdb-client-java/pull/51)
+  - Fix `Query multi reuslt error with same value` [52](https://github.com/CeresDB/ceresdb-client-java/pull/52)
+  - Fix `Clear dirty route cache when error occurs` [53](https://github.com/CeresDB/ceresdb-client-java/pull/53)
+
 ## 1.0.0 [2023-02-28]
 - Features
   - Update proto to v1.0.0 [45](https://github.com/CeresDB/ceresdb-client-java/pull/45)
@@ -31,7 +37,3 @@ The label below（modifier）：
 ## 1.0.0.alpha [2023-02-08]
 - Features
   - The [Ceresdb](https://github.com/CeresDB/ceresdb/tree/main) java client version initial release, allowing for the reading, writing, and managing of data tables.
-- Fixes
-  -
-- Breaking Changes
-  -
