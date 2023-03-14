@@ -262,8 +262,8 @@ public class GrpcClient implements RpcClient {
                 MetricsUtil.timer(REQ_RT, method.getFullMethodName(), address).update(duration, TimeUnit.MILLISECONDS);
 
                 if (onError) {
-                    MetricsUtil.meter(REQ_FAILED, method).mark();
-                    MetricsUtil.meter(REQ_FAILED, method, address).mark();
+                    MetricsUtil.meter(REQ_FAILED, method.getFullMethodName()).mark();
+                    MetricsUtil.meter(REQ_FAILED, method.getFullMethodName(), address).mark();
                 }
 
                 return duration;

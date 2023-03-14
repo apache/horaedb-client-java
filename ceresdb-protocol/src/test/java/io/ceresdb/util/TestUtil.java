@@ -18,7 +18,7 @@ import io.ceresdb.proto.internal.Storage;
 
 public class TestUtil {
 
-    public static List<Point> newTablePoints(final String table) {
+    public static List<Point> newTableTwoPoints(final String table) {
         final long time = Clock.defaultClock().getTick() - 1;
 
         List<Point> data = new ArrayList<>();
@@ -39,7 +39,7 @@ public class TestUtil {
     public static List<Point> newMultiTablePoints(final String... tables) {
         final List<Point> pointsList = new ArrayList<>();
         for (final String table : tables) {
-            pointsList.addAll(newTablePoints(table));
+            pointsList.addAll(newTableTwoPoints(table));
         }
         return pointsList;
     }

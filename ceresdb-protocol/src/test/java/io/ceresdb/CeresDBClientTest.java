@@ -57,7 +57,7 @@ public class CeresDBClientTest {
 
     @Test(expected = IllegalStateException.class)
     public void withoutInitTest() {
-        final List<Point> points = TestUtil.newTablePoints("test_table1_not_init");
+        final List<Point> points = TestUtil.newTableTwoPoints("test_table1_not_init");
         this.client.write(new WriteRequest(points));
     }
 
@@ -80,7 +80,7 @@ public class CeresDBClientTest {
     public void helloWorldTest() throws ExecutionException, InterruptedException {
         initAndMockWriteClient();
 
-        final List<Point> points = TestUtil.newTablePoints("test_table1");
+        final List<Point> points = TestUtil.newTableTwoPoints("test_table1");
 
         Mockito.when(this.writeClient.write(new WriteRequest(Mockito.anyList()), Mockito.any())) //
                 .thenReturn(Utils.completedCf(WriteOk.ok(2, 0, null).mapToResult()));
