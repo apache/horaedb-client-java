@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -455,10 +456,11 @@ public final class Utils {
             VectorSchemaRoot readRoot = arrowStreamReader.getVectorSchemaRoot();
             Schema schema = readRoot.getSchema();
 
+            List<Row> batchRows = new LinkedList<>();
             while (arrowStreamReader.loadNextBatch()) {
-                return parseArrowRecord(schema, readRoot);
+                batchRows.addAll(parseArrowRecord(schema, readRoot));
             }
-            return Collections.EMPTY_LIST;
+            return batchRows;
         } catch (IOException e) {
             return Collections.EMPTY_LIST;
         }
