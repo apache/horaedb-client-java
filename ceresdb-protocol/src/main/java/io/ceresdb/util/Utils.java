@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -484,7 +485,7 @@ public final class Utils {
                             builders.get(rowIdx).setValue(fieldIdx, Value.withStringOrNull(null));
                         } else {
                             builders.get(rowIdx).setValue(fieldIdx,
-                                    Value.withString(new String(varCharVector.get(rowIdx))));
+                                    Value.withString(new String(varCharVector.get(rowIdx), StandardCharsets.UTF_8)));
                         }
                     }
                     break;

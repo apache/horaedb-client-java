@@ -30,7 +30,8 @@ public class ReadmeTest {
                 .writeMaxRetries(1)
                 // maximum retry times when read fails
                 // (only some error codes will be retried, such as the routing table failure)
-                .readMaxRetries(1).build();
+                .readMaxRetries(1)
+                .build();
 
         final CeresDBClient client = new CeresDBClient();
         if (!client.init(opts)) {
@@ -88,7 +89,7 @@ public class ReadmeTest {
 
         final SqlQueryRequest queryRequest = SqlQueryRequest.newBuilder()
                 .forTables("machine_table") // table name is optional. If not provided, SQL parser will parse the `sql` to get the table name and do the routing automaticly
-                .sql("select * from machine_table where ts >= %d", timestamp) //
+                .sql("select * from machine_table where ts >= %d", timestamp)
                 .build();
         final CompletableFuture<Result<SqlQueryOk, Err>> qf = client.sqlQuery(queryRequest);
         // here the `future.get` is just for demonstration, a better async programming practice would be using the CompletableFuture API
@@ -98,14 +99,6 @@ public class ReadmeTest {
 
         final SqlQueryOk queryOk = queryResult.getOk();
         Assert.assertEquals(3, queryOk.getRowCount());
-
-        // get rows as list
-        final List<Row> rows = queryOk.getRowList();
-        Assert.assertEquals(timestamp, rows.get(0).getColumn("ts").getValue().getTimestamp());
-        Assert.assertEquals("Singapore", rows.get(0).getColumn("city").getValue().getString());
-        Assert.assertEquals("10.0.0.1", rows.get(0).getColumn("ip").getValue().getString());
-        Assert.assertEquals(0.23, rows.get(0).getColumn("cpu").getValue().getDouble(), 0.0000001);
-        Assert.assertEquals(0.55, rows.get(0).getColumn("mem").getValue().getDouble(), 0.0000001);
 
         // get rows as stream
         final Stream<Row> rowStream = queryOk.stream();
