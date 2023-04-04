@@ -18,10 +18,12 @@ X.Y.Z
 | RC    | Release Candidate，发行候选版本，理论上不再加入新的功能，主要修复 bug |
 
 ---
-## 1.0.2 [2023-04-03]
+## 1.0.3 [2023-04-04]
 - Fixes
   - 修复 `在非utf-8编码的jdk上使用中文乱码问题` [57](https://github.com/CeresDB/ceresdb-client-java/pull/57)
   - 修复 `多batch数据(exp: group by)未被正确处理的问题` [59](https://github.com/CeresDB/ceresdb-client-java/pull/59)
+
+## 1.0.2 [deprecated]
 
 ## 1.0.1 [2023-03-14]
 - Fixes
