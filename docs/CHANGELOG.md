@@ -18,10 +18,12 @@ The label below（modifier）：
 | RC    | Release candidate, release candidate, theoretically no new features will be added, mainly bug fixes |
 
 ---
-## 1.0.2 [2023-04-03]
+## 1.0.3 [2023-04-04]
 - Fixes
   - Fix `Garbled characters on non-utf-8 encoded jdk` [57](https://github.com/CeresDB/ceresdb-client-java/pull/57)
   - Fix `Multi-block(exp: group by) data not processed` [59](https://github.com/CeresDB/ceresdb-client-java/pull/59)
+
+## 1.0.2 [deprecated]
 
 ## 1.0.1 [2023-03-14]
 - Fixes
