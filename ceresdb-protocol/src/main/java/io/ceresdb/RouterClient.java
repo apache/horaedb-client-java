@@ -44,10 +44,9 @@ import com.codahale.metrics.Timer;
 
 /**
  * A route rpc client which implement RouteMode.Direct
- *
+ * <p>
  * cached the routing table information locally
  * and will refresh when the server returns an error code of INVALID_ROUTE
- *
  */
 public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable<Route> {
 
@@ -410,7 +409,11 @@ public class RouterClient implements Lifecycle<RouterOptions>, Display, Iterable
 
         private Route toRouteObj(final Storage.Route r) {
             final Storage.Endpoint ep = Requires.requireNonNull(r.getEndpoint(), "CeresDB.Endpoint");
-            return Route.of(r.getTable(), Endpoint.of(ep.getIp(), ep.getPort()));
+            if (r.getEndpoint().getIp().isEmpty()) {
+                return Route.of(r.getTable(), this.endpoint);
+            } else {
+                return Route.of(r.getTable(), Endpoint.of(ep.getIp(), ep.getPort()));
+            }
         }
     }
 }
