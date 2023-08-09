@@ -609,7 +609,7 @@ public class GrpcClient implements RpcClient {
             long now = System.currentTimeMillis();
             Random rand = new Random();
             // Add backoff here to avoid multiple connections retry at same time.
-            long backoff = rand.nextLong(20_000); // max backoff 20s
+            long backoff = rand.nextInt(20_000); // max backoff 20s
             if (now - createTime > maxAge + backoff) {
                 ch.shutdown();
                 IdChannel newChannel = this.newChannel(endpoint);
