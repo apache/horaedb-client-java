@@ -257,25 +257,14 @@ public class RpcOptions implements Copiable<RpcOptions> {
 
     @Override
     public String toString() {
-        return "RpcOptions{" +
-                "defaultRpcTimeout=" + defaultRpcTimeout +
-                ", rpcThreadPoolSize=" + rpcThreadPoolSize +
-                ", rpcThreadPoolQueueSize=" + rpcThreadPoolQueueSize +
-                ", maxInboundMessageSize=" + maxInboundMessageSize +
-                ", flowControlWindow=" + flowControlWindow +
-                ", idleTimeoutSeconds=" + idleTimeoutSeconds +
-                ", keepAliveTimeSeconds=" + keepAliveTimeSeconds +
-                ", keepAliveTimeoutSeconds=" + keepAliveTimeoutSeconds +
-                ", keepAliveWithoutCalls=" + keepAliveWithoutCalls +
-                ", limitKind=" + limitKind +
-                ", initialLimit=" + initialLimit +
-                ", maxLimit=" + maxLimit +
-                ", longRttWindow=" + longRttWindow +
-                ", smoothing=" + smoothing +
-                ", blockOnLimit=" + blockOnLimit +
-                ", logOnLimitChange=" + logOnLimitChange +
-                ", connectionMaxAge=" + connectionMaxAge +
-                '}';
+        return "RpcOptions{" + "defaultRpcTimeout=" + defaultRpcTimeout + ", rpcThreadPoolSize=" + rpcThreadPoolSize
+               + ", rpcThreadPoolQueueSize=" + rpcThreadPoolQueueSize + ", maxInboundMessageSize="
+               + maxInboundMessageSize + ", flowControlWindow=" + flowControlWindow + ", idleTimeoutSeconds="
+               + idleTimeoutSeconds + ", keepAliveTimeSeconds=" + keepAliveTimeSeconds + ", keepAliveTimeoutSeconds="
+               + keepAliveTimeoutSeconds + ", keepAliveWithoutCalls=" + keepAliveWithoutCalls + ", limitKind="
+               + limitKind + ", initialLimit=" + initialLimit + ", maxLimit=" + maxLimit + ", longRttWindow="
+               + longRttWindow + ", smoothing=" + smoothing + ", blockOnLimit=" + blockOnLimit + ", logOnLimitChange="
+               + logOnLimitChange + ", connectionMaxAge=" + connectionMaxAge + '}';
     }
 
     public static RpcOptions newDefault() {

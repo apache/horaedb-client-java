@@ -87,26 +87,26 @@ public class GrpcClient implements RpcClient {
                 }
             });
 
-    private static final int CONN_RESET_THRESHOLD = SystemPropertyUtil.getInt(OptKeys.GRPC_CONN_RESET_THRESHOLD, 3);
-    private static final int MAX_SIZE_TO_USE_ARRAY = 8192;
-    private static final String LIMITER_NAME = "grpc_call";
-    private static final String EXECUTOR_NAME = "grpc_executor";
-    private static final String REQ_RT = "req_rt";
-    private static final String REQ_FAILED = "req_failed";
-    private static final String UNARY_CALL = "unary-call";
+    private static final int    CONN_RESET_THRESHOLD  = SystemPropertyUtil.getInt(OptKeys.GRPC_CONN_RESET_THRESHOLD, 3);
+    private static final int    MAX_SIZE_TO_USE_ARRAY = 8192;
+    private static final String LIMITER_NAME          = "grpc_call";
+    private static final String EXECUTOR_NAME         = "grpc_executor";
+    private static final String REQ_RT                = "req_rt";
+    private static final String REQ_FAILED            = "req_failed";
+    private static final String UNARY_CALL            = "unary-call";
     private static final String SERVER_STREAMING_CALL = "server-streaming-call";
     private static final String CLIENT_STREAMING_CALL = "client-streaming-call";
 
-    private final Map<Endpoint, IdChannel> managedChannelPool = new ConcurrentHashMap<>();
-    private final Map<Endpoint, AtomicInteger> transientFailures = new ConcurrentHashMap<>();
-    private final List<ClientInterceptor> interceptors = new CopyOnWriteArrayList<>();
-    private final AtomicBoolean started = new AtomicBoolean(false);
-    private final List<ConnectionObserver> connectionObservers = new CopyOnWriteArrayList<>();
-    private final MarshallerRegistry marshallerRegistry;
+    private final Map<Endpoint, IdChannel>     managedChannelPool  = new ConcurrentHashMap<>();
+    private final Map<Endpoint, AtomicInteger> transientFailures   = new ConcurrentHashMap<>();
+    private final List<ClientInterceptor>      interceptors        = new CopyOnWriteArrayList<>();
+    private final AtomicBoolean                started             = new AtomicBoolean(false);
+    private final List<ConnectionObserver>     connectionObservers = new CopyOnWriteArrayList<>();
+    private final MarshallerRegistry           marshallerRegistry;
 
-    private RpcOptions opts;
+    private RpcOptions      opts;
     private ExecutorService asyncPool;
-    private boolean useSharedAsyncPool;
+    private boolean         useSharedAsyncPool;
 
     public GrpcClient(MarshallerRegistry marshallerRegistry) {
         this.marshallerRegistry = marshallerRegistry;
@@ -175,8 +175,7 @@ public class GrpcClient implements RpcClient {
     public <Req, Resp> Resp invokeSync(final Endpoint endpoint, //
                                        final Req request, //
                                        final Context ctx, //
-                                       final long timeoutMs)
-            throws RemotingException {
+                                       final long timeoutMs) throws RemotingException {
         final long timeout = calcTimeout(timeoutMs);
         final CompletableFuture<Resp> future = new CompletableFuture<>();
 
