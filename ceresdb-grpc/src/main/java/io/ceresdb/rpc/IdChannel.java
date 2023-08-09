@@ -18,7 +18,7 @@ import io.grpc.MethodDescriptor;
 public class IdChannel extends ManagedChannel {
 
     private static final AtomicLong ID_ALLOC   = new AtomicLong();
-    private final        long       createTime = System.currentTimeMillis();
+    private final long              createTime = System.currentTimeMillis();
 
     private final long           channelId;
     private final ManagedChannel channel;
@@ -70,8 +70,8 @@ public class IdChannel extends ManagedChannel {
     }
 
     @Override
-    public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
-            final MethodDescriptor<RequestT, ResponseT> methodDescriptor, final CallOptions callOptions) {
+    public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(final MethodDescriptor<RequestT, ResponseT> methodDescriptor,
+                                                                         final CallOptions callOptions) {
         return this.channel.newCall(methodDescriptor, callOptions);
     }
 

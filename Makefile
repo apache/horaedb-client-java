@@ -1,0 +1,3 @@
+
+fmt:
+	mvn formatter:format

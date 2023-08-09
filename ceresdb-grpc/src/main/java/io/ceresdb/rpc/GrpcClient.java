@@ -175,7 +175,8 @@ public class GrpcClient implements RpcClient {
     public <Req, Resp> Resp invokeSync(final Endpoint endpoint, //
                                        final Req request, //
                                        final Context ctx, //
-                                       final long timeoutMs) throws RemotingException {
+                                       final long timeoutMs)
+            throws RemotingException {
         final long timeout = calcTimeout(timeoutMs);
         final CompletableFuture<Resp> future = new CompletableFuture<>();
 
@@ -573,7 +574,7 @@ public class GrpcClient implements RpcClient {
         Requires.requireNonNull(defaultRespIns, "null default response instance: " + reqCls.getName());
 
         return MethodDescriptor //
-                .<Message, Message>newBuilder() //
+                .<Message, Message> newBuilder() //
                 .setType(methodType) //
                 .setFullMethodName(this.marshallerRegistry.getMethodName(reqCls, methodType)) //
                 .setRequestMarshaller(ProtoUtils.marshaller(defaultReqIns)) //
