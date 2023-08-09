@@ -91,12 +91,25 @@ public class RpcOptions implements Copiable<RpcOptions> {
 
     private boolean logOnLimitChange = true;
 
+    /**
+     * Max time a connection can live, 0 means forever.
+     */
+    private long connectionMaxAge = 0;
+
     public int getDefaultRpcTimeout() {
         return defaultRpcTimeout;
     }
 
     public void setDefaultRpcTimeout(int defaultRpcTimeout) {
         this.defaultRpcTimeout = defaultRpcTimeout;
+    }
+
+    public long getConnectionMaxAge() {
+        return connectionMaxAge;
+    }
+
+    public void setConnectionMaxAge(long connectionMaxAge) {
+        this.connectionMaxAge = connectionMaxAge;
     }
 
     public int getRpcThreadPoolSize() {
@@ -238,29 +251,31 @@ public class RpcOptions implements Copiable<RpcOptions> {
         opts.smoothing = this.smoothing;
         opts.blockOnLimit = this.blockOnLimit;
         opts.logOnLimitChange = this.logOnLimitChange;
+        opts.connectionMaxAge = this.connectionMaxAge;
         return opts;
     }
 
     @Override
     public String toString() {
-        return "RpcOptions{" + //
-               "defaultRpcTimeout=" + defaultRpcTimeout + //
-               ", rpcThreadPoolSize=" + rpcThreadPoolSize + //
-               ", rpcThreadPoolQueueSize=" + rpcThreadPoolQueueSize + //
-               ", maxInboundMessageSize=" + maxInboundMessageSize + //
-               ", flowControlWindow=" + flowControlWindow + //
-               ", idleTimeoutSeconds=" + idleTimeoutSeconds + //
-               ", keepAliveTimeSeconds=" + keepAliveTimeSeconds + //
-               ", keepAliveTimeoutSeconds=" + keepAliveTimeoutSeconds + //
-               ", keepAliveWithoutCalls=" + keepAliveWithoutCalls + //
-               ", limitKind=" + limitKind + //
-               ", initialLimit=" + initialLimit + //
-               ", maxLimit=" + maxLimit + //
-               ", longRttWindow=" + longRttWindow + //
-               ", smoothing=" + smoothing + //
-               ", blockOnLimit=" + blockOnLimit + //
-               ", logOnLimitChange=" + logOnLimitChange + //
-               '}';
+        return "RpcOptions{" +
+                "defaultRpcTimeout=" + defaultRpcTimeout +
+                ", rpcThreadPoolSize=" + rpcThreadPoolSize +
+                ", rpcThreadPoolQueueSize=" + rpcThreadPoolQueueSize +
+                ", maxInboundMessageSize=" + maxInboundMessageSize +
+                ", flowControlWindow=" + flowControlWindow +
+                ", idleTimeoutSeconds=" + idleTimeoutSeconds +
+                ", keepAliveTimeSeconds=" + keepAliveTimeSeconds +
+                ", keepAliveTimeoutSeconds=" + keepAliveTimeoutSeconds +
+                ", keepAliveWithoutCalls=" + keepAliveWithoutCalls +
+                ", limitKind=" + limitKind +
+                ", initialLimit=" + initialLimit +
+                ", maxLimit=" + maxLimit +
+                ", longRttWindow=" + longRttWindow +
+                ", smoothing=" + smoothing +
+                ", blockOnLimit=" + blockOnLimit +
+                ", logOnLimitChange=" + logOnLimitChange +
+                ", connectionMaxAge=" + connectionMaxAge +
+                '}';
     }
 
     public static RpcOptions newDefault() {

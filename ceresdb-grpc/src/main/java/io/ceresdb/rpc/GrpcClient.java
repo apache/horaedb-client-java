@@ -68,7 +68,6 @@ import com.netflix.concurrency.limits.MetricRegistry;
 
 /**
  * Grpc client implementation.
- *
  */
 public class GrpcClient implements RpcClient {
 
@@ -88,26 +87,26 @@ public class GrpcClient implements RpcClient {
                 }
             });
 
-    private static final int    CONN_RESET_THRESHOLD  = SystemPropertyUtil.getInt(OptKeys.GRPC_CONN_RESET_THRESHOLD, 3);
-    private static final int    MAX_SIZE_TO_USE_ARRAY = 8192;
-    private static final String LIMITER_NAME          = "grpc_call";
-    private static final String EXECUTOR_NAME         = "grpc_executor";
-    private static final String REQ_RT                = "req_rt";
-    private static final String REQ_FAILED            = "req_failed";
-    private static final String UNARY_CALL            = "unary-call";
+    private static final int CONN_RESET_THRESHOLD = SystemPropertyUtil.getInt(OptKeys.GRPC_CONN_RESET_THRESHOLD, 3);
+    private static final int MAX_SIZE_TO_USE_ARRAY = 8192;
+    private static final String LIMITER_NAME = "grpc_call";
+    private static final String EXECUTOR_NAME = "grpc_executor";
+    private static final String REQ_RT = "req_rt";
+    private static final String REQ_FAILED = "req_failed";
+    private static final String UNARY_CALL = "unary-call";
     private static final String SERVER_STREAMING_CALL = "server-streaming-call";
     private static final String CLIENT_STREAMING_CALL = "client-streaming-call";
 
-    private final Map<Endpoint, IdChannel>     managedChannelPool  = new ConcurrentHashMap<>();
-    private final Map<Endpoint, AtomicInteger> transientFailures   = new ConcurrentHashMap<>();
-    private final List<ClientInterceptor>      interceptors        = new CopyOnWriteArrayList<>();
-    private final AtomicBoolean                started             = new AtomicBoolean(false);
-    private final List<ConnectionObserver>     connectionObservers = new CopyOnWriteArrayList<>();
-    private final MarshallerRegistry           marshallerRegistry;
+    private final Map<Endpoint, IdChannel> managedChannelPool = new ConcurrentHashMap<>();
+    private final Map<Endpoint, AtomicInteger> transientFailures = new ConcurrentHashMap<>();
+    private final List<ClientInterceptor> interceptors = new CopyOnWriteArrayList<>();
+    private final AtomicBoolean started = new AtomicBoolean(false);
+    private final List<ConnectionObserver> connectionObservers = new CopyOnWriteArrayList<>();
+    private final MarshallerRegistry marshallerRegistry;
 
-    private RpcOptions      opts;
+    private RpcOptions opts;
     private ExecutorService asyncPool;
-    private boolean         useSharedAsyncPool;
+    private boolean useSharedAsyncPool;
 
     public GrpcClient(MarshallerRegistry marshallerRegistry) {
         this.marshallerRegistry = marshallerRegistry;
@@ -575,7 +574,7 @@ public class GrpcClient implements RpcClient {
         Requires.requireNonNull(defaultRespIns, "null default response instance: " + reqCls.getName());
 
         return MethodDescriptor //
-                .<Message, Message> newBuilder() //
+                .<Message, Message>newBuilder() //
                 .setType(methodType) //
                 .setFullMethodName(this.marshallerRegistry.getMethodName(reqCls, methodType)) //
                 .setRequestMarshaller(ProtoUtils.marshaller(defaultReqIns)) //
@@ -596,11 +595,26 @@ public class GrpcClient implements RpcClient {
     }
 
     private ManagedChannel getChannel(final Endpoint endpoint, final boolean createIfAbsent) {
+        IdChannel ch = null;
         if (createIfAbsent) {
-            return this.managedChannelPool.computeIfAbsent(endpoint, this::newChannel);
+            ch = this.managedChannelPool.computeIfAbsent(endpoint, this::newChannel);
         } else {
-            return this.managedChannelPool.get(endpoint);
+            ch = this.managedChannelPool.get(endpoint);
         }
+
+        long maxAge = this.opts.getConnectionMaxAge();
+        if (maxAge != 0 && ch != null) {
+            long createTime = ch.getCreateTime();
+            long now = System.currentTimeMillis();
+            if (now - createTime > maxAge) {
+                ch.shutdown();
+                IdChannel newChannel = this.newChannel(endpoint);
+                this.managedChannelPool.put(endpoint, newChannel);
+                return newChannel;
+            }
+        }
+
+        return ch;
     }
 
     private IdChannel newChannel(final Endpoint endpoint) {

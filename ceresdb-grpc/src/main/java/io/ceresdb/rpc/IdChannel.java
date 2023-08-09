@@ -14,13 +14,13 @@ import io.grpc.MethodDescriptor;
 
 /**
  * A managed channel that has a channel id.
- *
  */
 public class IdChannel extends ManagedChannel {
 
     private static final AtomicLong ID_ALLOC = new AtomicLong();
+    private final long createTime = System.currentTimeMillis();
 
-    private final long           channelId;
+    private final long channelId;
     private final ManagedChannel channel;
 
     private static long getNextId() {
@@ -30,6 +30,10 @@ public class IdChannel extends ManagedChannel {
     public IdChannel(ManagedChannel channel) {
         this.channelId = getNextId();
         this.channel = channel;
+    }
+
+    public long getCreateTime() {
+        return createTime;
     }
 
     public long getChannelId() {
@@ -98,9 +102,10 @@ public class IdChannel extends ManagedChannel {
 
     @Override
     public String toString() {
-        return "IdChannel{" + //
-               "channelId=" + channelId + //
-               ", channel=" + channel + //
-               '}';
+        return "IdChannel{" +
+                "createTime=" + createTime +
+                ", channelId=" + channelId +
+                '}';
     }
+
 }
