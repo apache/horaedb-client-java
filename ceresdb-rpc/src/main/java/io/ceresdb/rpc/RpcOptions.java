@@ -92,7 +92,7 @@ public class RpcOptions implements Copiable<RpcOptions> {
     private boolean logOnLimitChange = true;
 
     /**
-     * Max time a connection can live, 0 means forever.
+     * Max time in milliseconds a connection can live, 0 means forever.
      */
     private long connectionMaxAge = 0;
 

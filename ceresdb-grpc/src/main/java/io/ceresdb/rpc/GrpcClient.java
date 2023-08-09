@@ -5,6 +5,7 @@ package io.ceresdb.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -606,7 +607,10 @@ public class GrpcClient implements RpcClient {
         if (maxAge != 0 && ch != null) {
             long createTime = ch.getCreateTime();
             long now = System.currentTimeMillis();
-            if (now - createTime > maxAge) {
+            Random rand = new Random();
+            // Add backoff here to avoid multiple connections retry at same time.
+            long backoff = rand.nextLong(20_000); // max backoff 20s
+            if (now - createTime > maxAge + backoff) {
                 ch.shutdown();
                 IdChannel newChannel = this.newChannel(endpoint);
                 this.managedChannelPool.put(endpoint, newChannel);
