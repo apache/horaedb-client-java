@@ -5,6 +5,7 @@ package io.ceresdb.rpc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -68,7 +69,6 @@ import com.netflix.concurrency.limits.MetricRegistry;
 
 /**
  * Grpc client implementation.
- *
  */
 public class GrpcClient implements RpcClient {
 
@@ -596,11 +596,29 @@ public class GrpcClient implements RpcClient {
     }
 
     private ManagedChannel getChannel(final Endpoint endpoint, final boolean createIfAbsent) {
+        IdChannel ch = null;
         if (createIfAbsent) {
-            return this.managedChannelPool.computeIfAbsent(endpoint, this::newChannel);
+            ch = this.managedChannelPool.computeIfAbsent(endpoint, this::newChannel);
         } else {
-            return this.managedChannelPool.get(endpoint);
+            ch = this.managedChannelPool.get(endpoint);
         }
+
+        long maxAge = this.opts.getConnectionMaxAgeMs();
+        if (maxAge != 0 && ch != null) {
+            long createTime = ch.getCreateTime();
+            long now = System.currentTimeMillis();
+            Random rand = new Random();
+            // Add backoff here to avoid multiple connections retry at same time.
+            long backoff = rand.nextInt(20_000); // max backoff 20s
+            if (now - createTime > maxAge + backoff) {
+                ch.shutdown();
+                IdChannel newChannel = this.newChannel(endpoint);
+                this.managedChannelPool.put(endpoint, newChannel);
+                return newChannel;
+            }
+        }
+
+        return ch;
     }
 
     private IdChannel newChannel(final Endpoint endpoint) {
