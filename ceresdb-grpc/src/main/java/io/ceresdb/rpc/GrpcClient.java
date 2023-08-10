@@ -603,7 +603,7 @@ public class GrpcClient implements RpcClient {
             ch = this.managedChannelPool.get(endpoint);
         }
 
-        long maxAge = this.opts.getConnectionMaxAge();
+        long maxAge = this.opts.getConnectionMaxAgeMs();
         if (maxAge != 0 && ch != null) {
             long createTime = ch.getCreateTime();
             long now = System.currentTimeMillis();

@@ -94,7 +94,7 @@ public class RpcOptions implements Copiable<RpcOptions> {
     /**
      * Max time in milliseconds a connection can live, 0 means forever.
      */
-    private long connectionMaxAge = 0;
+    private long connectionMaxAgeMs = 0;
 
     public int getDefaultRpcTimeout() {
         return defaultRpcTimeout;
@@ -104,12 +104,12 @@ public class RpcOptions implements Copiable<RpcOptions> {
         this.defaultRpcTimeout = defaultRpcTimeout;
     }
 
-    public long getConnectionMaxAge() {
-        return connectionMaxAge;
+    public long getConnectionMaxAgeMs() {
+        return connectionMaxAgeMs;
     }
 
-    public void setConnectionMaxAge(long connectionMaxAge) {
-        this.connectionMaxAge = connectionMaxAge;
+    public void setConnectionMaxAgeMs(long connectionMaxAgeMs) {
+        this.connectionMaxAgeMs = connectionMaxAgeMs;
     }
 
     public int getRpcThreadPoolSize() {
@@ -251,7 +251,7 @@ public class RpcOptions implements Copiable<RpcOptions> {
         opts.smoothing = this.smoothing;
         opts.blockOnLimit = this.blockOnLimit;
         opts.logOnLimitChange = this.logOnLimitChange;
-        opts.connectionMaxAge = this.connectionMaxAge;
+        opts.connectionMaxAgeMs = this.connectionMaxAgeMs;
         return opts;
     }
 
@@ -264,7 +264,7 @@ public class RpcOptions implements Copiable<RpcOptions> {
                + keepAliveTimeoutSeconds + ", keepAliveWithoutCalls=" + keepAliveWithoutCalls + ", limitKind="
                + limitKind + ", initialLimit=" + initialLimit + ", maxLimit=" + maxLimit + ", longRttWindow="
                + longRttWindow + ", smoothing=" + smoothing + ", blockOnLimit=" + blockOnLimit + ", logOnLimitChange="
-               + logOnLimitChange + ", connectionMaxAge=" + connectionMaxAge + '}';
+               + logOnLimitChange + ", connectionMaxAge=" + connectionMaxAgeMs + '}';
     }
 
     public static RpcOptions newDefault() {
