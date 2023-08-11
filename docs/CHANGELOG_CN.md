@@ -18,7 +18,7 @@ X.Y.Z
 | RC    | Release Candidate，发行候选版本，理论上不再加入新的功能，主要修复 bug |
 
 ---
-## 1.0.4 [2023-08-10]
+## 1.0.5 [2023-08-10]
 - Features
   - `RpcOptions` 新增 `connectionMaxAgeMs` 字段, 一个 RPC 链接的最大生命周期，默认 0，即永不过期 [65](https://github.com/CeresDB/ceresdb-client-java/pull/65)
 ## 1.0.3 [2023-04-04]
