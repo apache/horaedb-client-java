@@ -18,7 +18,7 @@ The label below（modifier）：
 | RC    | Release candidate, release candidate, theoretically no new features will be added, mainly bug fixes |
 
 ---
-## 1.0.4 [2023-08-10]
+## 1.0.5 [2023-08-10]
 - Features
   - `RpcOptions` add new field `connectionMaxAgeMs`, which controls max time a connection can live, default 0(forever). [65](https://github.com/CeresDB/ceresdb-client-java/pull/65)
 
