@@ -43,7 +43,7 @@ X.Y.Z
 
 ## 1.0.0.alpha [2023-02-08]
 - Features
-  - [Horaedb](https://github.com/CeresDB/horaedb/tree/main) 稳定API的Java客户端版本，允许读写和管理数据表。
+  - [HoraeDB](https://github.com/CeresDB/horaedb/tree/main) 稳定API的Java客户端版本，允许读写和管理数据表。
 - Fixes
   -
 - Breaking Changes

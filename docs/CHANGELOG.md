@@ -43,4 +43,4 @@ The label below（modifier）：
 
 ## 1.0.0.alpha [2023-02-08]
 - Features
-  - The [Horaedb](https://github.com/CeresDB/horaedb/tree/main) java client version initial release, allowing for the reading, writing, and managing of data tables.
+  - The [HoraeDB](https://github.com/CeresDB/horaedb/tree/main) java client version initial release, allowing for the reading, writing, and managing of data tables.
