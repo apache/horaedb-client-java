@@ -10,7 +10,7 @@ The first time you execute `kill -s SIGUSR2 $pid`, will see the following help i
 Follow the help information to execute
 
 ```
- - -- CeresDBClient Signal Help --
+ - -- HoraeDBClient Signal Help --
  -     Signal output dir: /Users/xxx/xxx
  -
  -     How to clear route cache:

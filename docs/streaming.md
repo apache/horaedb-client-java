@@ -1,5 +1,5 @@
 ## Stream API
-CeresDB supports streaming query and writing which is suitable for large amounts of data.
+HoraeDB supports streaming query and writing which is suitable for large amounts of data.
 
 ### Stream Write API
 

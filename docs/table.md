@@ -1,2 +1,2 @@
 ## Table specification
-See [Table specification doc](https://github.com/CeresDB/docs/blob/main/docs/src/en/sql/model/special_columns.md)
+See [Table specification doc](https://ceresdb.github.io/docs/sql/model/special_columns.html)

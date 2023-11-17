@@ -2,7 +2,7 @@
 
 ```
                    ┌─────────────────────┐
-                   │   CeresDBClient     │
+                   │   HoraeClient     │
                    └─────────────────────┘
                               │
                               ▼
@@ -34,13 +34,13 @@
            │                            │
            ▼                            ▼                            ▼
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐
-│   CeresDB  Node1    │      │   CeresDB  Node2    │      │         ...         │
+│   HoraeDB  Node1    │      │   HoraeDB  Node2    │      │         ...         │
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘
 ```
 
 ## Description
-- CeresDBClient
-  - The java client implementation of CeresDB is oriented to users and provides APIs such as writing and querying
+- HoraeDBClient
+  - The java client implementation of HoraeDB is oriented to users and provides APIs such as writing and querying
 - QueryClient
   - The default implementation of queries, purely asynchronous
   - Including asynchronous acquisition of routing table, automatic retry when routing table fails

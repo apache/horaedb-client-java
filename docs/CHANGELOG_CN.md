@@ -1,4 +1,4 @@
-## CeresDB 软件版本定义：
+## HoraeDB 软件版本定义：
 
 ### 版本号格式
 X.Y.Z
@@ -20,30 +20,30 @@ X.Y.Z
 ---
 ## 1.0.3 [2023-04-04]
 - Fixes
-  - 修复 `在非utf-8编码的jdk上使用中文乱码问题` [57](https://github.com/CeresDB/ceresdb-client-java/pull/57)
-  - 修复 `多batch数据(exp: group by)未被正确处理的问题` [59](https://github.com/CeresDB/ceresdb-client-java/pull/59)
+  - 修复 `在非utf-8编码的jdk上使用中文乱码问题` [57](https://github.com/CeresDB/horaedb-client-java/pull/57)
+  - 修复 `多batch数据(exp: group by)未被正确处理的问题` [59](https://github.com/CeresDB/horaedb-client-java/pull/59)
 
 ## 1.0.2 [deprecated]
 
 ## 1.0.1 [2023-03-14]
 - Fixes
-  - 修复 `Metric req_rt导致的内存泄漏问题` [51](https://github.com/CeresDB/ceresdb-client-java/pull/51)
-  - 修复 `查询数据返回多个结果时重复的问题` [52](https://github.com/CeresDB/ceresdb-client-java/pull/52)
-  - 修复 `脏route缓存未被清理的问题` [53](https://github.com/CeresDB/ceresdb-client-java/pull/53)
+  - 修复 `Metric req_rt导致的内存泄漏问题` [51](https://github.com/CeresDB/horaedb-client-java/pull/51)
+  - 修复 `查询数据返回多个结果时重复的问题` [52](https://github.com/CeresDB/horaedb-client-java/pull/52)
+  - 修复 `脏route缓存未被清理的问题` [53](https://github.com/CeresDB/horaedb-client-java/pull/53)
 
 ## 1.0.0 [2023-02-28]
 - Features
-  - 更新 proto 版本到 v1.0.0 [45](https://github.com/CeresDB/ceresdb-client-java/pull/45)
-  - 增加API `List<Column> Row.getColumns()` [44](https://github.com/CeresDB/ceresdb-client-java/pull/44)
+  - 更新 proto 版本到 v1.0.0 [45](https://github.com/CeresDB/horaedb-client-java/pull/45)
+  - 增加API `List<Column> Row.getColumns()` [44](https://github.com/CeresDB/horaedb-client-java/pull/44)
 - Fixes
-  - 修复 `NPE for table error while creating table` [43](https://github.com/CeresDB/ceresdb-client-java/pull/43)
+  - 修复 `NPE for table error while creating table` [43](https://github.com/CeresDB/horaedb-client-java/pull/43)
 - Breaking Changes
   - 变更方法 `Value Row.getColumnValue(string)` 为 `Column Row.getColumn(string)`
   - 变更方法 `Object Value.getValue()` 为 `Object Value.getObject()`
 
 ## 1.0.0.alpha [2023-02-08]
 - Features
-  - [Ceresdb](https://github.com/CeresDB/ceresdb/tree/main) 稳定API的Java客户端版本，允许读写和管理数据表。
+  - [Horaedb](https://github.com/CeresDB/horaedb/tree/main) 稳定API的Java客户端版本，允许读写和管理数据表。
 - Fixes
   -
 - Breaking Changes

@@ -1,5 +1,5 @@
 ## About LimitedPolicy
-CeresDBClient will limit the write/query by default (the default maximum number for write requests is 16384, and the default maximum number of requests for queries is 8),
+HoraeDBClient will limit the write/query by default (the default maximum number for write requests is 16384, and the default maximum number of requests for queries is 8),
 The limiting parameters see the configuration in `WriteOptions` / `QueryOptions`.
 
 `LimitedPolicy` is the processing policy after the flow is limited. It should be noted that if the number of data contained in one write request exceeds the limit, then the request will be allowed. 
@@ -16,7 +16,7 @@ The limiting parameters see the configuration in `WriteOptions` / `QueryOptions`
 Note：default write limit policy is `AbortOnBlockingTimeoutPolicy(3s)`，query is `AbortOnBlockingTimeoutPolicy(10s)`
 
 ## Adaptive limiting
-CeresDBClient also provides an adaptive current limiter based on TCP `Vegas` and `Gradient` limit algorithms at the underlying communication layer.
+HoraeDBClient also provides an adaptive current limiter based on TCP `Vegas` and `Gradient` limit algorithms at the underlying communication layer.
 
 ### Vegas
 `Vegas` is a congestion control algorithm that actively adjusts cwnd. The main idea is to set two thresholds, alpha and beta, and then calculate the target rate (Expected) and the actual rate (Actual), then compare the relationship between diff and alpha and beta, and adjust cwnd.
