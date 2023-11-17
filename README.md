@@ -1,13 +1,13 @@
 # CeresDB Java Client
 
-[![build](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/ceresdb-java-client/actions/workflows/build.yml)
+[![build](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 [中文](./README_CN.md)
 
 ## Introduction
-CeresDB Client is a high-performance Java client for CeresDB.
-CeresDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
+HoraeDB Client is a high-performance Java client for HoraeDB.
+HoraeDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
 - With the well designed SPI, the network transport layer is extensible. And we provide the default implementation which uses the gRPC framework.
@@ -19,7 +19,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBClient     │  
+                   │   HoraeDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -51,14 +51,14 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
+│   HoraeDB Node1     │      │   HoraeDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
 ## Data query process
 ```
                    ┌─────────────────────┐  
-                   │   CeresDBClient     │  
+                   │   HoraeDBClient     │  
                    └─────────────────────┘  
                               │  
                               ▼  
@@ -90,7 +90,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
            │                            │  
            ▼                            ▼                            ▼  
 ┌─────────────────────┐      ┌─────────────────────┐      ┌─────────────────────┐  
-│   CeresDB Node1     │      │   CeresDB Node2     │      │         ...         │  
+│   HoraeDB Node1     │      │   HoraeDB Node2     │      │         ...         │  
 └─────────────────────┘      └─────────────────────┘      └─────────────────────┘  
 ```
 
@@ -106,7 +106,7 @@ CeresDB is a high-performance, distributed, schema-less, cloud native time-serie
 </dependency>
 ```
 
-## Init CeresDB client
+## Init HoraeDB client
 ```java
 final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // CeresDB default grpc port 8831，use DIRECT RouteMode
         .database("public") // use database for client, can be overridden by the RequestContext in request
@@ -125,9 +125,9 @@ if (!client.init(opts)) {
 For more configuration options, see [configuration](docs/configuration.md)
 
 ## Create table example
-CeresDB is a Schema-less time-series database, so creating table schema ahead of data ingestion is not required (CeresDB will create a default schema according to the very first data you write into it). Of course, you can also manually create a schema for fine grained management purposes (eg. managing index).
+HoraeDB is a Schema-less time-series database, so creating table schema ahead of data ingestion is not required (HoraeDB will create a default schema according to the very first data you write into it). Of course, you can also manually create a schema for fine grained management purposes (eg. managing index).
 
-The following table creation statement（using the SQL API included in SDK ）shows all field types supported by CeresDB：
+The following table creation statement（using the SQL API included in SDK ）shows all field types supported by HoraeDB：
 
 ```java
 // Create table manually, creating table schema ahead of data ingestion is not required
@@ -195,7 +195,7 @@ rowStream.forEach(row -> System.out.println(row.toString()));
 See [read](docs/read.md)
 
 ## stream write/read Example
-CeresDB support streaming writing and reading，suitable for large-scale data reading and writing。
+HoraeDB support streaming writing and reading，suitable for large-scale data reading and writing。
 ```java
 final StreamWriteBuf<Point, WriteOk> writeBuf = client.streamWrite("machine_table");
 for (int i = 0; i < 1000; i++) {

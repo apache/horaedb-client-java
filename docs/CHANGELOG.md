@@ -1,4 +1,4 @@
-## CeresDB software version definition：
+## HoraeDB software version definition：
 
 ### Format
 X.Y.Z
@@ -24,27 +24,27 @@ The label below（modifier）：
 
 ## 1.0.3 [2023-04-04]
 - Fixes
-  - Fix `Garbled characters on non-utf-8 encoded jdk` [57](https://github.com/CeresDB/ceresdb-client-java/pull/57)
-  - Fix `Multi-block(exp: group by) data not processed` [59](https://github.com/CeresDB/ceresdb-client-java/pull/59)
+  - Fix `Garbled characters on non-utf-8 encoded jdk` [57](https://github.com/CeresDB/horaedb-client-java/pull/57)
+  - Fix `Multi-block(exp: group by) data not processed` [59](https://github.com/CeresDB/horaedb-client-java/pull/59)
 
 ## 1.0.2 [deprecated]
 
 ## 1.0.1 [2023-03-14]
 - Fixes
-  - Fix `Memory leak caused by metric req_rt` [51](https://github.com/CeresDB/ceresdb-client-java/pull/51)
-  - Fix `Query multi reuslt error with same value` [52](https://github.com/CeresDB/ceresdb-client-java/pull/52)
-  - Fix `Clear dirty route cache when error occurs` [53](https://github.com/CeresDB/ceresdb-client-java/pull/53)
+  - Fix `Memory leak caused by metric req_rt` [51](https://github.com/CeresDB/horaedb-client-java/pull/51)
+  - Fix `Query multi reuslt error with same value` [52](https://github.com/CeresDB/horaedb-client-java/pull/52)
+  - Fix `Clear dirty route cache when error occurs` [53](https://github.com/CeresDB/horaedb-client-java/pull/53)
 
 ## 1.0.0 [2023-02-28]
 - Features
-  - Update proto to v1.0.0 [45](https://github.com/CeresDB/ceresdb-client-java/pull/45)
-  - Add API `List<Column> Row.getColumns()` [44](https://github.com/CeresDB/ceresdb-client-java/pull/44)
+  - Update proto to v1.0.0 [45](https://github.com/CeresDB/horaedb-client-java/pull/45)
+  - Add API `List<Column> Row.getColumns()` [44](https://github.com/CeresDB/horaedb-client-java/pull/44)
 - Fixes
-  - Fix `NPE for table error while creating table` [43](https://github.com/CeresDB/ceresdb-client-java/pull/43)
+  - Fix `NPE for table error while creating table` [43](https://github.com/CeresDB/horaedb-client-java/pull/43)
 - Breaking Changes
   - Move `Value Row.getColumnValue(string)` to `Column Row.getColumn(string)`
   - Move `Object Value.getValue()` to `Object Value.getObject()`
 
 ## 1.0.0.alpha [2023-02-08]
 - Features
-  - The [Ceresdb](https://github.com/CeresDB/ceresdb/tree/main) java client version initial release, allowing for the reading, writing, and managing of data tables.
+  - The [HoraeDB](https://github.com/CeresDB/horaedb/tree/main) java client version initial release, allowing for the reading, writing, and managing of data tables.
