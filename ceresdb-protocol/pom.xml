@@ -18,7 +18,7 @@
         <!-- an independent protocal lib for all ceresdb components -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ceresdb-proto-internal</artifactId>
+            <artifactId>horaedb-proto-internal</artifactId>
         </dependency>
 
         <dependency>

@@ -120,7 +120,7 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>ceresdb-proto-internal</artifactId>
+                <artifactId>horaedb-proto-internal</artifactId>
                 <version>${proto-internal.version}</version>
             </dependency>
 
