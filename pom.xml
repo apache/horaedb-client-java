@@ -427,6 +427,11 @@
                         <include>**/src/main/java/**</include>
                         <include>**/src/test/java/**</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/sql/CeresDBSqlParser.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserConstants.java</exclude>
+                        <exclude>**/sql/CeresDBSqlParserTokenManager.java</exclude>
+                    </excludes>
                     <strictCheck>true</strictCheck>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>

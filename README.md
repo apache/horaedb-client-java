@@ -1,16 +1,18 @@
-# CeresDB Java Client
+# HoraeDB Java Client
 
-[![build](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml)
+[![build](https://github.com/CeresDB/horaedb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/horaedb-java-client/actions/workflows/build.yml)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
-[中文](./README_CN.md)
+[中文](README_CN.md)
 
 ## Introduction
+
 HoraeDB Client is a high-performance Java client for HoraeDB.
 HoraeDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
 
 ## Features
-- With the well designed SPI, the network transport layer is extensible. And we provide the default implementation which uses the gRPC framework.
+
+- With the well-designed SPI, the network transport layer is extensible. And we provide the default implementation which uses the gRPC framework.
 - The client provides high-performance async streaming write API.
 - The client also collects lots of performance metrics by default. These metrics can be configured to write to local file.
 - We can take memory snapshots that contains the status of critical objects. The snapshots can also be configured to write to local file, which helps a lot when we diagnose complex problems.
