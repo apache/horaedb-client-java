@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>ceresdb-client</artifactId>
+        <artifactId>horaedb-client</artifactId>
         <groupId>io.ceresdb</groupId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>ceresdb-grpc</artifactId>
+    <artifactId>horaedb-grpc</artifactId>
 
     <properties>
         <concurrency.limits.version>0.3.6</concurrency.limits.version>
@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ceresdb-rpc</artifactId>
+            <artifactId>horaedb-rpc</artifactId>
         </dependency>
 
         <dependency>

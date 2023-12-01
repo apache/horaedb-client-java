@@ -2,28 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>ceresdb-client</artifactId>
+        <artifactId>horaedb-client</artifactId>
         <groupId>io.ceresdb</groupId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>ceresdb-sql</artifactId>
-
-    <properties>
-        <jsqlparser.version>4.0</jsqlparser.version>
-    </properties>
+    <artifactId>horaedb-common</artifactId>
 
     <dependencies>
+        <!-- metrics -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ceresdb-protocol</artifactId>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
         </dependency>
 
-        <!-- sql parser -->
         <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- protobuf -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
         </dependency>
 
         <!-- test -->
@@ -35,6 +36,18 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit-dep</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- benchmark -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
