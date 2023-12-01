@@ -1,14 +1,14 @@
 ## Global Options (System properties / Java -Dxxx)
 | name | description                                                                                                                |
 | --- |----------------------------------------------------------------------------------------------------------------------------|
-| "CeresDB.available_cpus" | Specify the number of CPU cores available to the SDK, and use all the number of CPUs in the current environment by default |
-| "CeresDB.grpc.conn.failures.reset_threshold" | Threshold gRPC reset connection, default is 3                                                                              |
-| "CeresDB.client.read.write.rw_logging" | Simple log output switch for read and write, default is true                                                               |
-| "CeresDB.client.write.collect_wrote_detail" | Whether to keep the written table list after the write is successful, default is false                                     |
-| "CeresDB.client.use_os_signal" | Whether to use OS Signal, SIGUSR2 is used by default                                                                       |
-| "CeresDB.signal.out_dir" | The Signal receiver outputs the content to the specified disk directory, which defaults to the process startup directory   |
-| "CeresDB.rpc.write.limit_percent" | RPC adaptive limit `write` ratio (default 0.7), the rest is reserved for `read`                                            |
-| "CeresDB.reporter.period_minutes" | Metrics reporter timing output period，default is 30 minutes                                                                |
+| "HoraeDB.available_cpus" | Specify the number of CPU cores available to the SDK, and use all the number of CPUs in the current environment by default |
+| "HoraeDB.grpc.conn.failures.reset_threshold" | Threshold gRPC reset connection, default is 3                                                                              |
+| "HoraeDB.client.read.write.rw_logging" | Simple log output switch for read and write, default is true                                                               |
+| "HoraeDB.client.write.collect_wrote_detail" | Whether to keep the written table list after the write is successful, default is false                                     |
+| "HoraeDB.client.use_os_signal" | Whether to use OS Signal, SIGUSR2 is used by default                                                                       |
+| "HoraeDB.signal.out_dir" | The Signal receiver outputs the content to the specified disk directory, which defaults to the process startup directory   |
+| "HoraeDB.rpc.write.limit_percent" | RPC adaptive limit `write` ratio (default 0.7), the rest is reserved for `read`                                            |
+| "HoraeDB.reporter.period_minutes" | Metrics reporter timing output period，default is 30 minutes                                                                |
 
 ## HoraeDBOptions
 | name           | description                                                                                                                                                                                                                                                                                                                                                                          |

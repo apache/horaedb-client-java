@@ -103,14 +103,14 @@ HoraeDB is a high-performance, distributed, schema-less, cloud native time-serie
 ```java
 <dependency>
   <groupId>io.ceresdb</groupId>
-  <artifactId>ceresdb-all</artifactId>
+  <artifactId>horaedb-all</artifactId>
   <version>1.0.0-alpha</version>
 </dependency>
 ```
 
 ## Init HoraeDB client
 ```java
-final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // CeresDB default grpc port 8831，use DIRECT RouteMode
+final HoraeDBOptions opts = HoraeBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // HoraeDB default grpc port 8831，use DIRECT RouteMode
         .database("public") // use database for client, can be overridden by the RequestContext in request
         // maximum retry times when write fails
         // (only some error codes will be retried, such as the routing table failure)
@@ -119,9 +119,9 @@ final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT)
         // (only some error codes will be retried, such as the routing table failure)
         .readMaxRetries(1).build();
 
-final CeresDBClient client = new CeresDBClient();
+final HoraeDBClient client = new HoraeDBClient();
 if (!client.init(opts)) {
-        throw new IllegalStateException("Fail to start CeresDBClient");
+        throw new IllegalStateException("Fail to start HoraeDBClient");
 }
 ```
 For more configuration options, see [configuration](docs/configuration.md)

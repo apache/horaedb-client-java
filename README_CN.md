@@ -1,6 +1,6 @@
-# CeresDB Java Client
+# HoraeDB Java Client
 
-[![build](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/Horaedb-java-client/actions/workflows/build.yml)
+[![build](https://github.com/CeresDB/horaedb-client-java/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/horaedb-client-java/actions/workflows/build.yml)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 ## 介绍
@@ -98,23 +98,23 @@ HoraeDBClient 是 HoraeDB 的高性能 Java 版客户端。HoraeDB 是定位为�
 ```java
 <dependency>
   <groupId>io.ceresdb</groupId>
-  <artifactId>ceresdb-all</artifactId>
+  <artifactId>horae-all</artifactId>
   <version>1.0.0-alpha</version>
 </dependency>
 ```
 
-## 初始化 CeresDB Client
+## 初始化 HoraeDB Client
 ```java
 // HoraeDB options
-final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, DIRECT) // 默认 gprc 端口号，DIRECT 模式
+final HoraeOptions opts = HoraeOptions.newBuilder("127.0.0.1", 8831, DIRECT) // 默认 gprc 端口号，DIRECT 模式
         .database("public") // Client所使用的database，可被RequestContext的database覆盖
         .writeMaxRetries(1) // 写入失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
         .readMaxRetries(1)  // 查询失败重试次数上限（只有部分错误 code 才会重试，比如路由表失效）
         .build();
 
-final CeresDBClient client = new CeresDBClient();
+final HoraeClient client = new HoraeClient();
 if (!client.init(opts)) {
-        throw new IllegalStateException("Fail to start CeresDBClient");
+        throw new IllegalStateException("Fail to start HoraeClient");
 }
 ```
 配置详情见 [configuration](docs/configuration.md)

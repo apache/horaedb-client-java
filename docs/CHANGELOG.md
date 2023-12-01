@@ -20,7 +20,7 @@ The label below（modifier）：
 ---
 ## 1.0.5 [2023-08-10]
 - Features
-  - `RpcOptions` add new field `connectionMaxAgeMs`, which controls max time a connection can live, default 0(forever). [65](https://github.com/CeresDB/ceresdb-client-java/pull/65)
+  - `RpcOptions` add new field `connectionMaxAgeMs`, which controls max time a connection can live, default 0(forever). [65](https://github.com/CeresDB/horaedb-client-java/pull/65)
 
 ## 1.0.3 [2023-04-04]
 - Fixes
