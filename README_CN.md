@@ -98,7 +98,7 @@ HoraeDBClient 是 HoraeDB 的高性能 Java 版客户端。HoraeDB 是定位为�
 ```java
 <dependency>
   <groupId>io.ceresdb</groupId>
-  <artifactId>horae-all</artifactId>
+  <artifactId>horaedb-all</artifactId>
   <version>1.0.0-alpha</version>
 </dependency>
 ```
