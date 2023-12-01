@@ -17,7 +17,7 @@ public class Cpus {
     /**
      * The configured number of available processors. The default is
      * {@link Runtime#availableProcessors()}. This can be overridden
-     * by setting the system property "CeresDB.available_cpus".
+     * by setting the system property "HoraeDB.available_cpus".
      *
      * @return available cpus num
      */

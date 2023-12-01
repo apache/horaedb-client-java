@@ -30,7 +30,7 @@ import io.ceresdb.models.SqlQueryRequest;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.models.WriteRequest;
-import io.ceresdb.options.CeresDBOptions;
+import io.ceresdb.options.HoraeDBOptions;
 import io.ceresdb.options.QueryOptions;
 import io.ceresdb.options.RouterOptions;
 import io.ceresdb.options.WriteOptions;
@@ -50,11 +50,11 @@ import com.codahale.metrics.Meter;
  * CeresDB client.
  *
  */
-public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, Display {
+public class HoraeDBClient implements Write, Query, Lifecycle<HoraeDBOptions>, Display {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CeresDBClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HoraeDBClient.class);
 
-    private static final Map<Integer, CeresDBClient> INSTANCES   = new ConcurrentHashMap<>();
+    private static final Map<Integer, HoraeDBClient> INSTANCES   = new ConcurrentHashMap<>();
     private static final AtomicInteger               ID          = new AtomicInteger(0);
     private static final String                      ID_KEY      = "client.id";
     private static final String                      VERSION_KEY = "client.version";
@@ -63,7 +63,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private final int           id;
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private CeresDBOptions opts;
+    private HoraeDBOptions opts;
     private RouterClient   routerClient;
     private WriteClient    writeClient;
     private QueryClient    queryClient;
@@ -82,17 +82,17 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         Runtime.getRuntime().addShutdownHook(new Thread(MetricsUtil::stopScheduledReporterAndDestroy));
     }
 
-    public CeresDBClient() {
+    public HoraeDBClient() {
         this.id = ID.incrementAndGet();
     }
 
     @Override
-    public boolean init(final CeresDBOptions opts) {
+    public boolean init(final HoraeDBOptions opts) {
         if (!this.started.compareAndSet(false, true)) {
             throw new IllegalStateException("CeresDB client has started");
         }
 
-        this.opts = CeresDBOptions.check(opts).copy();
+        this.opts = HoraeDBOptions.check(opts).copy();
 
         final RpcClient rpcClient = initRpcClient(this.opts);
         this.routerClient = initRouteClient(this.opts, rpcClient);
@@ -161,7 +161,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         this.queryClient.streamSqlQuery(req, attachCtx(ctx), observer);
     }
 
-    public static List<CeresDBClient> instances() {
+    public static List<HoraeDBClient> instances() {
         return new ArrayList<>(INSTANCES.values());
     }
 
@@ -179,7 +179,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
 
     @Override
     public void display(final Printer out) {
-        out.println("--- CeresDBClient ---") //
+        out.println("--- HoraeDBClient ---") //
                 .print("id=") //
                 .println(this.id) //
                 .print("version=") //
@@ -213,7 +213,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
 
     @Override
     public String toString() {
-        return "CeresDBClient{" + //
+        return "HoraeDBClient{" + //
                "id=" + id + //
                ", version=" + version() + //
                ", started=" + started + //
@@ -233,7 +233,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return c.with(ID_KEY, id()).with(VERSION_KEY, version());
     }
 
-    private static RpcClient initRpcClient(final CeresDBOptions opts) {
+    private static RpcClient initRpcClient(final HoraeDBOptions opts) {
         final RpcOptions rpcOpts = opts.getRpcOptions();
         final RpcClient rpcClient = RpcFactoryProvider.getRpcFactory().createRpcClient();
         if (!rpcClient.init(rpcOpts)) {
@@ -243,7 +243,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return rpcClient;
     }
 
-    private static RouterClient initRouteClient(final CeresDBOptions opts, final RpcClient rpcClient) {
+    private static RouterClient initRouteClient(final HoraeDBOptions opts, final RpcClient rpcClient) {
         final RouterOptions routerOpts = opts.getRouterOptions();
         routerOpts.setRpcClient(rpcClient);
 
@@ -264,7 +264,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return routerClient;
     }
 
-    private static WriteClient initWriteClient(final CeresDBOptions opts, //
+    private static WriteClient initWriteClient(final HoraeDBOptions opts, //
                                                final RouterClient routerClient, //
                                                final Executor asyncPool) {
         final WriteOptions writeOpts = opts.getWriteOptions();
@@ -278,7 +278,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
         return writeClient;
     }
 
-    private static QueryClient initQueryClient(final CeresDBOptions opts, //
+    private static QueryClient initQueryClient(final HoraeDBOptions opts, //
                                                final RouterClient routerClient, //
                                                final Executor asyncPool) {
         final QueryOptions queryOpts = opts.getQueryOptions();
@@ -295,7 +295,7 @@ public class CeresDBClient implements Write, Query, Lifecycle<CeresDBOptions>, D
     private static String loadVersion() {
         try {
             return Utils //
-                    .loadProperties(CeresDBClient.class.getClassLoader(), "client_version.properties") //
+                    .loadProperties(HoraeDBClient.class.getClassLoader(), "client_version.properties") //
                     .getProperty(VERSION_KEY, "Unknown version");
         } catch (final Exception ignored) {
             return "Unknown version(err)";

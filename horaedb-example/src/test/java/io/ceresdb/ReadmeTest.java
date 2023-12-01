@@ -4,7 +4,7 @@
 package io.ceresdb;
 
 import io.ceresdb.models.*;
-import io.ceresdb.options.CeresDBOptions;
+import io.ceresdb.options.HoraeDBOptions;
 import io.ceresdb.util.StreamWriteBuf;
 
 import org.junit.Assert;
@@ -23,7 +23,7 @@ public class ReadmeTest {
     @Ignore
     @Test
     public void readmeTest() throws ExecutionException, InterruptedException {
-        final CeresDBOptions opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) // CeresDB default grpc port 8831
+        final HoraeDBOptions opts = HoraeDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) // CeresDB default grpc port 8831
                 .database("public") // use database public
                 // maximum retry times when write fails
                 // (only some error codes will be retried, such as the routing table failure)
@@ -33,7 +33,7 @@ public class ReadmeTest {
                 .readMaxRetries(1)
                 .build();
 
-        final CeresDBClient client = new CeresDBClient();
+        final HoraeDBClient client = new HoraeDBClient();
         if (!client.init(opts)) {
             throw new IllegalStateException("Fail to start CeresDBClient");
         }

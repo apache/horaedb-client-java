@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import io.ceresdb.options.HoraeDBOptions;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +33,6 @@ import io.ceresdb.models.Result;
 import io.ceresdb.models.Value;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.models.WriteRequest;
-import io.ceresdb.options.CeresDBOptions;
 import io.ceresdb.rpc.RpcOptions;
 import io.ceresdb.util.StreamWriteBuf;
 
@@ -42,8 +42,8 @@ public class CeresDBTest {
 
     private String TEST_TABLE_NAME = "all_type_test_table_%d";
 
-    private CeresDBOptions opts;
-    private CeresDBClient  client;
+    private HoraeDBOptions opts;
+    private HoraeDBClient  client;
 
     @Before
     public void before() throws Exception {
@@ -52,13 +52,13 @@ public class CeresDBTest {
         rpcOpts.setInitialLimit(32);
         rpcOpts.setLimitKind(RpcOptions.LimitKind.Gradient);
         rpcOpts.setLogOnLimitChange(true);
-        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) //
+        this.opts = HoraeDBOptions.newBuilder("127.0.0.1", 8831, RouteMode.DIRECT) //
                 .database("public") //
                 .rpcOptions(rpcOpts) //
                 .writeMaxRetries(0) //
                 .readMaxRetries(1) //
                 .build();
-        this.client = new CeresDBClient();
+        this.client = new HoraeDBClient();
         final boolean ret = this.client.init(this.opts);
 
         TEST_TABLE_NAME = String.format(TEST_TABLE_NAME, System.currentTimeMillis());
@@ -90,7 +90,7 @@ public class CeresDBTest {
                                                                                               "fUint8 UINT8 NULL," + //
                                                                                               "fTimestamp TIMESTAMP NULL,"
                                                                                               + //
-                                                                                                                             //"fVarbinary VARBINARY NULL, + //"
+                                                                                              //"fVarbinary VARBINARY NULL, + //"
                                                                                               "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
                 TEST_TABLE_NAME)).get();
         if (!createResult.isOk()) {
@@ -98,7 +98,7 @@ public class CeresDBTest {
             return;
         }
 
-        LOG.info("Start CeresDB client {}, with options: {}, create table {}: {}.", result(ret), this.opts,
+        LOG.info("Start HoraeDB client {}, with options: {}, create table {}: {}.", result(ret), this.opts,
                 TEST_TABLE_NAME, createResult.getOk());
 
         final Result<SqlQueryOk, Err> existsResult2 = this.client
@@ -124,7 +124,7 @@ public class CeresDBTest {
         this.client.shutdownGracefully();
     }
 
-    public CeresDBOptions getOpts() {
+    public HoraeDBOptions getOpts() {
         return opts;
     }
 
@@ -161,7 +161,7 @@ public class CeresDBTest {
             LOG.info(
                     "======> Data: ts={}, tString={}, tInt64={}, fString={}, fBool={}, fDouble={}, fFloat={}, fInt64={}, fInt32={}, fInt16={},"
                      + //
-            "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}, fVarbinary={}", //
+            "fInt8={}, fUint64={}, fUint32={}, fUint16={}, fUint8={}, fTimestamp={}", //
                     row.getColumn("ts").getValue().getTimestamp(), //
                     row.getColumn("tString").getValue().getString(), //
                     row.getColumn("tInt64").getValue().getInt64(), //
@@ -178,7 +178,6 @@ public class CeresDBTest {
                     row.getColumn("fUint16").getValue().getUInt16(), //
                     row.getColumn("fUint8").getValue().getUInt8(), //
                     row.getColumn("fTimestamp").getValue().getTimestamp() //
-            //row.getColumnValue("fVarbinary").getVarbinary())
             );
         });
 

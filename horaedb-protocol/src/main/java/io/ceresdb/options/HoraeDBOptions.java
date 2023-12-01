@@ -16,7 +16,7 @@ import io.ceresdb.rpc.RpcOptions;
  * CeresDB client options.
  *
  */
-public class CeresDBOptions implements Copiable<CeresDBOptions> {
+public class HoraeDBOptions implements Copiable<HoraeDBOptions> {
     private Endpoint      clusterAddress;
     private String        database;
     private Executor      asyncWritePool;
@@ -91,8 +91,8 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
     }
 
     @Override
-    public CeresDBOptions copy() {
-        final CeresDBOptions copy = new CeresDBOptions();
+    public HoraeDBOptions copy() {
+        final HoraeDBOptions copy = new HoraeDBOptions();
         copy.clusterAddress = this.clusterAddress;
         copy.database = this.database;
         copy.asyncWritePool = this.asyncWritePool;
@@ -126,7 +126,7 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
                '}';
     }
 
-    public static CeresDBOptions check(final CeresDBOptions opts) {
+    public static HoraeDBOptions check(final HoraeDBOptions opts) {
         Requires.requireNonNull(opts, "CeresDBOptions.opts");
         Requires.requireNonNull(opts.getClusterAddress(), "CeresDBOptions.clusterAddress");
         Requires.requireNonNull(opts.getRpcOptions(), "CeresDBOptions.rpcOptions");
@@ -359,8 +359,8 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
          *
          * @return nice things
          */
-        public CeresDBOptions build() {
-            final CeresDBOptions opts = new CeresDBOptions();
+        public HoraeDBOptions build() {
+            final HoraeDBOptions opts = new HoraeDBOptions();
             opts.clusterAddress = this.clusterAddress;
             opts.database = this.database;
             opts.asyncWritePool = asyncWritePool;
@@ -382,7 +382,7 @@ public class CeresDBOptions implements Copiable<CeresDBOptions> {
             opts.queryOptions.setMaxRetries(this.readMaxRetries);
             opts.queryOptions.setMaxInFlightQueryRequests(this.maxInFlightQueryRequests);
             opts.queryOptions.setLimitedPolicy(this.queryLimitedPolicy);
-            return CeresDBOptions.check(opts);
+            return HoraeDBOptions.check(opts);
         }
     }
 }

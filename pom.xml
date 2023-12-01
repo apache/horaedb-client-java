@@ -22,8 +22,7 @@
 
     <developers>
         <developer>
-            <name>ceresdb team</name>
-            <email>ceresdbservice@gmail.com</email>
+            <name>horaedb team</name>
         </developer>
     </developers>
 
@@ -39,9 +38,9 @@
     </modules>
 
     <scm>
-        <connection>https://github.com/CeresDB/ceresdb-client-java</connection>
-        <developerConnection>https://github.com/CeresDB/ceresdb-client-java</developerConnection>
-        <url>https://github.com/CeresDB/ceresdb-client-java</url>
+        <connection>https://github.com/CeresDB/horaedb-client-java</connection>
+        <developerConnection>https://github.com/CeresDB/horaedb-client-java</developerConnection>
+        <url>https://github.com/CeresDB/horaedb-client-java</url>
     </scm>
 
     <distributionManagement>

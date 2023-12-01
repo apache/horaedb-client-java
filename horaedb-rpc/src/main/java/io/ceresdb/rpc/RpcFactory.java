@@ -4,7 +4,7 @@
 package io.ceresdb.rpc;
 
 /**
- * CeresDB's RPC service factory.
+ * HoraeDB's RPC service factory.
  *
  */
 public interface RpcFactory {

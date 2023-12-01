@@ -11,10 +11,10 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import io.ceresdb.HoraeDBClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.ceresdb.CeresDBClient;
 import io.ceresdb.common.Display;
 import io.ceresdb.common.SPI;
 import io.ceresdb.common.signal.FileOutputHelper;
@@ -39,7 +39,7 @@ public class DisplaySignalHandler implements SignalHandler {
             return;
         }
 
-        final List<CeresDBClient> instances = CeresDBClient.instances();
+        final List<HoraeDBClient> instances = HoraeDBClient.instances();
         if (instances.isEmpty()) {
             return;
         }
@@ -53,7 +53,7 @@ public class DisplaySignalHandler implements SignalHandler {
             try (PrintWriter out = new PrintWriter(
                     new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
                 final Display.Printer printer = new Display.DefaultPrinter(out);
-                for (final CeresDBClient ins : instances) {
+                for (final HoraeDBClient ins : instances) {
                     ins.display(printer);
                 }
                 out.flush();

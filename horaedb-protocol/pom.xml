@@ -15,7 +15,7 @@
             <artifactId>horaedb-rpc</artifactId>
         </dependency>
 
-        <!-- an independent protocal lib for all ceresdb components -->
+        <!-- an independent protocal lib for all horaedb components -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>horaedb-proto-internal</artifactId>

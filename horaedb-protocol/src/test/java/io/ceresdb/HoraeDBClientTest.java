@@ -24,29 +24,29 @@ import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;
 import io.ceresdb.models.WriteOk;
 import io.ceresdb.models.WriteRequest;
-import io.ceresdb.options.CeresDBOptions;
+import io.ceresdb.options.HoraeDBOptions;
 import io.ceresdb.util.TestUtil;
 import io.ceresdb.util.Utils;
 
 @RunWith(value = MockitoJUnitRunner.class)
-public class CeresDBClientTest {
+public class HoraeDBClientTest {
 
-    private static final ReferenceFieldUpdater<CeresDBClient, WriteClient> WC_UPDATER = Updaters //
-            .newReferenceFieldUpdater(CeresDBClient.class, "writeClient");
+    private static final ReferenceFieldUpdater<HoraeDBClient, WriteClient> WC_UPDATER = Updaters //
+            .newReferenceFieldUpdater(HoraeDBClient.class, "writeClient");
 
-    private CeresDBClient  client;
-    private CeresDBOptions opts;
+    private HoraeDBClient  client;
+    private HoraeDBOptions opts;
     @Mock
     private WriteClient    writeClient;
 
     @Before
     public void before() {
-        this.opts = CeresDBOptions.newBuilder("127.0.0.1", 8081, RouteMode.DIRECT) //
+        this.opts = HoraeDBOptions.newBuilder("127.0.0.1", 8081, RouteMode.DIRECT) //
                 .database("public") //
                 .writeMaxRetries(1) //
                 .readMaxRetries(1) //
                 .build();
-        this.client = new CeresDBClient();
+        this.client = new HoraeDBClient();
     }
 
     @After
@@ -70,9 +70,9 @@ public class CeresDBClientTest {
     @Test
     public void instancesTest() {
         this.client.init(this.opts);
-        Assert.assertEquals(1, CeresDBClient.instances().size());
+        Assert.assertEquals(1, HoraeDBClient.instances().size());
         this.client.shutdownGracefully();
-        Assert.assertTrue(CeresDBClient.instances().isEmpty());
+        Assert.assertTrue(HoraeDBClient.instances().isEmpty());
     }
 
     @SuppressWarnings("unchecked")
