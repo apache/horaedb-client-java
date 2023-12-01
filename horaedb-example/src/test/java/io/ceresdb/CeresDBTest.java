@@ -90,7 +90,7 @@ public class CeresDBTest {
                                                                                               "fUint8 UINT8 NULL," + //
                                                                                               "fTimestamp TIMESTAMP NULL,"
                                                                                               + //
-                                                                                              //"fVarbinary VARBINARY NULL, + //"
+                                                                                                                             //"fVarbinary VARBINARY NULL, + //"
                                                                                               "TIMESTAMP KEY(ts)) ENGINE=Analytic WITH (ttl='7d')",
                 TEST_TABLE_NAME)).get();
         if (!createResult.isOk()) {
