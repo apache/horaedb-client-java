@@ -19,7 +19,7 @@ jobs:
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
           && sh ./tools/check_format.sh
 
-  test_ceresdb_common:
+  test_horaedb_common:
     needs: check_format
     runs-on: ubuntu-latest
     steps:
@@ -30,11 +30,11 @@ jobs:
           java-version: 1.8
       - name: Maven Test
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          && (mvn --projects ceresdb-common test
-            || mvn --projects ceresdb-common test
-            || mvn --projects ceresdb-common test)
+          && (mvn --projects horaedb-common test
+            || mvn --projects horaedb-common test
+            || mvn --projects horaedb-common test)
 
-  test_ceresdb_grpc:
+  test_horaedb_grpc:
     needs: check_format
     runs-on: ubuntu-latest
     steps:
@@ -45,11 +45,11 @@ jobs:
           java-version: 1.8
       - name: Maven Test
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          && (mvn --projects ceresdb-grpc test
-            || mvn --projects ceresdb-grpc test
-            || mvn --projects ceresdb-grpc test)
+          && (mvn --projects horaedb-grpc test
+            || mvn --projects horaedb-grpc test
+            || mvn --projects horaedb-grpc test)
 
-  test_ceresdb_protocol:
+  test_horaedb_protocol:
     needs: check_format
     runs-on: ubuntu-latest
     steps:
@@ -60,11 +60,11 @@ jobs:
           java-version: 1.8
       - name: Maven Test
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          && (mvn --projects ceresdb-protocol test
-            || mvn --projects ceresdb-protocol test
-            || mvn --projects ceresdb-protocol test)
+          && (mvn --projects horaedb-protocol test
+            || mvn --projects horaedb-protocol test
+            || mvn --projects horaedb-protocol test)
 
-  test_ceresdb_sql:
+  test_horaedb_sql:
     needs: check_format
     runs-on: ubuntu-latest
     steps:
@@ -75,11 +75,11 @@ jobs:
           java-version: 1.8
       - name: Maven Test
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          && (mvn --projects ceresdb-sql test
-            || mvn --projects ceresdb-sql test
-            || mvn --projects ceresdb-sql test)
+          && (mvn --projects horaedb-sql test
+            || mvn --projects horaedb-sql test
+            || mvn --projects horaedb-sql test)
 
-  test_ceresdb_javacc:
+  test_horaedb_javacc:
     needs: check_format
     runs-on: ubuntu-latest
     steps:
@@ -90,6 +90,6 @@ jobs:
           java-version: 1.8
       - name: Maven Test
         run: mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          && (mvn --projects ceresdb-sql-javacc test
-            || mvn --projects ceresdb-sql-javacc test
-            || mvn --projects ceresdb-sql-javacc test)
+          && (mvn --projects horaedb-sql-javacc test
+            || mvn --projects horaedb-sql-javacc test
+            || mvn --projects horaedb-sql-javacc test)
