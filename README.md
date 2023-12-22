@@ -1,6 +1,5 @@
 # HoraeDB Java Client
 
-[![build](https://github.com/CeresDB/horaedb-java-client/actions/workflows/build.yml/badge.svg)](https://github.com/CeresDB/horaedb-java-client/actions/workflows/build.yml)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 [中文](README_CN.md)
@@ -220,6 +219,4 @@ See [streaming](docs/streaming.md)
 Under [Apache License 2.0](./LICENSE).
 
 ## Community and support
-- Join the user group on [Slack](https://join.slack.com/t/ceresdbcommunity/shared_invite/zt-1au1ihbdy-5huC9J9s2462yBMIWmerTw)
-- Join the use group on WeChat [WeChat QR code](https://github.com/CeresDB/assets/blob/main/WeChatQRCode.jpg)
 - Join the user group on DingTalk: 44602802
