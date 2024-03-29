@@ -5,7 +5,7 @@ package io.ceresdb.rpc.limit;
 
 import java.util.function.Supplier;
 
-import io.ceresdb.common.util.MetricsUtil;
+import org.apache.horaedb.common.util.MetricsUtil;
 import com.netflix.concurrency.limits.MetricRegistry;
 
 /**

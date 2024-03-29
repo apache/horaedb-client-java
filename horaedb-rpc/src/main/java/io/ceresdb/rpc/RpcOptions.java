@@ -5,8 +5,8 @@ package io.ceresdb.rpc;
 
 import java.util.concurrent.TimeUnit;
 
-import io.ceresdb.common.Copiable;
-import io.ceresdb.common.util.Cpus;
+import org.apache.horaedb.common.Copiable;
+import org.apache.horaedb.common.util.Cpus;
 
 /**
  * RPC client options.

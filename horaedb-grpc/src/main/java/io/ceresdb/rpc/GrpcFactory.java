@@ -3,7 +3,7 @@
  */
 package io.ceresdb.rpc;
 
-import io.ceresdb.common.SPI;
+import org.apache.horaedb.common.SPI;
 import com.google.protobuf.Message;
 
 /**

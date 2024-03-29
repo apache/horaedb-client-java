@@ -3,13 +3,13 @@
  */
 package io.ceresdb.models;
 
+import org.apache.horaedb.common.util.Requires;
+import org.apache.horaedb.common.util.Strings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import io.ceresdb.common.util.Requires;
-import io.ceresdb.common.util.Strings;
 
 /**
  * The query request condition.

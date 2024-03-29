@@ -7,10 +7,10 @@ import java.util.concurrent.Executor;
 
 import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouteMode;
-import io.ceresdb.common.Copiable;
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.util.Requires;
 import io.ceresdb.rpc.RpcOptions;
+import org.apache.horaedb.common.Copiable;
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.util.Requires;
 
 /**
  * CeresDB client options.

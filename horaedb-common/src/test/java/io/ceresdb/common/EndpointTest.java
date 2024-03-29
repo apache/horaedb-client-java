@@ -3,6 +3,7 @@
  */
 package io.ceresdb.common;
 
+import org.apache.horaedb.common.Endpoint;
 import org.junit.Assert;
 import org.junit.Test;
 

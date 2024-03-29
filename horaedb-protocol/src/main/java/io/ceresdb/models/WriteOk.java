@@ -3,11 +3,11 @@
  */
 package io.ceresdb.models;
 
+import org.apache.horaedb.common.OptKeys;
+import org.apache.horaedb.common.util.SystemPropertyUtil;
+
 import java.util.Collection;
 import java.util.Set;
-
-import io.ceresdb.common.OptKeys;
-import io.ceresdb.common.util.SystemPropertyUtil;
 
 /**
  * Contains the success value of write.

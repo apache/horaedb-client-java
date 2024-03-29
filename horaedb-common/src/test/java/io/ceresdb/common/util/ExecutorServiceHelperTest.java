@@ -6,6 +6,9 @@ package io.ceresdb.common.util;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 
+import org.apache.horaedb.common.util.ExecutorServiceHelper;
+import org.apache.horaedb.common.util.NamedThreadFactory;
+import org.apache.horaedb.common.util.ThreadPoolUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

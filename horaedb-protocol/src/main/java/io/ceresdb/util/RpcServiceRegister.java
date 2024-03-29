@@ -3,11 +3,11 @@
  */
 package io.ceresdb.util;
 
-import io.ceresdb.common.OptKeys;
-import io.ceresdb.common.util.SystemPropertyUtil;
 import io.ceresdb.proto.internal.Storage;
 import io.ceresdb.rpc.MethodDescriptor;
 import io.ceresdb.rpc.RpcFactoryProvider;
+import org.apache.horaedb.common.OptKeys;
+import org.apache.horaedb.common.util.SystemPropertyUtil;
 
 public class RpcServiceRegister {
 

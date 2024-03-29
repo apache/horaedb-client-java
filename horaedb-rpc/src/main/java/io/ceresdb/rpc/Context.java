@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import io.ceresdb.common.Copiable;
+import org.apache.horaedb.common.Copiable;
 
 /**
  * Invoke context.

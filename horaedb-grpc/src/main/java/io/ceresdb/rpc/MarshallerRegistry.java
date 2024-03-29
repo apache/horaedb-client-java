@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import io.ceresdb.common.util.Requires;
+import org.apache.horaedb.common.util.Requires;
 import com.google.protobuf.Message;
 
 /**

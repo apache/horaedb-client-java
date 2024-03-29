@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.horaedb.common.Endpoint;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.ceresdb.common.Endpoint;
 import io.ceresdb.models.Err;
 import io.ceresdb.models.Point;
 import io.ceresdb.models.Result;

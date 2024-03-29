@@ -3,6 +3,8 @@
  */
 package io.ceresdb.common.util;
 
+import org.apache.horaedb.common.util.ObjectPool;
+import org.apache.horaedb.common.util.RcObjectPool;
 import org.junit.Assert;
 import org.junit.Test;
 

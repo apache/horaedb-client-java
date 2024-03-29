@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.horaedb.common.Endpoint;
 import org.junit.Assert;
 import org.junit.Test;
-
-import io.ceresdb.common.Endpoint;
 
 public class ErrTest {
 

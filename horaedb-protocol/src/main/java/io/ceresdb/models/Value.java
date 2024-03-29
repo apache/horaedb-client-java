@@ -3,10 +3,10 @@
  */
 package io.ceresdb.models;
 
+import org.apache.horaedb.common.util.Requires;
+
 import java.util.Objects;
 import java.util.Optional;
-
-import io.ceresdb.common.util.Requires;
 
 public class Value {
 

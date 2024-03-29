@@ -7,10 +7,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import io.ceresdb.util.Utils;
-import io.ceresdb.common.InFlightLimiter;
-import io.ceresdb.common.Limiter;
-import io.ceresdb.common.util.MetricsUtil;
 import com.codahale.metrics.Histogram;
+import org.apache.horaedb.common.InFlightLimiter;
+import org.apache.horaedb.common.Limiter;
+import org.apache.horaedb.common.util.MetricsUtil;
 
 /**
  * A Write/Query limiter that limits traffic according to the number of

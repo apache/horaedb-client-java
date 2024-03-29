@@ -7,7 +7,7 @@ import java.util.concurrent.Executor;
 
 import io.ceresdb.limit.LimitedPolicy;
 import io.ceresdb.RouterClient;
-import io.ceresdb.common.Copiable;
+import org.apache.horaedb.common.Copiable;
 
 /**
  * Write options.

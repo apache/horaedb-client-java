@@ -6,13 +6,12 @@ package io.ceresdb.signal;
 import java.util.List;
 
 import io.ceresdb.HoraeDBClient;
+import org.apache.horaedb.common.SPI;
+import org.apache.horaedb.common.signal.FileSignal;
+import org.apache.horaedb.common.signal.FileSignals;
+import org.apache.horaedb.common.signal.SignalHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.ceresdb.common.SPI;
-import io.ceresdb.common.signal.FileSignal;
-import io.ceresdb.common.signal.FileSignals;
-import io.ceresdb.common.signal.SignalHandler;
 
 /**
  * A signal handler that can clear the route cache.

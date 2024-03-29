@@ -3,7 +3,7 @@
  */
 package io.ceresdb.rpc.limit;
 
-import io.ceresdb.common.util.Requires;
+import org.apache.horaedb.common.util.Requires;
 import com.netflix.concurrency.limits.MetricIds;
 import com.netflix.concurrency.limits.MetricRegistry;
 import com.netflix.concurrency.limits.MetricRegistry.SampleListener;

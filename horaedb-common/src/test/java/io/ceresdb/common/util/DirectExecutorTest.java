@@ -5,6 +5,8 @@ package io.ceresdb.common.util;
 
 import java.util.concurrent.Executor;
 
+import org.apache.horaedb.common.util.DirectExecutor;
+import org.apache.horaedb.common.util.RefCell;
 import org.junit.Assert;
 import org.junit.Test;
 

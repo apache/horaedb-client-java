@@ -5,8 +5,8 @@ package io.ceresdb.limit;
 
 import java.util.concurrent.TimeUnit;
 
-import io.ceresdb.common.Limiter;
 import io.ceresdb.errors.LimitedException;
+import org.apache.horaedb.common.Limiter;
 
 /**
  * A limited policy using a given {@code Limiter}.

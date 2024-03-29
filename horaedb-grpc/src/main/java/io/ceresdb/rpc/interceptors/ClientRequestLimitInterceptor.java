@@ -16,7 +16,7 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import io.grpc.Status;
 
-import io.ceresdb.common.util.MetricsUtil;
+import org.apache.horaedb.common.util.MetricsUtil;
 import io.ceresdb.rpc.limit.LimitMetricRegistry;
 import io.ceresdb.rpc.limit.RequestLimitCtx;
 import com.netflix.concurrency.limits.Limiter;

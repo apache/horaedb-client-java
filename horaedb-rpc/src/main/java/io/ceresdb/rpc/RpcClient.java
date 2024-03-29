@@ -3,9 +3,9 @@
  */
 package io.ceresdb.rpc;
 
-import io.ceresdb.common.Display;
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.Lifecycle;
+import org.apache.horaedb.common.Display;
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.Lifecycle;
 import io.ceresdb.rpc.errors.RemotingException;
 
 /**

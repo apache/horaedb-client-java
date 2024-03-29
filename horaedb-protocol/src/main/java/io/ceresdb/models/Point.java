@@ -9,7 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import io.ceresdb.util.Utils;
-import io.ceresdb.common.util.Requires;
+import org.apache.horaedb.common.util.Requires;
 
 /**
  * A time series data point with multiple fields

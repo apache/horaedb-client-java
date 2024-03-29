@@ -3,9 +3,9 @@
  */
 package io.ceresdb.models;
 
-import java.util.function.Function;
+import org.apache.horaedb.common.util.Requires;
 
-import io.ceresdb.common.util.Requires;
+import java.util.function.Function;
 
 /**
  * `Result` is a type that represents either success ([`Ok`]) or failure ([`Err`]).

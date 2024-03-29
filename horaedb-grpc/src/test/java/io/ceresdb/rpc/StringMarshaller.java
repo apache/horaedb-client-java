@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import io.grpc.MethodDescriptor.Marshaller;
 
-import io.ceresdb.common.util.StringBuilderHelper;
+import org.apache.horaedb.common.util.StringBuilderHelper;
 
 public final class StringMarshaller implements Marshaller<String> {
 

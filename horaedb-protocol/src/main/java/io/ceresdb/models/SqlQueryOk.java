@@ -3,12 +3,12 @@
  */
 package io.ceresdb.models;
 
+import org.apache.horaedb.common.Streamable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import io.ceresdb.common.Streamable;
 
 /**
  * Contains the success value of query.

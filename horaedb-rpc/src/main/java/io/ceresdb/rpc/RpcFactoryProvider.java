@@ -3,7 +3,7 @@
  */
 package io.ceresdb.rpc;
 
-import io.ceresdb.common.util.ServiceLoader;
+import org.apache.horaedb.common.util.ServiceLoader;
 
 public class RpcFactoryProvider {
 

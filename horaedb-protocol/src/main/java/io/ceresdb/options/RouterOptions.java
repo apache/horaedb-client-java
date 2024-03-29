@@ -4,9 +4,9 @@
 package io.ceresdb.options;
 
 import io.ceresdb.RouteMode;
-import io.ceresdb.common.Copiable;
-import io.ceresdb.common.Endpoint;
 import io.ceresdb.rpc.RpcClient;
+import org.apache.horaedb.common.Copiable;
+import org.apache.horaedb.common.Endpoint;
 
 /**
  * Router options.

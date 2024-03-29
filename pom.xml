@@ -8,9 +8,15 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
+    <parent>
+        <artifactId>apache</artifactId>
+        <groupId>org.apache</groupId>
+        <version>31</version>
+    </parent>
+
     <name>horaedb-client</name>
     <description>Official Java client implementation for horaeDB.</description>
-    <url>https://github.com/CeresDB</url>
+    <url>https://horaedb.apache.org</url>
 
     <licenses>
         <license>
@@ -42,17 +48,6 @@
         <developerConnection>https://github.com/CeresDB/horaedb-client-java</developerConnection>
         <url>https://github.com/CeresDB/horaedb-client-java</url>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <properties>
         <!-- according to https://maven.apache.org/maven-ci-friendly.html -->
@@ -435,17 +430,6 @@
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>
                     </mapping>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
             <plugin>

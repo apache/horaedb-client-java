@@ -22,7 +22,7 @@ import io.grpc.stub.ServerCalls;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.ceresdb.common.util.MetricsUtil;
+import org.apache.horaedb.common.util.MetricsUtil;
 import io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor;
 import io.ceresdb.rpc.limit.LimitMetricRegistry;
 import io.ceresdb.rpc.limit.RequestLimitCtx;

@@ -5,7 +5,7 @@ package io.ceresdb.rpc;
 
 import java.util.concurrent.Executor;
 
-import io.ceresdb.common.util.internal.ThrowUtil;
+import org.apache.horaedb.common.util.internal.ThrowUtil;
 
 /**
  * Receives notifications from an observable stream of messages.

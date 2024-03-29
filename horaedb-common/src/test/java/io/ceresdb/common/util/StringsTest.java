@@ -3,6 +3,7 @@
  */
 package io.ceresdb.common.util;
 
+import org.apache.horaedb.common.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;
 

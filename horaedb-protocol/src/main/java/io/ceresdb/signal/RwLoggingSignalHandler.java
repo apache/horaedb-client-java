@@ -3,15 +3,15 @@
  */
 package io.ceresdb.signal;
 
+import org.apache.horaedb.common.SPI;
+import org.apache.horaedb.common.signal.FileSignal;
+import org.apache.horaedb.common.signal.FileSignals;
+import org.apache.horaedb.common.signal.Signal;
+import org.apache.horaedb.common.signal.SignalHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.ceresdb.util.Utils;
-import io.ceresdb.common.SPI;
-import io.ceresdb.common.signal.FileSignal;
-import io.ceresdb.common.signal.Signal;
-import io.ceresdb.common.signal.SignalHandler;
-import io.ceresdb.common.signal.FileSignals;
 
 /**
  * A signal handler that can reset RW_LOGGING by {@link Utils#resetRwLogging()}.

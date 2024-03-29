@@ -5,6 +5,7 @@ package io.ceresdb.common.util;
 
 import java.math.BigInteger;
 
+import org.apache.horaedb.common.util.UnsignedUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

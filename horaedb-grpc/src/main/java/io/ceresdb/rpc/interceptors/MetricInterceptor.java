@@ -12,7 +12,7 @@ import io.grpc.ForwardingClientCallListener;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 
-import io.ceresdb.common.util.MetricsUtil;
+import org.apache.horaedb.common.util.MetricsUtil;
 import com.codahale.metrics.Counter;
 import com.google.protobuf.MessageLite;
 

@@ -3,6 +3,9 @@
  */
 package io.ceresdb.models;
 
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.Streamable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,9 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.Streamable;
 
 /**
  * Contains the write or query error value.

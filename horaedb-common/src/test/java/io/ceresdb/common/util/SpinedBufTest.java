@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.horaedb.common.util.Spines;
 import org.junit.Assert;
 import org.junit.Test;
 

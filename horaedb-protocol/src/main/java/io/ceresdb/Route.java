@@ -3,10 +3,10 @@
  */
 package io.ceresdb;
 
-import java.util.concurrent.atomic.AtomicLong;
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.util.Clock;
 
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.util.Clock;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Route info for table.
