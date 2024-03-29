@@ -18,11 +18,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.horaedb.models.RequestContext;
-import io.ceresdb.proto.internal.Storage;
 import org.apache.horaedb.common.Display;
 import org.apache.horaedb.common.Endpoint;
 import org.apache.horaedb.common.Lifecycle;
 import org.apache.horaedb.common.util.*;
+import org.apache.horaedb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

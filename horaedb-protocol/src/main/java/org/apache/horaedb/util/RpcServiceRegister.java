@@ -3,7 +3,7 @@
  */
 package org.apache.horaedb.util;
 
-import io.ceresdb.proto.internal.Storage;
+import org.apache.horaedb.proto.internal.Storage;
 import org.apache.horaedb.rpc.MethodDescriptor;
 import org.apache.horaedb.rpc.RpcFactoryProvider;
 import org.apache.horaedb.common.OptKeys;

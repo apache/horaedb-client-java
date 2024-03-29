@@ -18,6 +18,7 @@ import org.apache.horaedb.common.VisibleForTest;
 import org.apache.horaedb.common.parser.SqlParser;
 import org.apache.horaedb.common.parser.SqlParserFactoryProvider;
 import org.apache.horaedb.common.util.*;
+import org.apache.horaedb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,8 +206,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                                                  final SqlQueryRequest req, //
                                                                  final Context ctx, //
                                                                  final int retries) {
-        final SqlQueryRequest request = SqlQueryRequest.newBuilder() //
-                .setContext(RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
+        final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
+                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();
@@ -225,8 +226,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                  final SqlQueryRequest req, //
                                  final Context ctx, //
                                  final Observer<SqlQueryOk> observer) {
-        final SqlQueryRequest request = SqlQueryRequest.newBuilder() //
-                .setContext(RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
+        final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
+                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();

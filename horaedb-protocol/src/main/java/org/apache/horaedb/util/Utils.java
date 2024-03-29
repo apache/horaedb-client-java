@@ -35,8 +35,8 @@ import org.apache.horaedb.models.SqlQueryOk;
 import org.apache.horaedb.models.Result;
 import org.apache.horaedb.models.Value;
 import org.apache.horaedb.models.WriteOk;
-import io.ceresdb.proto.internal.Common;
-import io.ceresdb.proto.internal.Storage;
+import org.apache.horaedb.proto.internal.Common;
+import org.apache.horaedb.proto.internal.Storage;
 import org.apache.horaedb.rpc.Observer;
 
 import org.apache.arrow.memory.RootAllocator;

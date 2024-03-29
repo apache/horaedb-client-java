@@ -21,6 +21,7 @@ import org.apache.horaedb.common.Endpoint;
 import org.apache.horaedb.common.Lifecycle;
 import org.apache.horaedb.common.VisibleForTest;
 import org.apache.horaedb.common.util.*;
+import org.apache.horaedb.proto.internal.Storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ import org.apache.horaedb.models.Value;
 import org.apache.horaedb.models.WriteOk;
 import org.apache.horaedb.models.WriteRequest;
 import org.apache.horaedb.options.WriteOptions;
-import io.ceresdb.proto.internal.Storage;
 import org.apache.horaedb.rpc.Context;
 import org.apache.horaedb.rpc.Observer;
 import org.apache.horaedb.util.StreamWriteBuf;
