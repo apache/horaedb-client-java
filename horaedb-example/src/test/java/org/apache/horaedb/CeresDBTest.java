@@ -13,8 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.HoraeDBClient;
-import org.apache.RouteMode;
 import org.apache.horaedb.common.util.MetricsUtil;
 import org.apache.horaedb.common.util.internal.ThrowUtil;
 import org.apache.horaedb.options.HoraeDBOptions;

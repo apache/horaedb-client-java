@@ -3,7 +3,7 @@
  */
 package org.apache.horaedb.options;
 
-import org.apache.RouteMode;
+import org.apache.horaedb.RouteMode;
 import org.apache.horaedb.rpc.RpcClient;
 import org.apache.horaedb.common.Copiable;
 import org.apache.horaedb.common.Endpoint;

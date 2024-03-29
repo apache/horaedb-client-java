@@ -4,8 +4,6 @@
 package org.apache.horaedb;
 
 import io.ceresdb.models.*;
-import org.apache.HoraeDBClient;
-import org.apache.RouteMode;
 import org.apache.horaedb.models.*;
 import org.apache.models.*;
 import org.apache.horaedb.options.HoraeDBOptions;

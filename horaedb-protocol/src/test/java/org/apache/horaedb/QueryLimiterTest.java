@@ -8,8 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.QueryClient;
-import org.apache.horaedb.QueryClient;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.HoraeDBClient;
+import org.apache.horaedb.HoraeDBClient;
 import org.apache.horaedb.common.Display;
 import org.apache.horaedb.common.SPI;
 import org.apache.horaedb.common.signal.FileOutputHelper;

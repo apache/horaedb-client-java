@@ -1,7 +1,7 @@
 /*
  * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
  */
-package org.apache;
+package org.apache.horaedb;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.apache.horaedb.limit.LimitedPolicy;
 import org.apache.horaedb.limit.QueryLimiter;
 import org.apache.horaedb.models.RequestContext;
-import io.ceresdb.proto.internal.Storage;
 import org.apache.horaedb.common.Display;
 import org.apache.horaedb.common.Endpoint;
 import org.apache.horaedb.common.Lifecycle;
@@ -206,8 +205,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                                                  final SqlQueryRequest req, //
                                                                  final Context ctx, //
                                                                  final int retries) {
-        final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
-                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
+        final SqlQueryRequest request = SqlQueryRequest.newBuilder() //
+                .setContext(RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();
@@ -226,8 +225,8 @@ public class QueryClient implements Query, Lifecycle<QueryOptions>, Display {
                                  final SqlQueryRequest req, //
                                  final Context ctx, //
                                  final Observer<SqlQueryOk> observer) {
-        final Storage.SqlQueryRequest request = Storage.SqlQueryRequest.newBuilder() //
-                .setContext(Storage.RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
+        final SqlQueryRequest request = SqlQueryRequest.newBuilder() //
+                .setContext(RequestContext.newBuilder().setDatabase(req.getReqCtx().getDatabase()).build()) //
                 .addAllTables(req.getTables()) //
                 .setSql(req.getSql()) //
                 .build();

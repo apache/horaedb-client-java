@@ -17,10 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.*;
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.util.internal.ThrowUtil;
 import org.apache.horaedb.models.Row;
-import io.ceresdb.proto.internal.Common;
-import io.ceresdb.proto.internal.Storage;
 
 import org.apache.arrow.memory.BufferAllocator;
 import org.apache.arrow.memory.RootAllocator;
@@ -51,8 +50,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.util.internal.ThrowUtil;
 import org.apache.horaedb.errors.IteratorException;
 import org.apache.horaedb.errors.StreamException;
 import org.apache.horaedb.models.Err;
@@ -92,7 +89,7 @@ public class QueryClientTest {
 
     @Test
     public void queryOkNoRouteTest() throws ExecutionException, InterruptedException, IOException {
-        final Storage.SqlQueryResponse resp = mockSimpleQueryResponse(1, false);
+        final SqlQueryResponse resp = mockSimpleQueryResponse(1, false);
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
@@ -388,7 +385,7 @@ public class QueryClientTest {
         writer.writeBatch();
         writer.close();
 
-        Storage.ArrowPayload arrowPayload = Storage.ArrowPayload.newBuilder()
+        ArrowPayload arrowPayload = Storage.ArrowPayload.newBuilder()
                 .setCompression(Storage.ArrowPayload.Compression.NONE)
                 .addRecordBatches(ByteStringHelper.wrap(out.toByteArray())).build();
 

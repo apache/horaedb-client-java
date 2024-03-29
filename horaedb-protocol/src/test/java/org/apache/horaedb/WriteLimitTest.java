@@ -9,8 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.WriteClient;
-import org.apache.horaedb.WriteClient;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -5,7 +5,7 @@ package org.apache.horaedb.signal;
 
 import java.util.List;
 
-import org.apache.HoraeDBClient;
+import org.apache.horaedb.HoraeDBClient;
 import org.apache.horaedb.common.SPI;
 import org.apache.horaedb.common.signal.FileSignal;
 import org.apache.horaedb.common.signal.FileSignals;

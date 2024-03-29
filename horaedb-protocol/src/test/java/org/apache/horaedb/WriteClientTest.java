@@ -18,9 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.Route;
-import org.apache.RouterClient;
-import org.apache.WriteClient;
 import org.apache.horaedb.models.Point;
 import org.apache.horaedb.models.RequestContext;
 import org.apache.horaedb.models.Value;

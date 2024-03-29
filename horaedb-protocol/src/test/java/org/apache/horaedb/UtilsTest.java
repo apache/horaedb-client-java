@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.Route;
-import org.apache.horaedb.Route;
 import org.apache.horaedb.common.Endpoint;
 import org.junit.Assert;
 import org.junit.Test;

@@ -6,7 +6,7 @@ package org.apache.horaedb.options;
 import java.util.concurrent.Executor;
 
 import org.apache.horaedb.limit.LimitedPolicy;
-import org.apache.RouterClient;
+import org.apache.horaedb.RouterClient;
 import org.apache.horaedb.common.Copiable;
 
 /**
