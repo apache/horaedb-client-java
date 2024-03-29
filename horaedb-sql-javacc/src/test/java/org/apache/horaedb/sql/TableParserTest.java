@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.apache.horaedb.common.parser.SqlParser;
 import org.apache.horaedb.common.parser.SqlParserFactory;
+import org.apache.horaedb.common.parser.SqlParserFactoryProvider;
 import org.apache.horaedb.common.util.ServiceLoader;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 public class TableParserTest {
 

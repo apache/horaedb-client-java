@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.ceresdb.common.parser.SqlParser;
-import io.ceresdb.common.util.Requires;
-
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import net.sf.jsqlparser.util.TablesNamesFinder;
+import org.apache.horaedb.common.parser.SqlParser;
+import org.apache.horaedb.common.util.Requires;
 
 public class SqlParserUtil {
 

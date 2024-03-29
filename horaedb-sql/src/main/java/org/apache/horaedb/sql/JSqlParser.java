@@ -6,9 +6,6 @@ package org.apache.horaedb.sql;
 import java.util.Collections;
 import java.util.List;
 
-import io.ceresdb.common.parser.SqlParser;
-import io.ceresdb.common.util.internal.ThrowUtil;
-
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.DescribeStatement;
@@ -19,6 +16,8 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.drop.Drop;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
+import org.apache.horaedb.common.parser.SqlParser;
+import org.apache.horaedb.common.util.internal.ThrowUtil;
 
 /**
  * Parse SQL use JSqlParser.

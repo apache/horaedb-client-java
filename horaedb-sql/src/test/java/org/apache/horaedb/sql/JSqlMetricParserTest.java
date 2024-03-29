@@ -8,13 +8,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.horaedb.common.parser.SqlParser;
+import org.apache.horaedb.common.parser.SqlParserFactory;
+import org.apache.horaedb.common.parser.SqlParserFactoryProvider;
+import org.apache.horaedb.common.util.ServiceLoader;
 import org.junit.Assert;
 import org.junit.Test;
-
-import io.ceresdb.common.parser.SqlParser;
-import io.ceresdb.common.parser.SqlParserFactory;
-import io.ceresdb.common.parser.SqlParserFactoryProvider;
-import io.ceresdb.common.util.ServiceLoader;
 
 public class JSqlMetricParserTest {
 

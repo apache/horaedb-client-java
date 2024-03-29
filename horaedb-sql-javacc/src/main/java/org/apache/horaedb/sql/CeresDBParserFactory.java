@@ -7,11 +7,11 @@ import org.apache.horaedb.common.SPI;
 import org.apache.horaedb.common.parser.SqlParser;
 import org.apache.horaedb.common.parser.SqlParserFactory;
 
-@SPI
-public class JSqlParserFactory implements SqlParserFactory {
+@SPI(priority = 1)
+public class CeresDBParserFactory implements SqlParserFactory {
 
     @Override
     public SqlParser getParser(final String sql) {
-        return new JSqlParser(sql);
+        return new CeresDBParser(sql);
     }
 }

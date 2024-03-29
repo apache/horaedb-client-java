@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>horaedb-client</artifactId>
-        <groupId>io.ceresdb</groupId>
+        <groupId>org.apache.horaedb</groupId>
         <version>${revision}</version>
     </parent>
 
