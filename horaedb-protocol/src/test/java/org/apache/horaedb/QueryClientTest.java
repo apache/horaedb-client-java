@@ -41,6 +41,8 @@ import org.apache.arrow.vector.VarCharVector;
 import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ArrowStreamWriter;
 import org.apache.arrow.vector.types.pojo.Field;
+import org.apache.horaedb.proto.internal.Common;
+import org.apache.horaedb.proto.internal.Storage;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -89,7 +91,7 @@ public class QueryClientTest {
 
     @Test
     public void queryOkNoRouteTest() throws ExecutionException, InterruptedException, IOException {
-        final SqlQueryResponse resp = mockSimpleQueryResponse(1, false);
+        final Storage.SqlQueryResponse resp = mockSimpleQueryResponse(1, false);
         final Endpoint ep = Endpoint.of("127.0.0.1", 8081);
 
         Mockito.when(this.routerClient.invoke(Mockito.eq(ep), Mockito.any(), Mockito.any())) //
@@ -385,7 +387,7 @@ public class QueryClientTest {
         writer.writeBatch();
         writer.close();
 
-        ArrowPayload arrowPayload = Storage.ArrowPayload.newBuilder()
+        Storage.ArrowPayload arrowPayload = Storage.ArrowPayload.newBuilder()
                 .setCompression(Storage.ArrowPayload.Compression.NONE)
                 .addRecordBatches(ByteStringHelper.wrap(out.toByteArray())).build();
 

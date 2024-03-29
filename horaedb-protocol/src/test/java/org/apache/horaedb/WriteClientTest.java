@@ -18,12 +18,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.util.Clock;
 import org.apache.horaedb.models.Point;
 import org.apache.horaedb.models.RequestContext;
 import org.apache.horaedb.models.Value;
 import org.apache.horaedb.models.WriteRequest;
-import io.ceresdb.proto.internal.Common;
-import io.ceresdb.proto.internal.Storage;
+import org.apache.horaedb.proto.internal.Common;
+import org.apache.horaedb.proto.internal.Storage;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,8 +35,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.ceresdb.common.Endpoint;
-import io.ceresdb.common.util.Clock;
 import org.apache.horaedb.models.Err;
 import org.apache.horaedb.models.Result;
 import org.apache.horaedb.models.WriteOk;
