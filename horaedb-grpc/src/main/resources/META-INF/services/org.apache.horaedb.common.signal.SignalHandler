@@ -1,1 +1,1 @@
-io.ceresdb.rpc.signal.RpcLimitSignalHandler
+org.apache.horaedb.rpc.signal.RpcLimitSignalHandler

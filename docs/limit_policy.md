@@ -47,6 +47,6 @@ newLimit = gradient * currentLimit + queueSize;
 newLimit = currentLimit * (1 - smoothing) + newLimit * smoothing
 ```
 
-- The default adaptive current limiting algorithm is `Gradient`，you can set in configuration `io.ceresdb.rpc.RpcOptions.limitKind = Vegas` by `Vegas`, or set `io.ceresdb.rpc.RpcOptions.limitKind = None` to close
-- It will fail quickly when the limit is reached by default, and it can also be set by setting `io.ceresdb.rpc.RpcOptions.blockOnLimit = true`
+- The default adaptive current limiting algorithm is `Gradient`，you can set in configuration `org.apache.horaedb.rpc.RpcOptions.limitKind = Vegas` by `Vegas`, or set `org.apache.horaedb.rpc.RpcOptions.limitKind = None` to close
+- It will fail quickly when the limit is reached by default, and it can also be set by setting `org.apache.horaedb.rpc.RpcOptions.blockOnLimit = true`
 - Write and read requests share this current limiter. By default, 70% and 30% of the access permissions can be obtained for write and read respectively. You can use the startup parameters `-DCeresDB.rpc.write.limit_percent=xxx`，readLimitPercent is `1 - writeLimitPercent`

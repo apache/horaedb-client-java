@@ -5,7 +5,7 @@ package org.apache.horaedb.sql;
 
 import java.util.List;
 
-import io.ceresdb.util.Utils;
+import org.apache.horaedb.util.Utils;
 import org.apache.horaedb.common.parser.SqlParser;
 import org.apache.horaedb.common.util.internal.ThrowUtil;
 

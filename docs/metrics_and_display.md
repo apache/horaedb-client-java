@@ -583,7 +583,7 @@ routeCache.size=1
 --- GrpcClient ---
 started=true
 opts=RpcOptions{defaultRpcTimeout=10000, rpcThreadPoolSize=0, rpcThreadPoolQueueSize=16, maxInboundMessageSize=67108864, flowControlWindow=67108864, idleTimeoutSeconds=300, keepAliveTimeSeconds=3, keepAliveTimeoutSeconds=3, keepAliveWithoutCalls=true, openVegasLimiter=true, vegasInitialLimit=50, blockOnLimit=false}
-connectionObservers=[io.ceresdb.HoraeDBClient$RpcConnectionObserver@465f5824]
+connectionObservers=[org.apache.HoraeDBClient$RpcConnectionObserver@465f5824]
 asyncPool=DirectExecutor{name='grpc_executor'}
 interceptors=[io.ceresdb.rpc.interceptors.MetricInterceptor@62b47ad1, io.ceresdb.rpc.interceptors.ClientRequestLimitInterceptor@77533e32, io.ceresdb.rpc.interceptors.ContextToHeadersInterceptor@1a52427d]
 managedChannelPool={127.0.0.1:8831=ManagedChannelOrphanWrapper{delegate=ManagedChannelImpl{logId=1, target=127.0.0.1:8831}}}

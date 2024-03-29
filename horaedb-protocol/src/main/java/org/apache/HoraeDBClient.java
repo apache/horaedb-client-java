@@ -1,0 +1,372 @@
+/*
+ * Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
+ */
+package org.apache;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.horaedb.common.Display;
+import org.apache.horaedb.common.Endpoint;
+import org.apache.horaedb.common.Lifecycle;
+import org.apache.horaedb.common.signal.SignalHandlersLoader;
+import org.apache.horaedb.common.util.MetricExecutor;
+import org.apache.horaedb.common.util.MetricsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.apache.horaedb.models.Err;
+import org.apache.horaedb.models.Point;
+import org.apache.horaedb.models.RequestContext;
+import org.apache.horaedb.models.SqlQueryOk;
+import org.apache.horaedb.models.SqlQueryRequest;
+import org.apache.horaedb.models.Result;
+import org.apache.horaedb.models.WriteOk;
+import org.apache.horaedb.models.WriteRequest;
+import org.apache.horaedb.options.HoraeDBOptions;
+import org.apache.horaedb.options.QueryOptions;
+import org.apache.horaedb.options.RouterOptions;
+import org.apache.horaedb.options.WriteOptions;
+import org.apache.horaedb.rpc.Context;
+import org.apache.horaedb.rpc.Observer;
+import org.apache.horaedb.rpc.RpcClient;
+import org.apache.horaedb.rpc.RpcFactoryProvider;
+import org.apache.horaedb.rpc.RpcOptions;
+import org.apache.horaedb.util.RpcServiceRegister;
+import org.apache.horaedb.util.StreamWriteBuf;
+import org.apache.horaedb.util.Utils;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Meter;
+
+/**
+ * CeresDB client.
+ *
+ */
+public class HoraeDBClient implements Write, Query, Lifecycle<HoraeDBOptions>, Display {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HoraeDBClient.class);
+
+    private static final Map<Integer, HoraeDBClient> INSTANCES   = new ConcurrentHashMap<>();
+    private static final AtomicInteger               ID          = new AtomicInteger(0);
+    private static final String                      ID_KEY      = "client.id";
+    private static final String                      VERSION_KEY = "client.version";
+    private static final String                      VERSION     = loadVersion();
+
+    private final int           id;
+    private final AtomicBoolean started = new AtomicBoolean(false);
+
+    private HoraeDBOptions opts;
+    private RouterClient   routerClient;
+    private WriteClient    writeClient;
+    private QueryClient    queryClient;
+
+    // Note: We do not close it to free resources, as we view it as shared
+    private Executor asyncWritePool;
+    private Executor asyncReadPool;
+
+    static {
+        // load all signal handlers
+        SignalHandlersLoader.load();
+        // register all rpc service
+        RpcServiceRegister.registerStorageService();
+        // start scheduled metric reporter
+        MetricsUtil.startScheduledReporter(Utils.autoReportPeriodMin(), TimeUnit.MINUTES);
+        Runtime.getRuntime().addShutdownHook(new Thread(MetricsUtil::stopScheduledReporterAndDestroy));
+    }
+
+    public HoraeDBClient() {
+        this.id = ID.incrementAndGet();
+    }
+
+    @Override
+    public boolean init(final HoraeDBOptions opts) {
+        if (!this.started.compareAndSet(false, true)) {
+            throw new IllegalStateException("CeresDB client has started");
+        }
+
+        this.opts = HoraeDBOptions.check(opts).copy();
+
+        final RpcClient rpcClient = initRpcClient(this.opts);
+        this.routerClient = initRouteClient(this.opts, rpcClient);
+        this.asyncWritePool = withMetricPool(this.opts.getAsyncWritePool(), "async_write_pool.time");
+        this.asyncReadPool = withMetricPool(this.opts.getAsyncReadPool(), "async_read_pool.time");
+        this.writeClient = initWriteClient(this.opts, this.routerClient, this.asyncWritePool);
+        this.queryClient = initQueryClient(this.opts, this.routerClient, this.asyncReadPool);
+
+        INSTANCES.put(this.id, this);
+
+        Utils.scheduleDisplaySelf(this, new LogPrinter(LOG));
+
+        return true;
+    }
+
+    @Override
+    public void shutdownGracefully() {
+        if (!this.started.compareAndSet(true, false)) {
+            return;
+        }
+
+        if (this.writeClient != null) {
+            this.writeClient.shutdownGracefully();
+        }
+
+        if (this.queryClient != null) {
+            this.queryClient.shutdownGracefully();
+        }
+
+        if (this.routerClient != null) {
+            this.routerClient.shutdownGracefully();
+        }
+
+        INSTANCES.remove(this.id);
+    }
+
+    @Override
+    public void ensureInitialized() {
+        if (this.started.get() && INSTANCES.containsKey(this.id)) {
+            return;
+        }
+        throw new IllegalStateException(String.format("CeresDBClient(%d) is not started", this.id));
+    }
+
+    @Override
+    public CompletableFuture<Result<WriteOk, Err>> write(final WriteRequest req, final Context ctx) {
+        ensureInitialized();
+        return this.writeClient.write(req, attachCtx(ctx));
+    }
+
+    @Override
+    public StreamWriteBuf<Point, WriteOk> streamWrite(RequestContext reqCtx, final String table, final Context ctx) {
+        ensureInitialized();
+        return this.writeClient.streamWrite(reqCtx, table, attachCtx(ctx));
+    }
+
+    @Override
+    public CompletableFuture<Result<SqlQueryOk, Err>> sqlQuery(final SqlQueryRequest req, final Context ctx) {
+        ensureInitialized();
+        return this.queryClient.sqlQuery(req, attachCtx(ctx));
+    }
+
+    @Override
+    public void streamSqlQuery(final SqlQueryRequest req, final Context ctx, final Observer<SqlQueryOk> observer) {
+        ensureInitialized();
+        this.queryClient.streamSqlQuery(req, attachCtx(ctx), observer);
+    }
+
+    public static List<HoraeDBClient> instances() {
+        return new ArrayList<>(INSTANCES.values());
+    }
+
+    public int id() {
+        return this.id;
+    }
+
+    public String version() {
+        return VERSION;
+    }
+
+    public RouterClient routerClient() {
+        return this.routerClient;
+    }
+
+    @Override
+    public void display(final Printer out) {
+        out.println("--- HoraeDBClient ---") //
+                .print("id=") //
+                .println(this.id) //
+                .print("version=") //
+                .println(version()) //
+                .print("clusterAddress=") //
+                .println(this.opts.getClusterAddress()) //
+                .print("database=") //
+                .println(this.opts.getDatabase()) //
+                .print("userAsyncWritePool=") //
+                .println(this.opts.getAsyncWritePool()) //
+                .print("userAsyncReadPool=") //
+                .println(this.opts.getAsyncReadPool());
+
+        if (this.routerClient != null) {
+            out.println("");
+            this.routerClient.display(out);
+        }
+
+        if (this.writeClient != null) {
+            out.println("");
+            this.writeClient.display(out);
+        }
+
+        if (this.queryClient != null) {
+            out.println("");
+            this.queryClient.display(out);
+        }
+
+        out.println("");
+    }
+
+    @Override
+    public String toString() {
+        return "HoraeDBClient{" + //
+               "id=" + id + //
+               ", version=" + version() + //
+               ", started=" + started + //
+               ", opts=" + opts + //
+               ", writeClient=" + writeClient + //
+               ", asyncWritePool=" + asyncWritePool + //
+               ", asyncReadPool=" + asyncReadPool + //
+               '}';
+    }
+
+    private Executor withMetricPool(final Executor pool, final String name) {
+        return pool == null ? null : new MetricExecutor(pool, name);
+    }
+
+    private Context attachCtx(final Context ctx) {
+        final Context c = ctx == null ? Context.newDefault() : ctx;
+        return c.with(ID_KEY, id()).with(VERSION_KEY, version());
+    }
+
+    private static RpcClient initRpcClient(final HoraeDBOptions opts) {
+        final RpcOptions rpcOpts = opts.getRpcOptions();
+        final RpcClient rpcClient = RpcFactoryProvider.getRpcFactory().createRpcClient();
+        if (!rpcClient.init(rpcOpts)) {
+            throw new IllegalStateException("Fail to start RPC client");
+        }
+        rpcClient.registerConnectionObserver(new RpcConnectionObserver());
+        return rpcClient;
+    }
+
+    private static RouterClient initRouteClient(final HoraeDBOptions opts, final RpcClient rpcClient) {
+        final RouterOptions routerOpts = opts.getRouterOptions();
+        routerOpts.setRpcClient(rpcClient);
+
+        RouterClient routerClient;
+        switch (routerOpts.getRouteMode()) {
+            case DIRECT:
+                routerClient = new RouterClient();
+                break;
+            case PROXY:
+                routerClient = new ProxyRouterClient();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Route mode " + routerOpts.getRouteMode());
+        }
+        if (!routerClient.init(routerOpts)) {
+            throw new IllegalStateException("Fail to start router client");
+        }
+        return routerClient;
+    }
+
+    private static WriteClient initWriteClient(final HoraeDBOptions opts, //
+                                               final RouterClient routerClient, //
+                                               final Executor asyncPool) {
+        final WriteOptions writeOpts = opts.getWriteOptions();
+        writeOpts.setDatabase(opts.getDatabase());
+        writeOpts.setRoutedClient(routerClient);
+        writeOpts.setAsyncPool(asyncPool);
+        final WriteClient writeClient = new WriteClient();
+        if (!writeClient.init(writeOpts)) {
+            throw new IllegalStateException("Fail to start write client");
+        }
+        return writeClient;
+    }
+
+    private static QueryClient initQueryClient(final HoraeDBOptions opts, //
+                                               final RouterClient routerClient, //
+                                               final Executor asyncPool) {
+        final QueryOptions queryOpts = opts.getQueryOptions();
+        queryOpts.setDatabase(opts.getDatabase());
+        queryOpts.setRouterClient(routerClient);
+        queryOpts.setAsyncPool(asyncPool);
+        final QueryClient queryClient = new QueryClient();
+        if (!queryClient.init(queryOpts)) {
+            throw new IllegalStateException("Fail to start query client");
+        }
+        return queryClient;
+    }
+
+    private static String loadVersion() {
+        try {
+            return Utils //
+                    .loadProperties(HoraeDBClient.class.getClassLoader(), "client_version.properties") //
+                    .getProperty(VERSION_KEY, "Unknown version");
+        } catch (final Exception ignored) {
+            return "Unknown version(err)";
+        }
+    }
+
+    static final class RpcConnectionObserver implements RpcClient.ConnectionObserver {
+
+        static final Counter CONN_COUNTER  = MetricsUtil.counter("connection_counter");
+        static final Meter   CONN_FAILURES = MetricsUtil.meter("connection_failures");
+
+        @Override
+        public void onReady(final Endpoint ep) {
+            CONN_COUNTER.inc();
+            MetricsUtil.counter("connection_counter", ep).inc();
+        }
+
+        @Override
+        public void onFailure(final Endpoint ep) {
+            CONN_COUNTER.dec();
+            CONN_FAILURES.mark();
+            MetricsUtil.counter("connection_counter", ep).dec();
+            MetricsUtil.meter("connection_failures", ep).mark();
+        }
+
+        @Override
+        public void onShutdown(final Endpoint ep) {
+            CONN_COUNTER.dec();
+            MetricsUtil.counter("connection_counter", ep).dec();
+        }
+    }
+
+    /**
+     * A printer use logger, the {@link #print(Object)} writes data to
+     * an inner buffer, the {@link #println(Object)} actually writes
+     * data to the logger, so we must call {@link #println(Object)}
+     * on the last writing.
+     */
+    static final class LogPrinter implements Display.Printer {
+
+        private static final int MAX_BUF_SIZE = 1024 << 3;
+
+        private final Logger logger;
+
+        private StringBuilder buf = new StringBuilder();
+
+        LogPrinter(Logger logger) {
+            this.logger = logger;
+        }
+
+        @Override
+        public synchronized Printer print(final Object x) {
+            this.buf.append(x);
+            return this;
+        }
+
+        @Override
+        public synchronized Printer println(final Object x) {
+            this.buf.append(x);
+            this.logger.info(this.buf.toString());
+            truncateBuf();
+            this.buf.setLength(0);
+            return this;
+        }
+
+        private void truncateBuf() {
+            if (this.buf.capacity() < MAX_BUF_SIZE) {
+                this.buf.setLength(0); // reuse
+            } else {
+                this.buf = new StringBuilder();
+            }
+        }
+    }
+}
