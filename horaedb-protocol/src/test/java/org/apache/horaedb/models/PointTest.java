@@ -3,12 +3,9 @@
  */
 package org.apache.horaedb.models;
 
-import org.apache.horaedb.models.Point;
-import org.apache.horaedb.models.Value;
+import org.apache.horaedb.common.util.Clock;
 import org.junit.Assert;
 import org.junit.Test;
-
-import io.ceresdb.common.util.Clock;
 
 public class PointTest {
     @Test

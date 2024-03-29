@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.ceresdb.common.util.Clock;
+import org.apache.horaedb.common.util.Clock;
 import org.apache.horaedb.models.Point;
 import org.apache.horaedb.models.Result;
 import org.apache.horaedb.models.Value;
-import io.ceresdb.proto.internal.Common;
-import io.ceresdb.proto.internal.Storage;
+import org.apache.horaedb.proto.internal.Common;
+import org.apache.horaedb.proto.internal.Storage;
 
 public class TestUtil {
 

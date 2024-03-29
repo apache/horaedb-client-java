@@ -6,8 +6,6 @@ package org.apache.horaedb.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.horaedb.models.*;
-import org.apache.models.*;
 import org.junit.Assert;
 import org.junit.Test;
 
