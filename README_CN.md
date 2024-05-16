@@ -1,9 +1,9 @@
-# HoraeDB Java Client
+# Apache HoraeDB (Incubating) Java Client
 
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
 ## 介绍
-HoraeDBClient 是 HoraeDB 的高性能 Java 版客户端。HoraeDB 是定位为高性能的、分布式的、Schema-less 的云原生时序数据库。它可以同时支持时间序列和数据分析型的工作负载。
+HoraeDBClient 是 [Apache HoraeDB (Incubating)](https://github.com/apache/incubator-horaedb) 的高性能 Java 版客户端。
 
 ## 功能特性
 - 通信层基于 SPI 可扩展，默认提供 gRPC 的实现
