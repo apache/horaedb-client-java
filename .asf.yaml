@@ -19,8 +19,8 @@
 
 github:
   description: >-
-    Java implementation of HoraeDB client.
-  homepage: https://apache.github.io/incubator-horaedb-docs # TODO: after website is ready, set to https://horaedb.apache.org/
+    Apache HoraeDB (Incubating) Java Client.
+  homepage: https://horaedb.apache.org/
   labels:
     - java
     - sql

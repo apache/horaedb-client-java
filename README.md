@@ -1,4 +1,4 @@
-# HoraeDB Java Client
+# Apache HoraeDB (Incubating) Java Client
 
 ![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)
 
@@ -6,8 +6,7 @@
 
 ## Introduction
 
-HoraeDB Client is a high-performance Java client for HoraeDB.
-HoraeDB is a high-performance, distributed, schema-less, cloud native time-series database that can handle both time-series and analytics workloads.
+Java client for [Apache HoraeDB (Incubating)](https://github.com/apache/incubator-horaedb).
 
 ## Features
 
