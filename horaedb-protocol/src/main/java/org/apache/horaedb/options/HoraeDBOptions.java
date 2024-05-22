@@ -166,6 +166,9 @@ public class HoraeDBOptions implements Copiable<HoraeDBOptions> {
         // The routeMode for sdk, only Proxy and Direct support now.
         private RouteMode routeMode;
         private String    database;
+        private String    user;
+        private String    password;
+
         // Asynchronous thread pool, which is used to handle various asynchronous tasks in the SDK.
         private Executor asyncWritePool;
         private Executor asyncReadPool;
@@ -199,6 +202,13 @@ public class HoraeDBOptions implements Copiable<HoraeDBOptions> {
         public Builder(Endpoint clusterAddress, RouteMode routeMode) {
             this.clusterAddress = clusterAddress;
             this.routeMode = routeMode;
+        }
+
+        @SuppressWarnings("PMD")
+        public Builder authentication(final String user, final String password) {
+            this.user = user;
+            this.password = password;
+            return this;
         }
 
         /**
@@ -366,6 +376,10 @@ public class HoraeDBOptions implements Copiable<HoraeDBOptions> {
             opts.asyncWritePool = asyncWritePool;
             opts.asyncReadPool = asyncReadPool;
             opts.rpcOptions = this.rpcOptions;
+
+            opts.rpcOptions.setUser(this.user);
+            opts.rpcOptions.setPassword(this.password);
+
             opts.routerOptions = new RouterOptions();
             opts.routerOptions.setClusterAddress(this.clusterAddress);
             opts.routerOptions.setMaxCachedSize(this.routeTableMaxCachedSize);

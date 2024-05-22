@@ -15,6 +15,16 @@ import org.apache.horaedb.common.util.Cpus;
 public class RpcOptions implements Copiable<RpcOptions> {
 
     /**
+     * Username provided for authentication
+     */
+    private String user;
+
+    /**
+     * Password provided for authentication
+     */
+    private String password;
+
+    /**
      * RPC request default timeout in milliseconds
      * Default: 10000(10s)
      */
@@ -95,6 +105,14 @@ public class RpcOptions implements Copiable<RpcOptions> {
      * Max time in milliseconds a connection can live, 0 means forever.
      */
     private long connectionMaxAgeMs = 0;
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
     public int getDefaultRpcTimeout() {
         return defaultRpcTimeout;
@@ -180,6 +198,14 @@ public class RpcOptions implements Copiable<RpcOptions> {
         return limitKind;
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setLimitKind(LimitKind limitKind) {
         this.limitKind = limitKind;
     }
@@ -235,6 +261,8 @@ public class RpcOptions implements Copiable<RpcOptions> {
     @Override
     public RpcOptions copy() {
         final RpcOptions opts = new RpcOptions();
+        opts.user = this.user;
+        opts.password = this.password;
         opts.defaultRpcTimeout = this.defaultRpcTimeout;
         opts.rpcThreadPoolSize = this.rpcThreadPoolSize;
         opts.rpcThreadPoolQueueSize = this.rpcThreadPoolQueueSize;
