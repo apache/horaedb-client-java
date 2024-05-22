@@ -35,6 +35,7 @@ import io.grpc.protobuf.ProtoUtils;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
 
+import org.apache.horaedb.rpc.interceptors.AuthenticationInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -394,6 +395,8 @@ public class GrpcClient implements RpcClient {
     // Interceptors run in the reverse order in which they are added
     private void initInterceptors() {
         // the last one
+        addInterceptor(new AuthenticationInterceptor(opts.getUser(), opts.getPassword()));
+
         addInterceptor(new MetricInterceptor());
 
         // the second
