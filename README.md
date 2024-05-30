@@ -8,6 +8,12 @@
 
 Java client for [Apache HoraeDB (Incubating)](https://github.com/apache/incubator-horaedb).
 
+> [!IMPORTANT]
+> Apache HoraeDB (incubating) is an effort undergoing incubation at the Apache
+> Software Foundation (ASF), sponsored by the Apache Incubator PMC.
+>
+> Please read the [DISCLAIMER](DISCLAIMER) and a full explanation of ["incubating"](https://incubator.apache.org/policy/incubation.html).
+
 ## Features
 
 - With the well-designed SPI, the network transport layer is extensible. And we provide the default implementation which uses the gRPC framework.
