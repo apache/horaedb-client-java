@@ -356,6 +356,6 @@ public final class ServiceLoader<S> implements Iterable<S> {
      */
     @Override
     public String toString() {
-        return "io.ceresdb.ServiceLoader[" + this.service.getName() + "]";
+        return "org.apache.horaedb.ServiceLoader[" + this.service.getName() + "]";
     }
 }
